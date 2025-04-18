@@ -23,7 +23,7 @@ export default function TeachersList() {
       });
   }, []);
 
-  if (loading) return <p>Cargando profesores...</p>;
+  if (loading) return <p>Cargando profesores..</p>;
 
   return (
     <div>
