@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import BlurBackground from '@/components/BlurBackground';
 
-export default function TeachersList() {
-  const [teachers, setTeachers] = useState([]);
+export default function IncidentList() {
+  const [incidents, setIncidents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -12,29 +13,30 @@ export default function TeachersList() {
      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     // Petición HTTP con Axios
     axios
-      .get(`${backendUrl}/students`)
+      .get(`${backendUrl}/incidents`)
       .then((response) => {
-        setTeachers(response.data);   // guardamos los profesores
+        setIncidents(response.data);   // guardamos los avisos.
         setLoading(false);         // dejamos de cargar
       })
       .catch((error) => {
-        console.error('Error al traer los profesores:', error);
+        console.error('Error al traer los avisos.:', error);
         setLoading(false);
       });
   }, []);
 
-  if (loading) return <p>Cargando profesores..</p>;
+  if (loading) return <p>Cargando avisos...</p>;
 
   return (
-    <div>
-      <h2>Alumnos</h2>
+    <BlurBackground>
+      <h2>Avisos</h2>
       <ul>
-        {teachers.map((u) => (
-          <li key={u.id}>
-            <strong>{u.name}</strong> - <strong>{u.group_id}</strong>
+        {incidents.map((i) => (
+          <li key={i.id}>
+            <strong>{i.description}</strong> - <strong>{i.is_solved}</strong>
           </li>
         ))}
       </ul>
-    </div>
+
+    </BlurBackground>
   );
 }
