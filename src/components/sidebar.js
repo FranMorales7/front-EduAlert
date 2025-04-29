@@ -12,22 +12,22 @@ export default function Sidebar() {
       <Image src={logo} alt="Logo" width={100} height={100} />
       </h2>
       <nav className="flex flex-col space-y-4">
-        <Link href="/" className="flex items-center gap-2 hover:text-blue-600">
+        <Link href="/logged/manager/" className="flex items-center gap-2 hover:text-blue-600">
           <Home size={20} /> Inicio
         </Link>
-        <Link href="/avisos" className="flex items-center gap-2 hover:text-blue-600">
+        <Link href="/logged/manager/avisos" className="flex items-center gap-2 hover:text-blue-600">
           <Bell size={20} /> Avisos
         </Link>
-        <Link href="/alumnado" className="flex items-center gap-2 hover:text-blue-600">
+        <Link href="/logged/manager/alumnado" className="flex items-center gap-2 hover:text-blue-600">
           <PiStudentFill size={20} /> Estudiantes
         </Link>
-        <Link href="/profesorado" className="flex items-center gap-2 hover:text-blue-600">
+        <Link href="/logged/manager/profesorado" className="flex items-center gap-2 hover:text-blue-600">
           <GiTeacher size={20} /> Profesores
         </Link>
-        <Link href="/configuracion" className="flex items-center gap-2 hover:text-blue-600">
+        <Link href="/logged/manager/configuracion" className="flex items-center gap-2 hover:text-blue-600">
           <Settings size={20} /> Configuración
         </Link>
-        <Link href="/perfil" className="flex items-center gap-2 hover:text-blue-600">
+        <Link href="/logged/manager/perfil" className="flex items-center gap-2 hover:text-blue-600">
           <User size={20} /> Mi perfil
         </Link>
       </nav>

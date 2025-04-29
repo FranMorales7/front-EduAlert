@@ -1,11 +1,15 @@
-import { Info } from "lucide-react";
+// app/page.js
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <div className="">
-      <h2 className="flex p-2 gap-4">
-        <Info /> Cooming Soon!
-      </h2>
-    </div>
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/not_logged/login');
+  }, []);
+
+  return null; // o un loader/spinner mientras redirige
 }
