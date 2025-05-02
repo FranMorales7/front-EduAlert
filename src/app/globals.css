@@ -35,6 +35,7 @@ body {
   background-size: 400% 400%;
   animation: fondoAnimado 20s ease infinite;
   font-family: sans-serif;
+  overflow: hidden;
 }
 
 @keyframes fondoAnimado {

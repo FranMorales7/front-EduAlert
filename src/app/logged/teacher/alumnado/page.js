@@ -1,12 +1,11 @@
 'use client'; // si estás en Next.js App Router
 
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import BlurBackground from '@/components/BlurBackground';
 import api from '@/api/axios';
 
-export default function TeachersList() {
-  const [teachers, setTeachers] = useState([]);
+export default function StudentssList() {
+  const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -14,26 +13,26 @@ export default function TeachersList() {
      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     // Petición HTTP con Axios
     api
-      .get(`${backendUrl}/teachers`)
+      .get(`${backendUrl}/students`)
       .then((response) => {
-        setTeachers(response.data);   // guardamos los profesores.
+        setStudents(response.data);   // guardamos los alumnos.
         setLoading(false);         // dejamos de cargar
       })
       .catch((error) => {
-        console.error('Error al traer los profesores.:', error);
+        console.error('Error al traer los alumnos.:', error);
         setLoading(false);
       });
   }, []);
 
-  if (loading) return <p>Cargando profesores...</p>;
+  if (loading) return <p>Cargando alumnos...</p>;
 
   return (
     <BlurBackground>
-      <h2>Profesores</h2>
+      <h2>Alumnos</h2>
       <ul>
-        {teachers.map((t) => (
-          <li key={t.id}>
-            <strong>{t.name}</strong> - <strong>{t.email}</strong>
+        {students.map((u) => (
+          <li key={u.id}>
+            <strong>{u.name}</strong> - <strong>{u.group_id}</strong>
           </li>
         ))}
       </ul>

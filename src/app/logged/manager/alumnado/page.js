@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import BlurBackground from '@/components/BlurBackground';
+import api from '@/api/axios';
 
 export default function StudentssList() {
   const [students, setStudents] = useState([]);
@@ -12,7 +13,7 @@ export default function StudentssList() {
      // Usamos la variable de entorno para la URL base
      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     // Petición HTTP con Axios
-    axios
+    api
       .get(`${backendUrl}/students`)
       .then((response) => {
         setStudents(response.data);   // guardamos los alumnos.

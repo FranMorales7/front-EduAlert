@@ -1,19 +1,34 @@
 'use client'
 import { useState } from 'react';
 import api from '../../../api/axios'; // La configuración de axios
+import { useRouter } from 'next/navigation';
 import logo from '../../../../public/images/CF_logo.png';
 import Image from 'next/image';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await api.post('/login', { email, password });
-      console.log('Usuario autenticado:', response.data);
-      // Aquí puedes guardar el token o redirigir según el rol
+      console.log('Usuario autenticado:', response?.data);
+     
+      // Guardamos el token generado en localstorage
+      localStorage.setItem('token', response.data.token);
+
+      // Saber si es un admin o un usuario
+      const admin = response?.data?.user?.is_admin;
+
+      if(admin){
+        router.push('/logged/manager/inicio')
+      } else {
+        router.push('/logged/teacher/inicio')
+      }
+
+
     } catch (error) {
       console.error('Error de autenticación', error);
     }
