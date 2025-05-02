@@ -12,7 +12,7 @@ export default function Sidebar() {
       <Image src={logo} alt="Logo" width={100} height={100} />
       </h2>
       <nav className="flex flex-col space-y-4">
-        <Link href="/logged/manager/" className="flex items-center gap-2 hover:text-blue-600">
+        <Link href="/logged/manager/inicio" className="flex items-center gap-2 hover:text-blue-600">
           <Home size={20} /> Inicio
         </Link>
         <Link href="/logged/manager/avisos" className="flex items-center gap-2 hover:text-blue-600">

@@ -1,7 +1,6 @@
 'use client'; // si estás en Next.js App Router
 
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState, useRef } from 'react';
 import BlurBackground from '@/components/BlurBackground';
 import api from '@/api/axios';
 
@@ -10,8 +9,18 @@ export default function TeachersList() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-     // Usamos la variable de entorno para la URL base
-     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    // Usamos la variable de entorno para la URL base
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+    // Cancela cualquier petición anterior
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    setLoading(true);
+
     // Petición HTTP con Axios
     api
       .get(`${backendUrl}/teachers`)
@@ -23,6 +32,12 @@ export default function TeachersList() {
         console.error('Error al traer los profesores.:', error);
         setLoading(false);
       });
+
+      // Limpiar la petición si el componente se desmonta
+      return () => {
+        controller.abort();
+      };
+
   }, []);
 
   if (loading) return <p>Cargando profesores...</p>;

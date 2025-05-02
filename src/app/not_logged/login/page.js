@@ -16,10 +16,11 @@ const Login = () => {
       const response = await api.post('/login', { email, password });
       console.log('Usuario autenticado:', response?.data);
      
-      // Guardamos el token generado en localstorage
+      // Guardamos el nombre del usuario y el token generado en localstorage
+      localStorage.setItem('nombre', response.data.user.name);
       localStorage.setItem('token', response.data.token);
 
-      // Saber si es un admin o un usuario
+      // Si es un admin o un usuario se redirigira a su respectiva pagina
       const admin = response?.data?.user?.is_admin;
 
       if(admin){
