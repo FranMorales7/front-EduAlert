@@ -91,7 +91,7 @@ export default function CardAvisos() {
     </Tab.List>
     <Tab.Panels>
         {incidents.map((i) => (
-        <Tab.Panel key={i.id} className="bg-white p-4 rounded shadow">
+        <Tab.Panel key={i.id} className="border-1 border-gray-300 shadow-xl bg-white p-4 rounded">
            
             {/* Información del alumno */}
             {i.student && (
