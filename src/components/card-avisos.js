@@ -74,7 +74,7 @@ export default function CardAvisos() {
         onClick={() => handleIncidentClick(i.id)}
         >
         <span
-            className={`h-3 w-3 rounded-full ${
+            className={`h-5 w-5 border-1 border-black rounded-full ${
             i.is_solved ? 'bg-green-500' : 'bg-red-500'
             }`}
         />
