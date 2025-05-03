@@ -67,8 +67,8 @@ export default function CardAvisos() {
         <Tab
         key={i.id}
         className={({ selected }) =>
-            `px-4 py-2 mb-2 rounded flex items-center gap-8 ${
-            selected ? 'bg-blue-600 text-white' : 'bg-white text-black'
+            `border-1 border-black px-4 py-2 mb-2 rounded flex items-center gap-8 ${
+            selected ? 'bg-blue-300 text-white' : 'bg-white text-black'
             } shadow border`
         }
         onClick={() => handleIncidentClick(i.id)}
