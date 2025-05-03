@@ -1,4 +1,3 @@
-// app/page.js
 'use client';
 
 import { useEffect } from 'react';
@@ -9,7 +8,7 @@ export default function Home() {
 
   useEffect(() => {
     router.replace('/not_logged/login');
-  }, []);
+  }, [router]);
 
-  return null; // o un loader/spinner mientras redirige
+  return null; // no se necesita renderizar nada
 }

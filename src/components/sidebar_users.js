@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { PiStudentFill } from "react-icons/pi";
-import { GiTeacher } from "react-icons/gi";
 import { Bell, Home, Settings, User } from 'lucide-react'; // Puedes usar lucide-react o tus propios íconos
 import Image from 'next/image';
 import logo from '../../public/images/SF_logo.png'; 
@@ -12,7 +11,7 @@ export default function Sidebar() {
       <Image src={logo} alt="Logo" width={100} height={100} />
       </h2>
       <nav className="flex flex-col space-y-4">
-        <Link href="/logged/teacher/" className="flex items-center gap-2 hover:text-blue-600">
+        <Link href="/logged/teacher/inicio" className="flex items-center gap-2 hover:text-blue-600">
           <Home size={20} /> Inicio
         </Link>
         <Link href="/logged/teacher/avisos" className="flex items-center gap-2 hover:text-blue-600">

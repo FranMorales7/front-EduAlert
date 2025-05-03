@@ -13,7 +13,7 @@ export default function Header() {
 
   return (
     <div className="text-lg font-semibold flex">
-      {name ? `Bienevenid@ ${name} ` : 'Hola'}
+      {name ? `Bienvenid@ ${name} ` : 'Bienvenid@'}
     </div>
   );
 }
