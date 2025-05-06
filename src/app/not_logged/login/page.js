@@ -1,9 +1,9 @@
 'use client'
 import { useState } from 'react';
-import api from '../../../api/axios'; // La configuración de axios
+import { signIn, getSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import logo from '../../../../public/images/CF_logo.png';
 import Image from 'next/image';
+import logo from '../../../../public/images/CF_logo.png';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -12,41 +12,34 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await api.post('/login', { email, password });
-      console.log('Usuario autenticado:', response?.data);
-     
-      // Guardamos el nombre del usuario y el token generado en localstorage
-      localStorage.setItem('nombre', response.data.user.name);
-      localStorage.setItem('token', response.data.token);
 
-      // Si es un admin o un usuario se redirigira a su respectiva pagina
-      const admin = response?.data?.user?.is_admin;
+    const result = await signIn('credentials', {
+      redirect: false,
+      email,
+      password,
+    });
 
-      if(admin){
-        router.push('/logged/manager/inicio')
+    if (result.ok) {
+      const session = await getSession();
+
+      if (session?.user?.is_admin) {
+        router.push('/logged/manager/inicio');
       } else {
-        router.push('/logged/teacher/inicio')
+        router.push('/logged/teacher/inicio');
       }
-
-
-    } catch (error) {
-      console.error('Error de autenticación', error);
+    } else {
+      console.error('Error de autenticación', result.error);
+      alert('Credenciales incorrectas');
     }
   };
 
   return (
     <div className="relative w-full h-screen flex items-center justify-center overflow-hidden">
-
-      {/* Contenido en primer plano */}
       <div className="ring-4 ring-blue-500 relative z-10 flex w-4/5 h-4/5 backdrop-blur-md bg-white/60 rounded-xl shadow-xl overflow-hidden">
-        
-        {/* Lado izquierdo con logo */}
         <div className="ring-2 ring-blue-500/50 w-1/2 flex items-center justify-center bg-white/70">
           <Image src={logo} alt="Logo" width={150} height={150} />
         </div>
 
-        {/* Lado derecho con formulario */}
         <div className="ring-2 ring-blue-500/50 w-1/2 p-8 flex items-center justify-center bg-white/30">
           <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4">
             <input

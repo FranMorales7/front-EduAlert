@@ -4,8 +4,8 @@ import { useEffect, useState, useRef } from 'react';
 import api from '@/api/axios';
 import { Tab } from '@headlessui/react';
 
-export default function CardAvisos() {
-  const [incidents, setIncidents] = useState([]);
+export default function CardSalidas() {
+  const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
   const abortControllerRef = useRef(null);
 
@@ -21,12 +21,12 @@ export default function CardAvisos() {
     setLoading(true);
 
     api
-      .get(`${backendUrl}/incidents`, {
+      .get(`${backendUrl}/trips`, {
         signal: controller.signal,
       })
       .then((response) => {
-        setIncidents(response.data);
-        console.log('Respuesta de incidentes: ', response.data);
+        setTrips(response.data);
+        console.log('Respuesta de salidas: ', response.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -41,15 +41,15 @@ export default function CardAvisos() {
     };
   }, []);
 
-  const handleIncidentClick = (id) => {
+  const handleTripsClick = (id) => {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-    const getIncidentUrl = `${backendUrl}/incidents/${id}`;
-    console.log(`Realizando petición al endpoint: ${getIncidentUrl}`);
+    const getTripsUrl = `${backendUrl}/trips/${id}`;
+    console.log(`Realizando petición al endpoint: ${getTripsUrl}`);
 
     api
-      .get(getIncidentUrl)
+      .get(getTripsUrl)
       .then((response) => {
-        console.log('Respuesta - getIncidente: ', response.data);
+        console.log('Respuesta - getSalida: ', response.data);
       })
       .catch((error) => {
         if (error.name !== 'CanceledError') {
@@ -63,15 +63,15 @@ export default function CardAvisos() {
   return (
     <Tab.Group>
     <Tab.List className=" mb-8">
-        {incidents.map((i) => (
+        {trips.map((i) => (
         <Tab
         key={i.id}
         className={({ selected }) =>
-            `border-1 border-black px-4 py-2 mb-2 rounded flex items-center gap-8 ${
-            selected ? 'bg-blue-300 text-white' : 'bg-white text-black'
-            } shadow border`
+            `border-2 border-black ${i.is_solved ? 'hover:border-green-300' : 'hover:border-red-300'} px-4 py-2 mb-2 rounded flex items-center gap-8 ${
+            selected ? 'bg-sky-400 text-white' : 'bg-white text-black'
+            } shadow border cursor-pointer`
         }
-        onClick={() => handleIncidentClick(i.id)}
+        onClick={() => handleTripsClick(i.id)}
         >
         <span
             className={`h-5 w-5 border-1 border-black rounded-full ${
@@ -90,7 +90,7 @@ export default function CardAvisos() {
         ))}
     </Tab.List>
     <Tab.Panels>
-        {incidents.map((i) => (
+        {trips.map((i) => (
         <Tab.Panel key={i.id} className="border-1 border-gray-300 shadow-xl bg-white p-4 rounded">
            
             {/* Información del alumno */}
