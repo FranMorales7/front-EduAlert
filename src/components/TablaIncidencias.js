@@ -10,13 +10,14 @@ export default function TablaIncidencias() {
   const abortControllerRef = useRef(null);
   const [filtros, setFiltros] = useState({ descripcion: '', alumno: '', fecha: '', aula: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data: session, status } = useSession(); // ✅ IMPORTANTE
+  const { data: session, status } = useSession(); 
   const [user, setUser] = useState(null);
 
   // Cuando ya se tiene la sesión, guardamos el ID de usuario
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
-      setUser(session.user.id); // o el campo que uses para identificar al usuario
+      setUser(session.user.id);
+      console.log('User-->', session)
     }
   }, [session, status]);
 
@@ -33,11 +34,15 @@ export default function TablaIncidencias() {
     abortControllerRef.current = controller;
 
     api
-      .get(`${backendUrl}/incidents/${user}`, {
+      .get(`${backendUrl}/incidents/user/${user}`, {
+        headers: {
+          Authorization: `Bearer ${session.user.accessToken}`,
+        },
         signal: controller.signal,
       })
       .then((response) => {
         setIncidents(response.data);
+        console.log('Incidentes->', response.data)
       })
       .catch((error) => {
         if (error.name !== 'CanceledError') {
@@ -64,11 +69,16 @@ export default function TablaIncidencias() {
   };
 
   const datosFiltrados = incidents.filter((i) =>
-    i.descripcion.toLowerCase().includes(filtros.descripcion.toLowerCase()) &&
-    i.alumno.toLowerCase().includes(filtros.alumno.toLowerCase()) &&
-    i.fecha.includes(filtros.fecha) &&
-    i.aula.toLowerCase().includes(filtros.aula.toLowerCase())
+    (i.description?.toLowerCase() ?? '').includes(filtros.descripcion.toLowerCase()) &&
+    (
+      `${i.student?.name ?? ''} ${i.student?.last_name_1 ?? ''} ${i.student?.last_name_2 ?? ''}`
+        .toLowerCase()
+        .includes(filtros.alumno.toLowerCase())
+    ) &&
+    (i.created_at?.includes(filtros.fecha) ?? '') &&
+    (i.lesson?.location?.toLowerCase().includes(filtros.aula.toLowerCase()) ?? '')
   );
+  
 
   if (status === 'loading') return <p className="p-6">Cargando sesión...</p>;
   if (status === 'unauthenticated') return <p className="p-6">No estás autenticado.</p>;
@@ -107,10 +117,12 @@ export default function TablaIncidencias() {
         <tbody>
           {datosFiltrados.map((i) => (
             <tr key={i.id} className="hover:bg-gray-50">
-              <td className="p-2 border">{i.descripcion}</td>
-              <td className="p-2 border">{i.alumno}</td>
-              <td className="p-2 border">{i.fecha}</td>
-              <td className="p-2 border">{i.aula}</td>
+              <td className="p-2 border">{i.description}</td>
+              <td className="p-2 border">
+                {i.student?.name} {i.student?.last_name_1} {i.student?.last_name_2}
+              </td>
+              <td className="p-2 border">{i.created_at?.slice(0, 10)}</td>
+              <td className="p-2 border">{i.lesson?.location}</td>
               <td className="p-2 border">
                 <button className="text-blue-600 hover:underline mr-4">Editar</button>
                 <button className="text-red-600 hover:underline" onClick={() => handleEliminar(i.id)}>Eliminar</button>
