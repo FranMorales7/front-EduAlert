@@ -1,19 +1,22 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 export default function Header() {
-  const [name, setName] = useState('');
+  const { data: session, status } = useSession(); 
+  const [user, setUser] = useState(null);
 
+  // Cuando ya se tiene la sesión, mostramos el nombre del usuario
   useEffect(() => {
-    const storedName = localStorage.getItem('nombre');
-    if (storedName) {
-      setName(storedName);
+    if (status === 'authenticated' && session?.user) {
+      console.log(session.user.name)
+      setUser(session.user.name);
     }
-  }, []);
+  }, [session, status]);
 
   return (
     <div className="text-lg font-semibold flex">
-      {name ? `Bienvenid@ ${name} ` : 'Bienvenid@'}
+      {user ? `Bienvenid@ ${user} ` : 'Bienvenid@'}
     </div>
   );
 }
