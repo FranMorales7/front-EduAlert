@@ -5,8 +5,8 @@ import { useSession } from 'next-auth/react';
 import api from '@/api/axios';
 import { Dialog } from '@headlessui/react';
 
-export default function TablaIncidencias() {
-  const [incidents, setIncidents] = useState([]);
+export default function TablaSalidas() {
+  const [trips, setTrips] = useState([]);
   const abortControllerRef = useRef(null);
   const [filtros, setFiltros] = useState({ descripcion: '', alumno: '', fecha: '', aula: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,19 +33,18 @@ export default function TablaIncidencias() {
     abortControllerRef.current = controller;
 
     api
-      .get(`${backendUrl}/incidents/user/${user}`, {
+      .get(`${backendUrl}/trips/user/${user}`, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
         },
         signal: controller.signal,
       })
       .then((response) => {
-        setIncidents(response.data);
-        console.log('Incidentes->', response.data)
+        setTrips(response.data);
       })
       .catch((error) => {
         if (error.name !== 'CanceledError') {
-          console.error('Error al traer las incidencias:', error);
+          console.error('Error al traer las salidas:', error);
         }
       });
 
@@ -71,15 +70,15 @@ export default function TablaIncidencias() {
     abortControllerRef.current = controller;
 
     api
-      .delete(`${backendUrl}/incidents/${id}`, {
+      .delete(`${backendUrl}/trips/${id}`, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
         },
         signal: controller.signal,
       })
       .then(() => {
-        // Actualizar el estado de incidencias eliminando la incidencia eliminada
-        setIncidents((prevIncidents) => prevIncidents.filter((incident) => incident.id !== id));
+        // Actualizar el estado de salidas eliminando la incidencia eliminada
+        setTrips((prevTrips) => prevTrips.filter((trip) => trip.id !== id));
       })
       .catch((error) => {
         if (error.name !== 'CanceledError') {
@@ -93,11 +92,11 @@ export default function TablaIncidencias() {
   };
 
   const handleCrear = (nueva) => {
-    setIncidents([...incidents, { ...nueva, id: Date.now() }]);
+    setTrips([...trips, { ...nueva, id: Date.now() }]);
     setIsModalOpen(false);
   };
 
-  const datosFiltrados = incidents.filter((i) =>
+  const datosFiltrados = trips.filter((i) =>
     (i.description?.toLowerCase() ?? '').includes(filtros.descripcion.toLowerCase()) &&
     (
       `${i.student?.name ?? ''} ${i.student?.last_name_1 ?? ''} ${i.student?.last_name_2 ?? ''}`
@@ -115,12 +114,12 @@ export default function TablaIncidencias() {
   return (
     <div className="p-6 bg-white shadow rounded-xl">
       <div className="flex justify-between mb-4">
-        <h2 className="text-2xl font-semibold">Mis Incidencias</h2>
+        <h2 className="text-2xl font-semibold">Mis Salidas</h2>
         <button
           onClick={() => setIsModalOpen(true)}
           className="cursor-pointer px-4 py-2 bg-green-600 text-white rounded hover:bg-green-900"
         >
-          + Nueva incidencia
+          + Nueva salida
         </button>
       </div>
 
@@ -166,7 +165,7 @@ export default function TablaIncidencias() {
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Dialog.Panel className="w-full max-w-md bg-white p-6 rounded shadow">
-            <Dialog.Title className="text-lg font-semibold mb-4">Nueva Incidencia</Dialog.Title>
+            <Dialog.Title className="text-lg font-semibold mb-4">Nueva Salida</Dialog.Title>
             <FormularioIncidencia onCrear={handleCrear} />
           </Dialog.Panel>
         </div>
