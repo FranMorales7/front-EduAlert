@@ -4,14 +4,18 @@ import { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import api from '@/api/axios';
 import { Dialog } from '@headlessui/react';
+import FormularioIncidencia from './FormularioIncidencias';
+import { useRouter } from 'next/navigation';
 
 export default function TablaIncidencias() {
   const [incidents, setIncidents] = useState([]);
   const abortControllerRef = useRef(null);
   const [filtros, setFiltros] = useState({ descripcion: '', alumno: '', fecha: '', aula: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingIncident, setEditingIncident] = useState(null);
   const { data: session, status } = useSession(); 
   const [user, setUser] = useState(null);
+  const router = useRouter();
 
   // Cuando ya se tiene la sesión, guardamos el ID de usuario
   useEffect(() => {
@@ -58,6 +62,41 @@ export default function TablaIncidencias() {
     setFiltros({ ...filtros, [e.target.name]: e.target.value });
   };
 
+  const handleEditarSubmit = (editado) => {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+    const datosFormateados = {
+      id: editado.id,
+      description: editado.descripcion,
+      created_at: editado.fecha,
+      // aula y alumno necesitan mapeo
+    };
+
+    api
+      .put(`${backendUrl}/incidents/${editado.id}`, datosFormateados, {
+        headers: {
+          Authorization: `Bearer ${session.user.accessToken}`,
+        },
+      })
+      .then(() => {
+        // Solo actualizamos los campos relevantes
+        setIncidents((prev) =>
+          prev.map((inc) =>
+            inc.id === editado.id
+              ? {
+                  ...inc,
+                  description: datosFormateados.description,
+                  created_at: datosFormateados.created_at,
+                }
+              : inc
+          )
+        );
+        setIsModalOpen(false);
+        setEditingIncident(null);
+      })
+      .catch((err) => console.error('Error al editar incidencia:', err));
+  };
+
   const handleEliminar = (id) => {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -92,9 +131,32 @@ export default function TablaIncidencias() {
     };
   };
 
-  const handleCrear = (nueva) => {
-    setIncidents([...incidents, { ...nueva, id: Date.now() }]);
+  const abrirModalEditar = (incidente) => {
+    setEditingIncident(incidente); // carga datos en formulario
+    setIsModalOpen(true);
+  }
+
+  const handleCrear = async (nueva) => {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const datos = {
+      ...nueva,
+      teacher_id: user,
+    };
+
+    try {
+      const res = await api.post(`${backendUrl}/incidents`, datos, {
+        headers: {
+          Authorization: `Bearer ${session.user.accessToken}`,
+        },
+      });
+       
+    setIncidents((prev) => [...prev, res.data]); // ✅ actualiza lista local
     setIsModalOpen(false);
+    setEditingIncident(null);
+    router.refresh();
+    } catch (err) {
+      console.error('Error al crear la incidencia:', err);
+    }
   };
 
   const datosFiltrados = incidents.filter((i) =>
@@ -153,7 +215,7 @@ export default function TablaIncidencias() {
               <td className="p-2 border">{i.created_at?.slice(0, 10)}</td>
               <td className="p-2 border">{i.lesson?.location}</td>
               <td className="p-2 border">
-                <button className="cursor-pointer text-blue-600 hover:underline mr-4">Editar</button>
+                <button className="cursor-pointer text-blue-600 hover:underline mr-4" onClick={() => abrirModalEditar(i)}>Editar</button>
                 <button className="cursor-pointer text-red-600 hover:underline" onClick={() => handleEliminar(i.id)}>Eliminar</button>
               </td>
             </tr>
@@ -162,42 +224,21 @@ export default function TablaIncidencias() {
       </table>
 
       {/* Modal */}
-      <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)} className="relative z-50">
+      <Dialog open={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingIncident(null); }} className="relative z-50">
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Dialog.Panel className="w-full max-w-md bg-white p-6 rounded shadow">
-            <Dialog.Title className="text-lg font-semibold mb-4">Nueva Incidencia</Dialog.Title>
-            <FormularioIncidencia onCrear={handleCrear} />
+            <Dialog.Title className="text-lg font-semibold mb-4">
+              {editingIncident ? 'Editar Incidencia' : 'Nueva Incidencia'}
+            </Dialog.Title>
+            <FormularioIncidencia 
+              initialData={editingIncident}
+              onCrear={handleCrear}
+              onEditar={handleEditarSubmit}
+              isEditing={!!editingIncident} />
           </Dialog.Panel>
         </div>
       </Dialog>
     </div>
-  );
-}
-
-// Subcomponente del formulario
-function FormularioIncidencia({ onCrear }) {
-  const [form, setForm] = useState({ descripcion: '', fecha: '', aula: '', alumno: '' });
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (form.descripcion && form.fecha && form.aula && form.alumno) {
-      onCrear(form);
-      setForm({ descripcion: '', fecha: '', aula: '', alumno: '' });
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <input name="descripcion" placeholder="Descripción" value={form.descripcion} onChange={handleChange} className="w-full border px-3 py-2 rounded" />
-      <input name="alumno" placeholder="Alumno" value={form.alumno} onChange={handleChange} className="w-full border px-3 py-2 rounded" />
-      <input type="date" name="fecha" value={form.fecha} onChange={handleChange} className="w-full border px-3 py-2 rounded" />
-      <input name="aula" placeholder="Aula" value={form.aula} onChange={handleChange} className="w-full border px-3 py-2 rounded" />
-      <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Crear</button>
-    </form>
   );
 }
