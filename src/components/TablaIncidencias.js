@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import api from '@/api/axios';
 import { Dialog } from '@headlessui/react';
-import FormularioIncidencia from './FormularioIncidencias';
+import FormularioAviso from './FormularioAvisos';
 import { useRouter } from 'next/navigation';
 
 export default function TablaIncidencias() {
@@ -45,7 +45,6 @@ export default function TablaIncidencias() {
       })
       .then((response) => {
         setIncidents(response.data);
-        console.log('Incidentes->', response.data)
       })
       .catch((error) => {
         if (error.name !== 'CanceledError') {
@@ -66,6 +65,7 @@ export default function TablaIncidencias() {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
     const datosFormateados = {
+      is_solved: editado.is_solved,
       id: editado.id,
       description: editado.descripcion,
       created_at: editado.fecha,
@@ -149,11 +149,20 @@ export default function TablaIncidencias() {
           Authorization: `Bearer ${session.user.accessToken}`,
         },
       });
-       
-    setIncidents((prev) => [...prev, res.data]); // ✅ actualiza lista local
+
     setIsModalOpen(false);
     setEditingIncident(null);
     router.refresh();
+    api
+      .get(`${backendUrl}/incidents/user/${user}`, {
+        headers: {
+          Authorization: `Bearer ${session.user.accessToken}`,
+        },
+      })
+      .then((response) => {
+        setIncidents(response.data);
+        console.log('Incidentes->', response.data)
+      }); 
     } catch (err) {
       console.error('Error al crear la incidencia:', err);
     }
@@ -177,7 +186,7 @@ export default function TablaIncidencias() {
   return (
     <div className="p-6 bg-white shadow rounded-xl">
       <div className="flex justify-between mb-4">
-        <h2 className="text-2xl font-semibold">Mis Incidencias</h2>
+        <h2 className="text-2xl font-semibold">Gestión de Incidencias</h2>
         <button
           onClick={() => setIsModalOpen(true)}
           className="cursor-pointer px-4 py-2 bg-green-600 text-white rounded hover:bg-green-900"
@@ -188,6 +197,7 @@ export default function TablaIncidencias() {
 
       {/* Filtros */}
       <div className="grid grid-cols-4 gap-4 mb-4">
+        {/* <button name="estado" value={filtros.estado} onChange={handleFiltro} className="cursor-pointer border rounded">Estado</button> */}
         <input name="descripcion" value={filtros.descripcion} onChange={handleFiltro} placeholder="Filtrar por descripción" className="border px-3 py-2 rounded" />
         <input name="alumno" value={filtros.alumno} onChange={handleFiltro} placeholder="Filtrar por alumno" className="border px-3 py-2 rounded" />
         <input name="fecha" type="date" value={filtros.fecha} onChange={handleFiltro} className="border px-3 py-2 rounded" />
@@ -198,6 +208,7 @@ export default function TablaIncidencias() {
       <table className="w-full border border-gray-300">
         <thead>
           <tr className="bg-gray-100 text-left">
+            <th className="p-2 border">Estado</th>
             <th className="p-2 border max-w-2xl">Descripción</th>
             <th className="p-2 border">Alumno</th>
             <th className="p-2 border">Fecha</th>
@@ -208,6 +219,12 @@ export default function TablaIncidencias() {
         <tbody>
           {datosFiltrados.map((i) => (
             <tr key={i.id} className="hover:bg-gray-50">
+              <td className="p-2 border">
+                <span className={`px-2 py-1 rounded text-white text-sm font-semibold
+                  ${i.is_solved ? 'bg-green-500' : 'bg-red-500'}`}>
+                  {i.is_solved ? 'Resuelto' : 'Pendiente'}
+                </span>
+              </td>
               <td className="p-2 border max-w-2xl">{i.description}</td>
               <td className="p-2 border">
                 {i.student?.name} {i.student?.last_name_1} {i.student?.last_name_2}
@@ -231,7 +248,7 @@ export default function TablaIncidencias() {
             <Dialog.Title className="text-lg font-semibold mb-4">
               {editingIncident ? 'Editar Incidencia' : 'Nueva Incidencia'}
             </Dialog.Title>
-            <FormularioIncidencia 
+            <FormularioAviso 
               initialData={editingIncident}
               onCrear={handleCrear}
               onEditar={handleEditarSubmit}

@@ -3,14 +3,15 @@ import { Dialog } from '@headlessui/react';
 import { useSession } from 'next-auth/react';
 import api from '@/api/axios';
 
-export default function FormularioIncidencia({ initialData, onCrear, onEditar, isEditing }) {
+export default function FormularioAviso({ initialData, onCrear, onEditar, isEditing }) {
   const [form, setForm] = useState({
     descripcion: '',
     fecha: '',
     aula: '',
     alumno: '',
     student_id: null,
-    lesson_id: null
+    lesson_id: null,
+    is_solved: false,
   });
 
   const [showAlumnoModal, setShowAlumnoModal] = useState(false);
@@ -35,7 +36,8 @@ export default function FormularioIncidencia({ initialData, onCrear, onEditar, i
         aula: initialData.lesson?.location || '',
         alumno: `${initialData.student?.name ?? ''} ${initialData.student?.last_name_1 ?? ''}`.trim(),
         student_id: initialData.student?.id || null,
-        lesson_id: initialData.lesson?.id || null
+        lesson_id: initialData.lesson?.id || null,
+        is_solved: initialData.is_solved || false
       });
     }
   }, [initialData]);
@@ -124,62 +126,88 @@ export default function FormularioIncidencia({ initialData, onCrear, onEditar, i
       created_at: form.fecha,
       student_id: form.student_id,
       lesson_id: form.lesson_id,
-      ...(isEditing ? {} : { teacher_id: user }),
+      ...(isEditing ? { is_solved: form.is_solved } : { teacher_id: user }),
     };
     isEditing ? onEditar(data) : onCrear(data);
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <input
-        name="descripcion"
-        placeholder="Descripción"
-        value={form.descripcion}
-        onChange={handleChange}
-        className="w-full border px-3 py-2 rounded"
-      />
-
-      <div className="flex items-center gap-2">
+      <div> 
+        <span className="text-gray-700">Descripción:</span>
         <input
-          name="alumno"
-          value={form.alumno}
-          readOnly
-          className="flex-1 border px-3 py-2 rounded bg-gray-100 cursor-not-allowed"
+          name="descripcion"
+          placeholder="Descripción"
+          value={form.descripcion}
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
         />
-        <button
-          type="button"
-          onClick={() => setShowAlumnoModal(true)}
-          className="bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded text-sm"
-        >
-          Elegir
-        </button>
+      </div>
+      <div>
+        <span className="text-gray-700">Alumno:</span>
+        <div className="flex items-center gap-2">
+          <input
+            name="alumno"
+            value={form.alumno}
+            readOnly
+            className="flex-1 border px-3 py-2 rounded bg-gray-100 cursor-not-allowed"
+          />
+          <button
+            type="button"
+            onClick={() => setShowAlumnoModal(true)}
+            className="bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded text-sm"
+          >
+            Elegir
+          </button>
+        </div>
+      </div>
+      <div>
+        <span className="text-gray-700">Fecha:</span>
+        <input
+          type="date"
+          name="fecha"
+          value={form.fecha}
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+        />
+      </div>
+      <div>
+        <span className="text-gray-700">Aula:</span>
+        <div className="flex items-center gap-2">
+          <input
+            name="aula"
+            value={form.aula}
+            readOnly
+            className="flex-1 border px-3 py-2 rounded bg-gray-100 cursor-not-allowed"
+          />
+          <button
+            type="button"
+            onClick={() => setShowClaseModal(true)}
+            className="bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded text-sm"
+          >
+            Elegir
+          </button>
+        </div>
       </div>
 
-      <input
-        type="date"
-        name="fecha"
-        value={form.fecha}
-        onChange={handleChange}
-        className="w-full border px-3 py-2 rounded"
-      />
+      {isEditing && (
+        <div>
+          <span className="text-gray-700">Estado:</span>
+          <div className='flex items-center'>
+          <button
+            type="button"
+            onClick={() => setForm({ ...form, is_solved: !form.is_solved })}
+            className={`cursor-pointer px-4 py-2 rounded font-semibold text-white transition-colors duration-200 ${
+              form.is_solved ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'
+            }`}
+          >
+            {form.is_solved ? 'Resuelta' : 'Sin Resolver'}
+          </button>
+          </div>
+        </div>
+      )}
 
-      <div className="flex items-center gap-2">
-        <input
-          name="aula"
-          value={form.aula}
-          readOnly
-          className="flex-1 border px-3 py-2 rounded bg-gray-100 cursor-not-allowed"
-        />
-        <button
-          type="button"
-          onClick={() => setShowClaseModal(true)}
-          className="bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded text-sm"
-        >
-          Elegir
-        </button>
-      </div>
-
-      <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+      <button type="submit" className="cursor-pointer w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
         {isEditing ? 'Guardar cambios' : 'Crear'}
       </button>
 

@@ -60,6 +60,8 @@ export default function CardIncidentes() {
 
   return (
     <Tab.Group>
+      {/** Limitar a 8 las incidencias, el resto se verán haciendo scroll **/}
+      <div className="max-h-96 overflow-y-auto mb-8">
       <Tab.List className=" mb-8">
         {incidents.map((i) => (
           <Tab
@@ -85,6 +87,7 @@ export default function CardIncidentes() {
           </Tab>
         ))}
       </Tab.List>
+      </div>
       <Tab.Panels>
         {incidents.map((i) => (
           <Tab.Panel key={i.id} className="border-1 border-gray-300 shadow-xl bg-white p-4 rounded">

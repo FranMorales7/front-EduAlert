@@ -85,6 +85,8 @@ export default function CardSalidas() {
 
   return (
     <Tab.Group>
+      {/** Limitar a 8 las salidas, el resto se verán haciendo scroll **/}
+      <div className="max-h-96 overflow-y-auto mb-8">
       <Tab.List className=" mb-8">
         {trips.map((i) => (
           <Tab
@@ -111,6 +113,7 @@ export default function CardSalidas() {
           </Tab>
         ))}
       </Tab.List>
+      </div>
       <Tab.Panels>
         {trips.map((i) => (
           <Tab.Panel key={i.id} className="border-1 border-gray-300 shadow-xl bg-white p-4 rounded">
