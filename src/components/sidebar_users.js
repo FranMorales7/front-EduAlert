@@ -16,7 +16,7 @@ export default function Sidebar() {
     { href: '/logged/teacher/avisos', label: 'Avisos', icon: <Bell size={20} /> },
     { href: '/logged/teacher/incidencias', label: 'Incidencias', icon: <ThumbsDownIcon size={20} /> },
     { href: '/logged/teacher/salidas', label: 'Salidas', icon: <ToiletIcon size={20} /> },
-    { href: '/logged/teacher/configuracion', label: 'Configuración', icon: <UserCard /> },
+    { href: '/logged/teacher/configuracion', label: 'Configuración', icon: <Settings /> },
   ];
 
   return (
@@ -46,6 +46,10 @@ export default function Sidebar() {
           className="flex cursor-pointer items-center gap-2 hover:text-red-600"
         >
           <LogOutIcon size={20} /> Cerrar sesión
+        </button>
+
+        <button className='absolute bottom-10 left-1'>
+          <UserCard />
         </button>
       </nav>
     </aside>
