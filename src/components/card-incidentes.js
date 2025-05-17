@@ -16,7 +16,6 @@ export default function CardIncidentes() {
   useEffect(() => {
     if (status === 'authenticated' && session?.user?.id) {
       setUser(session.user.id);
-      console.log('User-->', session)
     }
   }, [session, status]);
 

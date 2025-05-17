@@ -161,7 +161,6 @@ export default function TablaIncidencias() {
       })
       .then((response) => {
         setIncidents(response.data);
-        console.log('Incidentes->', response.data)
       }); 
     } catch (err) {
       console.error('Error al crear la incidencia:', err);
@@ -184,9 +183,8 @@ export default function TablaIncidencias() {
   if (status === 'unauthenticated') return <p className="p-6">No estás autenticado.</p>;
 
   return (
-    <div className="p-6 bg-white shadow rounded-xl">
-      <div className="flex justify-between mb-4">
-        <h2 className="text-2xl font-semibold">Gestión de Incidencias</h2>
+    <div className="p-6 bg-white shadow-xl rounded-xl">
+      <div className="flex justify-end mb-4">
         <button
           onClick={() => setIsModalOpen(true)}
           className="cursor-pointer px-4 py-2 bg-green-600 text-white rounded hover:bg-green-900"

@@ -16,7 +16,6 @@ export default function CardSalidas() {
   useEffect(() => {
     if (status === 'authenticated' && session?.user?.id) {
       setUser(session.user.id);
-      console.log('User-->', session);
     }
   }, [session, status]);
 
@@ -74,7 +73,6 @@ export default function CardSalidas() {
                 selected ? 'bg-sky-400 text-white' : 'bg-white text-black'
               } shadow border cursor-pointer`
             }
-            onClick={() => handleTripsClick(i.id)}
           >
             <span
               className={`h-5 w-5 border-1 border-black rounded-full ${

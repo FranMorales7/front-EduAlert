@@ -69,7 +69,6 @@ export default function TablaSalidas() {
       id: editado.id,
       description: editado.descripcion,
       created_at: editado.fecha,
-      // aula y alumno necesitan mapeo
     };
 
     api
@@ -183,9 +182,8 @@ export default function TablaSalidas() {
   if (status === 'unauthenticated') return <p className="p-6">No estás autenticado.</p>;
 
   return (
-    <div className="p-6 bg-white shadow rounded-xl">
-      <div className="flex justify-between mb-4">
-        <h2 className="text-2xl font-semibold">Gestión de Salidas</h2>
+    <div className="p-6 bg-white shadow-xl rounded-xl">
+      <div className="flex justify-end mb-4">
         <button
           onClick={() => setIsModalOpen(true)}
           className="cursor-pointer px-4 py-2 bg-green-600 text-white rounded hover:bg-green-900"

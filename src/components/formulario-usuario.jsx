@@ -9,16 +9,18 @@ export default function FormularioUsuario() {
   const abortControllerRef = useRef(null);
   const { data: session, status } = useSession();
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [preview, setPreview] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     last_name_1: '',
     last_name_2: '',
     email: '',
     image: '',
+    imageFile: null,
     created_at: '',
     updated_at: '',
   });
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
@@ -45,14 +47,18 @@ export default function FormularioUsuario() {
         signal: controller.signal,
       })
       .then((resp) => {
+        const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL;
+        const data = resp?.data || {};
+        const fullImageUrl = data.image ? `${imageUrl}storage/${data.image}?t=${Date.now()}` : '';
         setFormData({
-          name: resp?.data?.name || '',
-          last_name_1: resp?.data?.last_name_1 || '',
-          last_name_2: resp?.data?.last_name_2 || '',
-          email: resp?.data?.email || '',
-          image: resp?.data?.image || '',
-          created_at: resp?.data?.created_at || '',
-          updated_at: resp?.data?.updated_at || '',
+          name: data.name ?? '',
+          last_name_1: data.last_name_1 ?? '',
+          last_name_2: data.last_name_2 ?? '',
+          email: data.email ?? '',
+          image: fullImageUrl,
+          imageFile: null,
+          created_at: data.created_at ?? '',
+          updated_at: data.updated_at ?? '',
         });
         setIsLoading(false);
       })
@@ -62,10 +68,19 @@ export default function FormularioUsuario() {
         }
       });
 
-    return () => {
-      controller.abort();
-    };
+    return () => controller.abort();
   }, [user, session, status]);
+
+  useEffect(() => {
+    if (formData.imageFile) {
+      const objectUrl = URL.createObjectURL(formData.imageFile);
+      setPreview(objectUrl);
+
+      return () => URL.revokeObjectURL(objectUrl);
+    } else {
+      setPreview(null);
+    }
+  }, [formData.imageFile]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -74,33 +89,54 @@ export default function FormularioUsuario() {
     }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Por favor selecciona un archivo de imagen válido.');
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert('La imagen debe ser menor a 2MB.');
+      return;
+    }
+
+    setFormData((prev) => ({ ...prev, imageFile: file }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-    // Solo incluir campos válidos y omitimos los no actualizables
-    const { email, created_at, updated_at, ...dataToSend } = formData;
+    const form = new FormData();
 
-    // Eliminar campos opcionales vacíos como image
-    Object.keys(dataToSend).forEach((key) => {
-      if (dataToSend[key] === '') delete dataToSend[key];
+    ['name', 'last_name_1', 'last_name_2'].forEach((field) => {
+      if (formData[field]) form.append(field, formData[field]);
     });
 
+    if (formData.imageFile) {
+      form.append('image', formData.imageFile);
+    }
+
     try {
-      await api.put(`${backendUrl}/teachers/byUser/${user}`, dataToSend, {
+      const resp = await api.post(`${backendUrl}/teachers/byUser/${user}`, form, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
+          'Content-Type': 'multipart/form-data',
         },
       });
 
-      alert('Datos actualizados correctamente');
+      setFormData((prev) => ({
+        ...prev,
+        image: resp?.data?.image ? `${backendUrl}/storage/${resp.data.image}?t=${Date.now()}` : '',
+        imageFile: null,
+      }));
+
     } catch (error) {
       console.error('Error al actualizar el perfil:', error);
-
-      if (error.response?.status === 422) {
-        const errores = error.response.data.errors;
-        const mensaje = Object.values(errores).flat().join('\n');
-      }
+      alert('Error al actualizar el perfil. Inténtalo nuevamente.');
     }
   };
 
@@ -112,11 +148,25 @@ export default function FormularioUsuario() {
 
       <div className="flex justify-center">
         <Image
-          src={formData.image || '/images/default-avatar.png'}
+          src={preview || formData.image || '/images/Avatar_m_2.jpg'}
           alt="Foto de perfil"
+          sizes='64px'
           width={100}
           height={100}
-          className="rounded-full ring ring-blue-500"
+          className="rounded-full ring ring-blue-500 object-cover"
+          style={{ width: '100px', height: '100px' }} // fuerza que sea cuadrado
+        />
+
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Cambiar imagen de perfil</label>
+        <input
+          type="file"
+          name="image"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
         />
       </div>
 
@@ -169,7 +219,7 @@ export default function FormularioUsuario() {
       <div>
         <label className="block text-sm font-medium text-gray-700">Contraseña</label>
         <p className="text-sm text-gray-500 italic">
-          Consulta a un administrador para cambiar tu contraseña.
+          Acude a un administrador/a para cambiar tu contraseña.
         </p>
       </div>
 

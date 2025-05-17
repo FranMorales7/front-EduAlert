@@ -9,7 +9,6 @@ export default function Header() {
   // Cuando ya se tiene la sesión, mostramos el nombre del usuario
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
-      console.log(session.user.name)
       setUser(session.user.name);
     }
   }, [session, status]);
