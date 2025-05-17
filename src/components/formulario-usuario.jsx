@@ -38,7 +38,7 @@ export default function FormularioUsuario() {
     abortControllerRef.current = controller;
 
     api
-      .get(`${backendUrl}/teachers/${user}`, {
+      .get(`${backendUrl}/teachers/byUser/${user}`, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
         },
@@ -87,7 +87,7 @@ export default function FormularioUsuario() {
     });
 
     try {
-      await api.put(`${backendUrl}/teachers/edit/${user}`, dataToSend, {
+      await api.put(`${backendUrl}/teachers/byUser/${user}`, dataToSend, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
         },

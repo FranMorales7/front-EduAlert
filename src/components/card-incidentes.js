@@ -41,7 +41,6 @@ export default function CardIncidentes() {
         signal: controller.signal,
       })
       .then((response) => {
-        console.log('profe', response.data)
         setIncidents(response.data);
         setLoading(false);
       })

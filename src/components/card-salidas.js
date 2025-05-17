@@ -59,28 +59,6 @@ export default function CardSalidas() {
     };
   }, [user, status, session]);
 
-  const handleTripsClick = (id) => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-    const getTripsUrl = `${backendUrl}/trips/${id}`;
-
-    const controller = new AbortController();
-
-    api
-      .get(getTripsUrl, {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-        signal: controller.signal, 
-      })
-      .then((response) => {
-      })
-      .catch((error) => {
-        if (error.name !== 'CanceledError') {
-          console.error('Error al traer los detalles de la salida:', error);
-        }
-      });
-  };
-
   if (loading) return <p className="p-4">Cargando salidas...</p>;
 
   return (
