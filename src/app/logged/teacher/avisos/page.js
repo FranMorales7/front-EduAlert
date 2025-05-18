@@ -1,9 +1,8 @@
 import BlurBackground from "@/components/BlurBackground";
 import CardIncidentes from "@/components/card-incidentes";
-import CardAvisos from "@/components/card-incidentes";
 import CardSalidas from "@/components/card-salidas";
 
-export default function Avisos() {
+export default function Notices() {
   return (
     <BlurBackground>
       <h2 className="text-xl font-bold mb-4">Panel de avisos</h2>

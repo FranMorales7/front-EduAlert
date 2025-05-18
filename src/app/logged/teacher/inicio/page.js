@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-export default function Configuration() {
+export default function Index() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
