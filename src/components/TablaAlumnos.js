@@ -160,7 +160,6 @@ export default function TablaAlumnos() {
         <table className="w-full">
           <thead>
             <tr className="bg-gray-100 text-left">
-              <th className="p-2 border">Imágen</th>
               <th className="p-2 border">Nombre</th>
               <th className="p-2 border">Apellidos</th>
               <th className="p-2 border">Edad</th>
@@ -172,9 +171,6 @@ export default function TablaAlumnos() {
           <tbody>
             {datosFiltrados.map((s) => (
               <tr key={s.id} className="hover:bg-gray-50">
-                <td className="p-2 border">
-                  <img src={s.image} alt="Foto" className="w-10 h-10 rounded-full object-cover" />
-                </td>
                 <td className="p-2 border">{s.name}</td>
                 <td className="p-2 border">{s.last_name_1} {s.last_name_2}</td>
                 <td className="p-2 border">{calcularEdad(s.birthdate)}</td>

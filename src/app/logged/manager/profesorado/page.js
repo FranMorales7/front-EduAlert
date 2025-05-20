@@ -1,57 +1,13 @@
-'use client'; // si estás en Next.js App Router
-
-import { useEffect, useState, useRef } from 'react';
 import BlurBackground from '@/components/BlurBackground';
-import api from '@/api/axios';
+import TablaProfesores from '@/components/TablaProfesores';
 
 export default function TeachersList() {
-  const [teachers, setTeachers] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Usamos la variable de entorno para la URL base
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-    // Cancela cualquier petición anterior
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-    const controller = new AbortController();
-    abortControllerRef.current = controller;
-
-    setLoading(true);
-
-    // Petición HTTP con Axios
-    api
-      .get(`${backendUrl}/teachers`)
-      .then((response) => {
-        setTeachers(response.data);   // guardamos los profesores.
-        setLoading(false);         // dejamos de cargar
-      })
-      .catch((error) => {
-        console.error('Error al traer los profesores.:', error);
-        setLoading(false);
-      });
-
-      // Limpiar la petición si el componente se desmonta
-      return () => {
-        controller.abort();
-      };
-
-  }, []);
-
-  if (loading) return <p>Cargando profesores...</p>;
 
   return (
     <BlurBackground>
-      <h2>Profesores</h2>
-      <ul>
-        {teachers.map((t) => (
-          <li key={t.id}>
-            <strong>{t.name}</strong> - <strong>{t.email}</strong>
-          </li>
-        ))}
-      </ul>
+      <h2 className="text-xl font-bold mb-4">Panel de profesorado</h2>
+      <h2 className="text-md text-gray-600 ml-4 mb-4">Puedes gestionar todos los profesores.</h2>
+      <TablaProfesores />
     </BlurBackground>
   );
 }
