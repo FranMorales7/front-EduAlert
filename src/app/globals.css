@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary-style: #0010f0;
 }
 
 @theme inline {
@@ -14,13 +15,37 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #4A90E2;
+    --foreground: #000000;
+    --primary-style: #0010f0;
   }
 }
-
+/*
 body {
-  background: var(--background);
+  background: white;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+  */
+
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(270deg, rgba(189, 0, 182, 1), rgba(253, 187, 45, 1));
+  background-size: 400% 400%;
+  animation: fondoAnimado 20s ease infinite;
+  font-family: sans-serif;
+  overflow: hidden;
+}
+
+@keyframes fondoAnimado {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
