@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { PiStudentFill } from "react-icons/pi";
+import { PiChalkboardTeacherBold, PiChalkboardTeacherFill, PiChalkboardTeacherLight, PiStudentFill } from "react-icons/pi";
 import { GiTeacher } from "react-icons/gi";
-import { Bell, Home, LogOutIcon, Settings, ThumbsDown, Toilet } from 'lucide-react'; // Puedes usar lucide-react o tus propios íconos
+import { Bell, BookOpenText, Home, LogOutIcon, Settings, ThumbsDown, Toilet } from 'lucide-react'; // Puedes usar lucide-react o tus propios íconos
 import Image from 'next/image';
 import logo from '../../public/images/SF_logo.png'; 
 import UserCard from './UserCard';
@@ -20,7 +20,10 @@ export default function Sidebar() {
       { href: '/logged/manager/incidencias', label: 'Incidencias', icon: <ThumbsDown size={20} /> },
       { href: '/logged/manager/salidas', label: 'Salidas', icon: <Toilet size={20} /> },
       { href: '/logged/manager/alumnado', label: 'Estudiantes', icon: <PiStudentFill size={20} /> },
-      { href: '/logged/manager/profesorado', label: 'Profesores', icon: <GiTeacher size={20} /> },
+      { href: '/logged/manager/profesorado', label: 'Profesores', icon: <PiChalkboardTeacherFill size={20} /> },
+      { href: '/logged/manager/grupos', label: 'Grupos', icon: <GiTeacher size={20} /> },
+      { href: '/logged/manager/clases', label: 'Clases', icon: <BookOpenText size={20} /> },
+
       { href: '/logged/manager/configuracion', label: 'Configuración', icon: <Settings size={20} /> },
     ];
   

@@ -1,7 +1,7 @@
 import BlurBackground from "@/components/BlurBackground";
 import Header from "@/components/header";
 
-export default function Configuration() {
+export default function IndexPage() {
   return (
     <BlurBackground className="">
       <Header />

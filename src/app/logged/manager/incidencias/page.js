@@ -1,7 +1,7 @@
 import BlurBackground from "@/components/BlurBackground";
 import TablaIncidencias from "@/components/TablaIncidencias_admin";
 
-export default function Incidents() {
+export default function IncidentsPage() {
   return (
     <BlurBackground>
       <h2 className="text-xl font-bold mb-4">Panel de incidencias</h2>

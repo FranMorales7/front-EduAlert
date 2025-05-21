@@ -1,7 +1,7 @@
 import BlurBackground from '@/components/BlurBackground';
 import TablaProfesores from '@/components/TablaProfesores';
 
-export default function TeachersList() {
+export default function TeacherPage() {
 
   return (
     <BlurBackground>

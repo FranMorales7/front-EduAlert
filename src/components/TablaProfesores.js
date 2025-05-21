@@ -132,7 +132,7 @@ export default function TablaProfesores() {
         <input name="email" value={filtros.email} onChange={handleFiltro} placeholder="Filtrar por email" className="border px-3 py-2 rounded" />
       </div>
 
-      <div className="max-h-[500px] overflow-y-auto rounded border border-gray-300">
+      <div className="max-h-[500px] overflow-auto rounded border border-gray-300">
         <table className="w-full">
           <thead>
             <tr className="bg-gray-100 text-left">
