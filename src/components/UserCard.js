@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import api from '@/api/axios';
-import { Mail } from 'lucide-react'; // ícono opcional
+import { Mail } from 'lucide-react';
 
 export default function UserCard() {
   const abortControllerRef = useRef(null);
@@ -45,21 +45,23 @@ export default function UserCard() {
   const fullImageUrl = user.image ? `${imageUrl}storage/${user.image}` : '/images/Avatar_m_2.jpg';
 
   return (
-    <div className="flex items-center p-2 max-w-sm bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300">
-      <div className="relative">
-        <img
-          src={fullImageUrl}
-          alt="Foto de perfil"
-          className="w-16 h-16 rounded-full object-cover border-4 border-blue-500 shadow-sm"
-        />
-        <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-400 border-2 border-white rounded-full"></div>
-      </div>
-      <div className="ml-3 flex flex-col">
-        <h2 className="text-xl font-semibold text-gray-900">{user.name}</h2>
-        <div className="flex items-center gap-1 text-xs text-gray-500">
-          <Mail className="w-4 h-4" />
-          <span>{user.email}</span>
+    <div className="flex flex-col items-center p-4 max-w-xs bg-white rounded-2xl shadow-blue transition-shadow shadow-md hover:shadow-lg">
+      <div className="relative mb-3">
+        <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm">
+          <img
+            src={fullImageUrl}
+            alt={user.name}
+            className="w-full h-full object-cover"
+          />
         </div>
+        <span className="absolute bottom-1 right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full" />
+      </div>
+
+      <h2 className="text-lg font-semibold text-gray-800">{user.name}</h2>
+
+      <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
+        <Mail className="w-4 h-4" />
+        <span>{user.email}</span>
       </div>
     </div>
   );

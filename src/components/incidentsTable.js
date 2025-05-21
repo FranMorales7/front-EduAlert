@@ -1,33 +1,25 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { useSession } from 'next-auth/react';
-import api from '@/api/axios';
 import { Dialog } from '@headlessui/react';
 import FormularioAviso from './FormularioAvisos';
-import { useRouter } from 'next/navigation';
+import { createIncident, deleteIncident, fetchIncidentsByUser, updateIncident } from '@/requests/incidents';
+import useAuthUser from '@/hooks/useAuthUser';
 
-export default function TablaSalidas() {
-  const [trips, setTrips] = useState([]);
-  const abortControllerRef = useRef(null);
+export default function IncidentsTable() {
+  const [loading, setLoading] = useState(true);
+  const [incidents, setIncidents] = useState([]);
   const [filtros, setFiltros] = useState({ descripcion: '', alumno: '', fecha: '', aula: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingTrips, setEditingTrips] = useState(null);
-  const { data: session, status } = useSession(); 
-  const [user, setUser] = useState(null);
-  const router = useRouter();
+  const [editingIncident, setEditingIncident] = useState(null);
+  const abortControllerRef = useRef(null);
 
-  // Cuando ya se tiene la sesión, guardamos el ID de usuario
-  useEffect(() => {
-    if (status === 'authenticated' && session?.user) {
-      setUser(session.user.id);
-    }
-  }, [session, status]);
+  // Obtener usuario de la sesión
+  const { user, session, status } = useAuthUser();
 
   useEffect(() => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-    if (!user) return; // Espera a que haya user
+    if (!user || status !== 'authenticated') return; 
 
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -36,137 +28,79 @@ export default function TablaSalidas() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    api
-      .get(`${backendUrl}/trips/user/${user}`, {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-        signal: controller.signal,
-      })
-      .then((response) => {
-        setTrips(response.data);
-      })
+    setLoading(true);
+
+    fetchIncidentsByUser(user.id, session.user.accessToken, controller.signal)
+      .then( (res) => setIncidents(res.data) )
       .catch((error) => {
         if (error.name !== 'CanceledError') {
-          console.error('Error al traer las salidas:', error);
+          console.error('Error al traer las incidencias:', error);
         }
+        setLoading(false);
       });
 
-    return () => {
-      controller.abort();
-    };
-  }, [user]);
+    return () => { controller.abort(); };
+    }, [user, status, session]);
 
   const handleFiltro = (e) => {
     setFiltros({ ...filtros, [e.target.name]: e.target.value });
   };
 
-  const handleEditarSubmit = (editado) => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const handleEditarSubmit = async (editado) => {
+    try {
+      await updateIncident(editado.id, {
+        id: editado.id,
+        is_solved: editado.is_solved,
+        description: editado.descripcion,
+        created_at: editado.fecha,
+      }, session.user.accessToken);
 
-    const datosFormateados = {
-      is_solved: editado.is_solved,
-      id: editado.id,
-      description: editado.descripcion,
-      created_at: editado.fecha,
-    };
-
-    api
-      .put(`${backendUrl}/trips/${editado.id}`, datosFormateados, {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-      })
-      .then(() => {
-        // Solo actualizamos los campos relevantes
-        setTrips((prev) =>
-          prev.map((inc) =>
-            inc.id === editado.id
-              ? {
-                  ...inc,
-                  description: datosFormateados.description,
-                  created_at: datosFormateados.created_at,
-                }
-              : inc
-          )
-        );
-        setIsModalOpen(false);
-        setEditingTrips(null);
-      })
-      .catch((err) => console.error('Error al editar salida:', err));
-  };
-
-  const handleEliminar = (id) => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-    if (!user) return; // Espera a que haya user
-
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
+      setIncidents((prev) =>
+        prev.map((inc) =>
+          inc.id === editado.id
+            ? { ...inc, description: editado.descripcion, created_at: editado.fecha }
+            : inc
+        )
+      );
+      setIsModalOpen(false);
+      setEditingIncident(null);
+    } catch (err) {
+      console.error('Error al editar incidencia:', err);
     }
-
-    const controller = new AbortController();
-    abortControllerRef.current = controller;
-
-    api
-      .delete(`${backendUrl}/trips/${id}`, {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-        signal: controller.signal,
-      })
-      .then(() => {
-        // Actualizar el estado de incidencias eliminando la incidencia eliminada
-        setTrips((prevTripss) => prevTripss.filter((trip) => trip.id !== id));
-      })
-      .catch((error) => {
-        if (error.name !== 'CanceledError') {
-          console.error('Error al eliminar las salidas:', error);
-        }
-      });
-
-    return () => {
-      controller.abort();
-    };
   };
 
-  const abrirModalEditar = (salida) => {
-    setEditingTrips(salida); // carga datos en formulario
+  const handleEliminar = async (id) => {
+    try {
+      const controller = new AbortController();
+      await deleteIncident(id, session.user.accessToken, controller.signal);
+      setIncidents((prev) => prev.filter((i) => i.id !== id));
+    } catch (err) {
+      console.error('Error al eliminar incidencia:', err);
+    }
+  };
+
+  const handleCrear = async (nueva) => {
+    try {
+      const nuevaIncidencia = {
+        ...nueva,
+        teacher_id: user.id,
+      };
+
+      const response = await createIncident(nuevaIncidencia, session.user.accessToken);
+      setIsModalOpen(false);
+      setEditingIncident(null);
+      
+    } catch (err) {
+      console.error('Error al crear incidencia:', err);
+    }
+  };
+
+  const abrirModalEditar = (incidente) => {
+    setEditingIncident(incidente); // carga datos en formulario
     setIsModalOpen(true);
   }
 
-  const handleCrear = async (nueva) => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-    const datos = {
-      ...nueva,
-      teacher_id: user,
-    };
-
-    try {
-      const res = await api.post(`${backendUrl}/trips`, datos, {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-      });
-
-    setIsModalOpen(false);
-    setEditingTrips(null);
-    router.refresh();
-    api
-      .get(`${backendUrl}/trips/user/${user}`, {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-      })
-      .then((response) => {
-        setTrips(response.data);
-      }); 
-    } catch (err) {
-      console.error('Error al crear la salida:', err);
-    }
-  };
-
-  const datosFiltrados = trips.filter((i) =>
+  const datosFiltrados = incidents.filter((i) =>
     (i.description?.toLowerCase() ?? '').includes(filtros.descripcion.toLowerCase()) &&
     (
       `${i.student?.name ?? ''} ${i.student?.last_name_1 ?? ''} ${i.student?.last_name_2 ?? ''}`
@@ -177,7 +111,7 @@ export default function TablaSalidas() {
     (i.lesson?.location?.toLowerCase().includes(filtros.aula.toLowerCase()) ?? '')
   );
   
-
+  if (loading) return <p className="p-4">Cargando panel de avisos...</p>;
   if (status === 'loading') return <p className="p-6">Cargando sesión...</p>;
   if (status === 'unauthenticated') return <p className="p-6">No estás autenticado.</p>;
 
@@ -188,12 +122,13 @@ export default function TablaSalidas() {
           onClick={() => setIsModalOpen(true)}
           className="cursor-pointer px-4 py-2 bg-green-600 text-white rounded hover:bg-green-900"
         >
-          + Nueva salida
+          + Nueva incidencia
         </button>
       </div>
 
       {/* Filtros */}
       <div className="grid grid-cols-4 gap-4 mb-4">
+        {/* <button name="estado" value={filtros.estado} onChange={handleFiltro} className="cursor-pointer border rounded">Estado</button> */}
         <input name="descripcion" value={filtros.descripcion} onChange={handleFiltro} placeholder="Filtrar por descripción" className="border px-3 py-2 rounded" />
         <input name="alumno" value={filtros.alumno} onChange={handleFiltro} placeholder="Filtrar por alumno" className="border px-3 py-2 rounded" />
         <input name="fecha" type="date" value={filtros.fecha} onChange={handleFiltro} className="border px-3 py-2 rounded" />
@@ -237,18 +172,18 @@ export default function TablaSalidas() {
       </table>
 
       {/* Modal */}
-      <Dialog open={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingTrips(null); }} className="relative z-50">
+      <Dialog open={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingIncident(null); }} className="relative z-50">
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Dialog.Panel className="w-full max-w-md bg-white p-6 rounded shadow">
             <Dialog.Title className="text-lg font-semibold mb-4">
-              {editingTrips ? 'Editar Salida' : 'Nueva Salida'}
+              {editingIncident ? 'Editar Incidencia' : 'Nueva Incidencia'}
             </Dialog.Title>
-            <FormularioAviso
-              initialData={editingTrips}
+            <FormularioAviso 
+              initialData={editingIncident}
               onCrear={handleCrear}
               onEditar={handleEditarSubmit}
-              isEditing={!!editingTrips} />
+              isEditing={!!editingIncident} />
           </Dialog.Panel>
         </div>
       </Dialog>

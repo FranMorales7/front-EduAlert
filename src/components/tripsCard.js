@@ -1,28 +1,20 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import api from '@/api/axios';
-import { useSession } from 'next-auth/react';
 import { Tab } from '@headlessui/react';
+import useAuthUser from '@/hooks/useAuthUser';
+import { getAllTrips } from '@/requests/trips';
 
-export default function CardIncidentes() {
-  const [incidents, setIncidents] = useState([]);
+export default function TripsCard() {
+  const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
   const abortControllerRef = useRef(null);
-  const { data: session, status } = useSession(); 
-  const [user, setUser] = useState(null);
 
-  // Cuando ya se tiene la sesión, guardamos el ID de usuario
-  useEffect(() => {
-    if (status === 'authenticated' && session?.user?.id) {
-      setUser(session.user.id);
-    }
-  }, [session, status]);
+  // Obtener usuario de la sesión
+  const { user, session, status } = useAuthUser();
 
   useEffect(() => {
-    if (status !== 'authenticated') return; // No hacer nada si no está autenticado
-
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    if (status !== 'authenticated' || !session?.user?.accessToken) return;
 
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -32,19 +24,11 @@ export default function CardIncidentes() {
 
     setLoading(true);
 
-    api
-      .get(`${backendUrl}/incidents`, {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-        signal: controller.signal,
-      })
-      .then((response) => {
-        setIncidents(response.data);
-        setLoading(false);
-      })
+    getAllTrips(session.user.accessToken, controller.signal)
+      .then((resp) => { setTrips(resp); setLoading(false); })
       .catch((error) => {
         if (error.name !== 'CanceledError') {
+          console.error('Error al traer las salidas:', error);
         }
         setLoading(false);
       });
@@ -54,14 +38,14 @@ export default function CardIncidentes() {
     };
   }, [user, status, session]);
 
-  if (loading) return <p className="p-4">Cargando avisos...</p>;
+  if (loading) return <p className="p-4">Cargando salidas...</p>;
 
   return (
     <Tab.Group>
-      {/** Limitar a 8 las incidencias, el resto se verán haciendo scroll **/}
+      {/** Limitar a 8 las salidas, el resto se verán haciendo scroll **/}
       <div className="max-h-96 overflow-y-auto mb-8">
       <Tab.List className=" mb-8">
-        {incidents.map((i) => (
+        {trips.map((i) => (
           <Tab
             key={i.id}
             className={({ selected }) =>
@@ -75,11 +59,11 @@ export default function CardIncidentes() {
                 i.is_solved ? 'bg-green-500' : 'bg-red-500'
               }`}
             />
-            {/* Localización de la lección */}
+            {/* Localización de la salida */}
             <span>{i.lesson?.location}</span>
 
             {/* Hora de creación */}
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-amber-100">
               {new Date(i.created_at).toLocaleString()}
             </span>
           </Tab>
@@ -87,7 +71,7 @@ export default function CardIncidentes() {
       </Tab.List>
       </div>
       <Tab.Panels>
-        {incidents.map((i) => (
+        {trips.map((i) => (
           <Tab.Panel key={i.id} className="border-1 border-gray-300 shadow-xl bg-white p-4 rounded">
             {/* Información del alumno */}
             {i.student && (
@@ -103,7 +87,7 @@ export default function CardIncidentes() {
               </p>
             )}
 
-            {/* Información detallada del incidente */}
+            {/* Información detallada de la salida */}
             <p>
               <strong>Descripción:</strong> {i.description}
             </p>

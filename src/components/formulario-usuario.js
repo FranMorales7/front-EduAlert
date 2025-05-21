@@ -4,8 +4,10 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState, useRef } from 'react';
 import api from '@/api/axios';
 import Image from 'next/image';
+import { Eye, EyeClosed } from 'lucide-react';
 
 export default function FormularioUsuario() {
+  const [showPassword, setShowPassword] = useState(false);
   const abortControllerRef = useRef(null);
   const { data: session, status } = useSession();
   const [user, setUser] = useState(null);
@@ -16,6 +18,7 @@ export default function FormularioUsuario() {
     last_name_1: '',
     last_name_2: '',
     email: '',
+    password: '',
     image: '',
     imageFile: null,
     created_at: '',
@@ -55,6 +58,7 @@ export default function FormularioUsuario() {
           last_name_1: data.last_name_1 ?? '',
           last_name_2: data.last_name_2 ?? '',
           email: data.email ?? '',
+          password: '',
           image: fullImageUrl,
           imageFile: null,
           created_at: data.created_at ?? '',
@@ -116,6 +120,10 @@ export default function FormularioUsuario() {
       if (formData[field]) form.append(field, formData[field]);
     });
 
+    if (formData.password) {
+      data.append('password', formData.password);
+    }
+
     if (formData.imageFile) {
       form.append('image', formData.imageFile);
     }
@@ -154,7 +162,7 @@ export default function FormularioUsuario() {
           width={100}
           height={100}
           className="rounded-full ring ring-blue-500 object-cover"
-          style={{ width: '100px', height: '100px' }} // fuerza que sea cuadrado
+          style={{ width: '100px', height: '100px' }}
         />
 
       </div>
@@ -216,11 +224,28 @@ export default function FormularioUsuario() {
         </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Contraseña</label>
-        <p className="text-sm text-gray-500 italic">
-          Acude a un administrador/a para cambiar tu contraseña.
-        </p>
+      <div className="block text-sm font-medium text-gray-700">
+        <label htmlFor="password">Contraseña</label>
+        <div className="relative">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder='Dejar en blanco para mantener la actual'
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
+
+          />
+          <button
+            type="button"
+            size="sm"
+            variant="link"
+            className="absolute right-0 bottom-2 top-0 h-full px-2"
+            onClick={() => setShowPassword((prev) => !prev)}
+          >
+            {showPassword ? <Eye className='-my-1' /> : <EyeClosed className='-my-1' />}
+          </button>
+        </div>
       </div>
 
       <div className="flex justify-between text-xs text-gray-400 mt-2">
