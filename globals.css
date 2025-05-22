@@ -51,6 +51,9 @@
   --sidebar-accent-foreground: #003366;
   --sidebar-border: #d9d9d9;
   --sidebar-ring: #66b2ff;
+
+  /* Colores para los botones de acción */
+
 }
 
 @theme inline {
@@ -191,10 +194,58 @@ button {
   font-weight: 600;
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
 }
 button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.btEdit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem; /* gap-2 */
+  padding: 0.5rem 1rem; /* py-2 px-4 */
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500; /* font-medium */
+  margin-right: 8;
+  color: white;
+  background: linear-gradient(to right, #f97316, #fb923c); /* from-orange-500 to-orange-400 */
+  border-radius: 0.75rem; /* rounded-xl */
+  box-shadow: 0 1px 2px rgba(255, 94, 0, 0.05); /* shadow-sm */
+  transition: background 0.15s ease-in-out;
+  outline: none;
+}
+
+.btEdit:hover {
+  background: linear-gradient(to right, #ea580c, #f97316); /* hover:from-orange-600 to-orange-500 */
+}
+
+.btEdit:focus {
+  box-shadow: 0 0 0 2px #fdba74; /* focus:ring-2 focus:ring-orange-300 */
+}
+
+.btDelete {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+  background: linear-gradient(to right, #ef4444, #f87171); /* from-red-500 to-red-400 */
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: background 0.15s ease-in-out;
+  outline: none;
+}
+
+.btDelete:hover {
+  background: linear-gradient(to right, #dc2626, #ef4444); /* hover:from-red-600 to-red-500 */
+}
+
+.btDelete:focus {
+  box-shadow: 0 0 0 2px #fca5a5; /* focus:ring-red-300 */
 }
 
 .sidebar {

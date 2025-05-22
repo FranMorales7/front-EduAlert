@@ -1,5 +1,5 @@
 import BlurBackground from "@/components/BlurBackground";
-import IncidentsCard from "@/components/incidentsCard";
+import IncidentsCard from "@/components/cards/IncidentsCard";
 import TripsCard from "@/components/tripsCard";
 
 export default function Notices() {

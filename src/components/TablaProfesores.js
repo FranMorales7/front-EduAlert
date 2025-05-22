@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
-import api from '@/api/axios';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Dialog } from '@headlessui/react';
 import TeacherForm from './TeacherForm';
@@ -35,7 +35,7 @@ export default function TablaProfesores() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    api
+    axios
       .get(`${backendUrl}/teachers/`, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
@@ -56,7 +56,7 @@ export default function TablaProfesores() {
 
   const onCrear = async (nuevoTeacher) => {
     try {
-      const response = await api.post(`${backendUrl}/users/`, nuevoTeacher, {
+      const response = await axios.post(`${backendUrl}/users/`, nuevoTeacher, {
         headers: { Authorization: `Bearer ${session.user.accessToken}` },
       });
       setTeachers((prev) => [...prev, response.data]);
@@ -68,7 +68,7 @@ export default function TablaProfesores() {
 
   const onEditar = async ({ data, id }) => {
     try {
-      const response = await api.put(`${backendUrl}/teachers/${id}/`, data, {
+      const response = await axios.put(`${backendUrl}/teachers/${id}/`, data, {
         headers: { Authorization: `Bearer ${session.user.accessToken}` },
       });
       setTeachers((prev) => prev.map((t) => (t.id === response.data.id ? response.data : t)));
@@ -80,7 +80,7 @@ export default function TablaProfesores() {
   };
 
   const handleEliminar = (id) => {
-    api
+    axios
       .delete(`${backendUrl}/teachers/${id}/`, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,

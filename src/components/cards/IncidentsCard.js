@@ -25,7 +25,7 @@ export default function IncidentsCard() {
     setLoading(true);
 
     getAllIncidents(session.user.accessToken, controller.signal)
-      .then((resp) => { setIncidents(resp); setLoading(false); })
+      .then((resp) => { setIncidents(resp.data); setLoading(false); })
       .catch((error) => {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer las incidencias:', error);

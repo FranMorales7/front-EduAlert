@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useEffect, useState, useRef } from 'react';
-import api from '@/api/axios';
+import axios from 'axios';
 
 export default function Schedule() {
   const abortControllerRef = useRef(null);
@@ -36,7 +36,7 @@ export default function Schedule() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    api
+    axios
       .get(`${backendUrl}/lessons/schedule/${user}`, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,

@@ -2,10 +2,10 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
-import api from '@/api/axios';
 import { Dialog } from '@headlessui/react';
-import FormularioAviso from './FormularioAvisos';
+import FormularioAviso from './forms/IncidentsForm';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 export default function TablaIncidencias() {
   const [incidents, setIncidents] = useState([]);
@@ -36,7 +36,7 @@ export default function TablaIncidencias() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    api
+    axios
       .get(`${backendUrl}/incidents`, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
@@ -72,7 +72,7 @@ export default function TablaIncidencias() {
       // aula y alumno necesitan mapeo
     };
 
-    api
+    axios
       .put(`${backendUrl}/incidents/${editado.id}`, datosFormateados, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
@@ -109,7 +109,7 @@ export default function TablaIncidencias() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    api
+    axios
       .delete(`${backendUrl}/incidents/${id}`, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,

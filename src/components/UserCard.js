@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
-import api from '@/api/axios';
+import axios from 'axios';
 import { Mail } from 'lucide-react';
 
 export default function UserCard() {
@@ -21,7 +21,7 @@ export default function UserCard() {
       const controller = new AbortController();
       abortControllerRef.current = controller;
 
-      api
+      axios
         .get(`${backendUrl}/users/${idUser}`, {
           headers: {
             Authorization: `Bearer ${session.user.accessToken}`,

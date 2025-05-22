@@ -2,9 +2,9 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
-import api from '@/api/axios';
+import axios from 'axios';
 import { Dialog } from '@headlessui/react';
-import FormularioAviso from './FormularioAvisos';
+import FormularioAviso from './forms/IncidentsForm';
 import { useRouter } from 'next/navigation';
 
 export default function TablaSalidas() {
@@ -36,7 +36,7 @@ export default function TablaSalidas() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    api
+    axios
       .get(`${backendUrl}/trips`, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
@@ -72,7 +72,7 @@ export default function TablaSalidas() {
       // aula y alumno necesitan mapeo
     };
 
-    api
+    axios
       .put(`${backendUrl}/trips/${editado.id}`, datosFormateados, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
@@ -109,7 +109,7 @@ export default function TablaSalidas() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    api
+    axios
       .delete(`${backendUrl}/trips/${id}`, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,

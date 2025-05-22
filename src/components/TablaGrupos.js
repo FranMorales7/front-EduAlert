@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { Dialog } from '@headlessui/react';
-import api from '@/api/axios';
+import axios from 'axios';
 import GroupForm from './GroupForm';
 
 export default function TablaGrupos() {
@@ -24,14 +24,14 @@ export default function TablaGrupos() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    api.get(`${backendUrl}/groups/`, {
+    axios.get(`${backendUrl}/groups/`, {
       headers: { Authorization: `Bearer ${session.user.accessToken}` },
       signal: controller.signal,
     })
       .then((res) => setGroups(res.data))
       .catch((err) => console.error('Error al cargar grupos:', err));
 
-    api.get(`${backendUrl}/teachers/`, {
+    axios.get(`${backendUrl}/teachers/`, {
       headers: { Authorization: `Bearer ${session.user.accessToken}` },
     })
       .then((res) => setTutors(res.data))
@@ -42,7 +42,7 @@ export default function TablaGrupos() {
 
   const onCrear = async (nuevoGrupo) => {
     try {
-      const res = await api.post(`${backendUrl}/groups/`, nuevoGrupo, {
+      const res = await axios.post(`${backendUrl}/groups/`, nuevoGrupo, {
         headers: { Authorization: `Bearer ${session.user.accessToken}` },
       });
       setGroups((prev) => [...prev, res.data]);
@@ -54,7 +54,7 @@ export default function TablaGrupos() {
 
   const onEditar = async ({ data, id }) => {
     try {
-      const res = await api.put(`${backendUrl}/groups/${id}/`, data, {
+      const res = await axios.put(`${backendUrl}/groups/${id}/`, data, {
         headers: { Authorization: `Bearer ${session.user.accessToken}` },
       });
       setGroups((prev) => prev.map((g) => (g.id === id ? res.data : g)));
@@ -67,7 +67,7 @@ export default function TablaGrupos() {
 
   const onEliminar = async (id) => {
     try {
-      await api.delete(`${backendUrl}/groups/${id}/`, {
+      await axios.delete(`${backendUrl}/groups/${id}/`, {
         headers: { Authorization: `Bearer ${session.user.accessToken}` },
       });
       setGroups((prev) => prev.filter((g) => g.id !== id));

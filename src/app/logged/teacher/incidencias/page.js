@@ -1,5 +1,5 @@
 import BlurBackground from "@/components/BlurBackground";
-import IncidentsTable from "@/components/incidentsTable";
+import IncidentsTable from "@/components/tables/IncidentsTable";
 
 export default function Incidents() {
   return (

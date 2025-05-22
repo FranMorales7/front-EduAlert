@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 
 /* Lógica de autenticación que devuelve el user al completo */

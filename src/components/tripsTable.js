@@ -2,10 +2,13 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { Dialog } from '@headlessui/react';
-import FormularioAviso from './FormularioAvisos';
+import FormularioAviso from './forms/IncidentsForm';
 import { useRouter } from 'next/navigation';
 import useAuthUser from '@/hooks/useAuthUser';
 import { createTrip, deleteTrip, fetchTripsByUser, updateTrip } from '@/requests/trips';
+import EditButton from './ui/editButton';
+import DeleteButton from './ui/deleteButton';
+import TripsForm from './forms/TripsForm';
 
 export default function TripsTable() {
   const [loading, setLoading] = useState(true);
@@ -172,8 +175,8 @@ export default function TripsTable() {
               <td className="p-2 border">{i.created_at?.slice(0, 10)}</td>
               <td className="p-2 border">{i.lesson?.location}</td>
               <td className="p-2 border">
-                <button className="cursor-pointer text-blue-600 hover:underline mr-4" onClick={() => abrirModalEditar(i)}>Editar</button>
-                <button className="cursor-pointer text-red-600 hover:underline" onClick={() => handleEliminar(i.id)}>Eliminar</button>
+                <EditButton onClick={() => abrirModalEditar(i)} /> 
+                <DeleteButton onClick={() => handleEliminar(i.id)}/>
               </td>
             </tr>
           ))}
@@ -188,11 +191,12 @@ export default function TripsTable() {
             <Dialog.Title className="text-lg font-semibold mb-4">
               {editingTrips ? 'Editar Salida' : 'Nueva Salida'}
             </Dialog.Title>
-            <FormularioAviso
+            <TripsForm
               initialData={editingTrips}
               onCrear={handleCrear}
               onEditar={handleEditarSubmit}
-              isEditing={!!editingTrips} />
+              isEditing={!!editingTrips} 
+            />
           </Dialog.Panel>
         </div>
       </Dialog>
