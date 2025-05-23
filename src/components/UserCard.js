@@ -45,7 +45,7 @@ export default function UserCard() {
   const fullImageUrl = user.image ? `${imageUrl}storage/${user.image}` : '/images/Avatar_m_2.jpg';
 
   return (
-    <div className="flex flex-col items-center p-4 max-w-xs bg-white rounded-2xl shadow-blue transition-shadow shadow-md hover:shadow-lg">
+    <div className="flex flex-col items-center p-4 max-w-xs bg-white rounded-2xl inset-shadow-sm transition-shadow shadow-md hover:shadow-lg">
       <div className="relative mb-3">
         <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm">
           <img

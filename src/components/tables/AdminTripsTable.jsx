@@ -2,21 +2,25 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { Dialog } from '@headlessui/react';
-import { createIncident, deleteIncident, fetchIncidentsByUser, updateIncident } from '@/requests/incidents';
 import useAuthUser from '@/hooks/useAuthUser';
 import EditButton from '../ui/editButton';
 import DeleteButton from '../ui/deleteButton';
-import IncidentsForm from '../forms/IncidentsForm';
+import ConfirmModal from '../ui/confirmModal';
+import { deleteTrip, getAllTrips, updateTrip } from '@/requests/trips';
+import TripsForm from '../forms/TripsForm';
 
-export default function IncidentsTable() {
+export default function AdminTripsTable() {
   const [loading, setLoading] = useState(true);
-  const [incidents, setIncidents] = useState([]);
+  const [trips, setTrips] = useState([]);
   const [filtros, setFiltros] = useState({ descripcion: '', alumno: '', fecha: '', aula: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingIncident, setEditingIncident] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [editingTrip, setEditingTrip] = useState(null);
   const abortControllerRef = useRef(null);
 
   const { user, session, status } = useAuthUser();
+  console.log('Usuario : ', session);
+  
 
   useEffect(() => {
     if (!user || status !== 'authenticated') return;
@@ -27,14 +31,14 @@ export default function IncidentsTable() {
 
     const fetchData = async () => {
       try {
-        const response = await fetchIncidentsByUser(user.id, session.user.accessToken, controller.signal);
+        const response = await getAllTrips(session.user.accessToken, controller.signal);
 
-        if (!response?.data) throw new Error('No se encontraron incidencias');
+        if (!response?.data) throw new Error('No se encontraron salidas');
 
-        setIncidents(response.data);
+        setTrips(response.data);
       } catch (error) {
         if (error.name !== 'CanceledError') {
-          console.error('Error al traer las incidencias:', error.message);
+          console.error('Error al traer las salidas:', error.message);
         }
       } finally {
         setLoading(false);
@@ -51,7 +55,7 @@ export default function IncidentsTable() {
 
   const handleEditarSubmit = async (editado) => {
     try {
-      await updateIncident(
+      await updateTrip(
         editado.id,
         {
           is_solved: editado.is_solved,
@@ -62,57 +66,70 @@ export default function IncidentsTable() {
         session.user.accessToken
       );
 
-      const res = await fetchIncidentsByUser(user.id, session.user.accessToken);
-      setIncidents(res.data);
+      // Refrescar datos en la página
+      const res = await getAllTrips(session.user.accessToken);
+      setTrips(res.data);
       cerrarModal();
+
     } catch (err) {
-      console.error('Error al editar incidencia:', err.message);
+      console.error('Error al editar salida:', err.message);
     }
   };
 
   const handleEliminar = async (id) => {
-    console.log("Access Token para edición:", session?.user?.accessToken);
-
     try {
       const controller = new AbortController();
-      await deleteIncident(id, session.user.accessToken, controller.signal);
-      setIncidents((prev) => prev.filter((i) => i.id !== id));
-    } catch (err) {
-      console.error('Error al eliminar incidencia:', err.message);
-    }
-  };
+      await deleteTrip(id, session.user.accessToken, controller.signal);
+      
+      // Refrescar datos
+      setTrips((prev) => prev.filter((i) => i.id !== id));
 
-  const handleCrear = async (nueva) => {
-    try {
-      await createIncident(nueva, session.user.accessToken);
-      const res = await fetchIncidentsByUser(user.id, session.user.accessToken);
-      setIncidents(res.data);
-      cerrarModal();
     } catch (err) {
-      console.error('Error al crear incidencia:', err.message);
+      console.error('Error al eliminar salida:', err.message);
     }
   };
 
   const cerrarModal = () => {
     setIsModalOpen(false);
-    setEditingIncident(null);
+    setEditingTrip(null);
   };
 
-  const abrirModalEditar = (incidente) => {
-    setEditingIncident({
-      id: incidente.id,
-      descripcion: incidente.description ?? '',
-      fecha: incidente.created_at?.slice(0, 10) ?? '',
-      aula: incidente.lesson?.location ?? '',
-      alumno: `${incidente.student?.name ?? ''} ${incidente.student?.last_name_1 ?? ''} ${incidente.student?.last_name_2 ?? ''}`.trim(),
-      student_id: incidente.student?.id ?? null,
-      lesson_id: incidente.lesson?.id ?? null,
-      is_solved: incidente.is_solved ?? false,
+  const abrirModalEditar = (salida) => {
+    // Formatear datos
+    setEditingTrip({
+      id: salida.id,
+      descripcion: salida.description ?? '',
+      fecha: salida.created_at?.slice(0, 10) ?? '',
+      aula: salida.lesson?.location ?? '',
+      alumno: `${salida.student?.name ?? ''} ${salida.student?.last_name_1 ?? ''} ${salida.student?.last_name_2 ?? ''}`.trim(),
+      student_id: salida.student?.id ?? null,
+      lesson_id: salida.lesson?.id ?? null,
+      is_solved: salida.is_solved ?? false,
     });
+
     setIsModalOpen(true);
   };
 
-  const datosFiltrados = incidents.filter((i) =>
+  const delSolvedTrip = async () => {
+    try {
+        const controller = new AbortController();
+        trips.map((i) => {
+            if(i.is_solved == true){
+                const id =  i.id;
+                
+                deleteTrip(id, session.user.accessToken, controller.signal);
+                setTrips((prev) => prev.filter((tr) => tr.id !== id));
+            };
+        })
+        } catch (err) {
+            console.error('Error al eliminar salidas resueltas:', err.message);
+        } finally {
+            // Refrescar datos
+            setShowConfirm(false); // Cerramos el modal después de la acción
+        }
+};
+
+  const datosFiltrados = trips.filter((i) =>
     (i.description?.toLowerCase() ?? '').includes(filtros.descripcion.toLowerCase()) &&
     (
       `${i.student?.name ?? ''} ${i.student?.last_name_1 ?? ''} ${i.student?.last_name_2 ?? ''}`
@@ -123,16 +140,16 @@ export default function IncidentsTable() {
     (i.lesson?.location?.toLowerCase().includes(filtros.aula.toLowerCase()) ?? '')
   );
 
-  if (loading) return <p className="p-4">Cargando panel de avisos...</p>;
+  if (loading) return <p className="p-4">Cargando panel de salidas...</p>;
 
   return (
-    <div className="p-6 bg-white shadow-xl rounded-xl inset-shadow-sm">
+    <div className='p-6 bg-white shadow-xl rounded-xl inset-shadow-sm'>
       <div className="flex justify-end mb-4">
         <button
-          onClick={() => setIsModalOpen(true)}
-          className="cursor-pointer px-4 py-2 bg-green-600 text-white rounded hover:bg-green-900"
+          onClick={() => setShowConfirm(true)}
+          className="cursor-pointer px-4 py-2 bg-yellow-400 text-white rounded hover:bg-yellow-600"
         >
-          + Nueva incidencia
+          Eliminar salidas resueltas
         </button>
       </div>
 
@@ -147,57 +164,68 @@ export default function IncidentsTable() {
       {/* Tabla */}
       <div className='max-h-[520px] overflow-y-auto border border-gray-300'>
         <table className="w-full">
-          <thead>
+            <thead>
             <tr className="bg-gray-100 text-left">
-              <th className="p-2 border">Estado</th>
-              <th className="p-2 border max-w-2xl">Descripción</th>
-              <th className="p-2 border">Alumno</th>
-              <th className="p-2 border">Fecha</th>
-              <th className="p-2 border">Aula</th>
-              <th className="p-2 border">Acciones</th>
+                <th className="p-2 border">Estado</th>
+                <th className="p-2 border max-w-2xl">Descripción</th>
+                <th className="p-2 border">Alumno</th>
+                <th className="p-2 border">Fecha</th>
+                <th className="p-2 border">Aula</th>
+                <th className="p-2 border">Acciones</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             {datosFiltrados.map((i) => (
-              <tr key={i.id} className="hover:bg-gray-50">
+                <tr key={i.id} className="hover:bg-gray-50">
                 <td className="p-2 border text-center">
-                  <span className={`px-2 py-1 rounded text-white text-sm font-semibold ${i.is_solved ? 'bg-green-500' : 'bg-red-500'}`}>
+                    <span className={`px-2 py-1 rounded text-white text-sm font-semibold ${i.is_solved ? 'bg-green-500' : 'bg-red-500'}`}>
                     {i.is_solved ? 'Resuelto' : 'Pendiente'}
-                  </span>
+                    </span>
                 </td>
                 <td className="p-2 border max-w-2xl">{i.description}</td>
                 <td className="p-2 border">
-                  {i.student?.name} {i.student?.last_name_1} {i.student?.last_name_2}
+                    {i.student?.name} {i.student?.last_name_1} {i.student?.last_name_2}
                 </td>
                 <td className="p-2 border">{i.created_at?.slice(0, 10)}</td>
                 <td className="p-2 border">{i.lesson?.location}</td>
                 <td className="p-2 border text-center">
-                  <EditButton onClick={() => abrirModalEditar(i)} />
-                  <DeleteButton onClick={() => handleEliminar(i.id)} />
+                    <EditButton onClick={() => abrirModalEditar(i)} />
+                    <DeleteButton onClick={() => handleEliminar(i.id)} />
                 </td>
-              </tr>
+                </tr>
             ))}
-          </tbody>
+            </tbody>
         </table>
       </div>
 
-      {/* Modal */}
+      {/** Eventos */}
+      {/** Modal de edición */}
       <Dialog open={isModalOpen} onClose={cerrarModal} className="relative z-50">
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Dialog.Panel className="w-full max-w-md bg-white p-6 rounded shadow">
             <Dialog.Title className="text-lg font-semibold mb-4">
-              {editingIncident ? 'Editar Incidencia' : 'Nueva Incidencia'}
+              {editingTrip ? 'Editar Incidencia' : ''}
             </Dialog.Title>
-            <IncidentsForm
-              initialData={editingIncident}
-              onCrear={handleCrear}
+            <TripsForm
+              initialData={editingTrip}
               onEditar={handleEditarSubmit}
-              isEditing={!!editingIncident}
+              isEditing={!!editingTrip}
             />
           </Dialog.Panel>
         </div>
       </Dialog>
+
+      {/** Modal de confirmación */}
+      {showConfirm && (
+        <ConfirmModal
+            message = "¿Seguro que deseas eliminar? Ten en cuenta que una acción irreversible."
+            actionType= "eliminar"
+            onConfirm={delSolvedTrip}
+            onClose={() => setShowConfirm(false)}
+            isOpen={showConfirm}
+        />
+      )}
     </div>
   );
 }

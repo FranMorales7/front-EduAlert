@@ -1,32 +1,27 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { useSession } from 'next-auth/react';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import useAuthUser from '@/hooks/useAuthUser';
 import { Dialog } from '@headlessui/react';
-import TeacherForm from './TeacherForm';
+import TeacherForm from '../forms/TeacherForm';
+import EditButton from '../ui/editButton';
+import DeleteButton from '../ui/deleteButton';
+import { createTeacher, deleteTeacher, getAllTeachers, updateTeacher } from '@/requests/teachers';
 
-export default function TablaProfesores() {
+export default function TeachersTable() {
   const [teachers, setTeachers] = useState([]);
   const [filtros, setFiltros] = useState({ nombre: '', apellidos: '', email: '' });
   const abortControllerRef = useRef(null);
-  const { data: session, status } = useSession();
-  const [user, setUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-  useEffect(() => {
-    if (status === 'authenticated' && session?.user) {
-      setUser(session.user.id);
-    }
-  }, [session, status]);
+  // Obtener usuario de la sesión
+  const { user, session, status } = useAuthUser();
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || status !== 'authenticated') return; 
 
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -35,32 +30,29 @@ export default function TablaProfesores() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    axios
-      .get(`${backendUrl}/teachers/`, {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-        signal: controller.signal,
-      })
+    setLoading(true);
+
+    getAllTeachers(session.user.accessToken, controller.signal)
       .then((res) => setTeachers(res.data))
       .catch((err) => {
         if (err.name !== 'CanceledError') {
           console.error('Error al traer profesores:', err);
         }
+        setLoading(false)
       });
 
-    return () => {
-      controller.abort();
-    };
-  }, [user]);
+    return () => { controller.abort(); };
+  }, [user, status, session]);
 
   const onCrear = async (nuevoTeacher) => {
     try {
-      const response = await axios.post(`${backendUrl}/users/`, nuevoTeacher, {
-        headers: { Authorization: `Bearer ${session.user.accessToken}` },
-      });
-      setTeachers((prev) => [...prev, response.data]);
-      setIsModalOpen(false);
+      const response = await createTeacher(nuevoTeacher, session.user.accessToken)
+      setIsModalOpen(false)
+      setIsEditing(false);
+      setTeachers((prev) => {
+          const nuevos = [...prev, response.data];
+          return nuevos; });
+
     } catch (error) {
       console.error('Error al crear profesor:', error);
     }
@@ -68,9 +60,7 @@ export default function TablaProfesores() {
 
   const onEditar = async ({ data, id }) => {
     try {
-      const response = await axios.put(`${backendUrl}/teachers/${id}/`, data, {
-        headers: { Authorization: `Bearer ${session.user.accessToken}` },
-      });
+      const response = await updateTeacher(id, data, session.user.accessToken)
       setTeachers((prev) => prev.map((t) => (t.id === response.data.id ? response.data : t)));
       setIsModalOpen(false);
       setIsEditing(false);
@@ -79,17 +69,14 @@ export default function TablaProfesores() {
     }
   };
 
-  const handleEliminar = (id) => {
-    axios
-      .delete(`${backendUrl}/teachers/${id}/`, {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-      })
-      .then(() => {
-        setTeachers((prev) => prev.filter((t) => t.id !== id));
-      })
-      .catch((err) => console.error('Error al eliminar profesor:', err));
+  const handleEliminar = async (id) => {
+    try{
+      const controller = new AbortController();
+      await deleteTeacher(id, session.user.accessToken, controller.signal);
+      setTeachers((prev) => prev.filter((i) => i.id !== id));
+    } catch (err) {
+      console.error('Error al eliminar profesor: ', err)
+    }
   };
 
   const abrirEditar = (teacher) => {
@@ -108,7 +95,7 @@ export default function TablaProfesores() {
     t.email.toLowerCase().includes(filtros.email.toLowerCase())
   );
 
-  if (status === 'loading') return <p className="p-6">Cargando sesión...</p>;
+  if (status === loading) return <p className="p-6">Cargando datos...</p>;
   if (status === 'unauthenticated') return <p className="p-6">No estás autenticado.</p>;
 
   return (
@@ -136,23 +123,28 @@ export default function TablaProfesores() {
         <table className="w-full">
           <thead>
             <tr className="bg-gray-100 text-left">
+              <th className="p-2 border">Estado</th>
               <th className="p-2 border">Nombre</th>
               <th className="p-2 border">Apellidos</th>
               <th className="p-2 border">Email</th>
-              <th className="p-2 border">Activo</th>
               <th className="p-2 border">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {datosFiltrados.map((t) => (
               <tr key={t.id} className="hover:bg-gray-50">
+                <td className="p-2 border text-center">
+                  <span className={`px-2 py-1 rounded text-white text-sm font-semibold
+                    ${t.is_active ? 'bg-green-500' : 'bg-red-500'}`}>
+                    {t.is_active ? 'En activo' : 'De baja'}
+                  </span>
+                </td>
                 <td className="p-2 border">{t.name}</td>
                 <td className="p-2 border">{t.last_name_1} {t.last_name_2}</td>
                 <td className="p-2 border">{t.email}</td>
-                <td className="p-2 border">{t.is_active ? 'Sí' : 'No'}</td>
-                <td className="p-2 border">
-                  <button className="text-blue-600 hover:underline mr-4" onClick={() => abrirEditar(t)}>Editar</button>
-                  <button className="text-red-600 hover:underline" onClick={() => handleEliminar(t.id)}>Eliminar</button>
+                <td className="p-2 border text-center">
+                  <EditButton onClick={() => abrirEditar(t)} />
+                  <DeleteButton onClick={() => handleEliminar(t.id)} />
                 </td>
               </tr>
             ))}
@@ -166,8 +158,13 @@ export default function TablaProfesores() {
           <Dialog.Panel className="bg-white p-6 rounded max-w-lg w-full shadow-xl">
             <TeacherForm
               initialData={selectedTeacher}
-              onCrear={onCrear}
-              onEditar={onEditar}
+              onSubmit={(formData) => {
+                if (isEditing && selectedTeacher) {
+                  onEditar({ data: formData, id: selectedTeacher.user_id });
+                } else {
+                  onCrear(formData);
+                }
+              }}
               isEditing={isEditing}
             />
           </Dialog.Panel>

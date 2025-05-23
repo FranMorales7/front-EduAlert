@@ -1,35 +1,30 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Dialog } from '@headlessui/react';
-import StudentForm from './StudentsForm';
-import axios from 'axios';
+import useAuthUser from '@/hooks/useAuthUser';
+import { createStudent, deleteStudent, getAllStudents, updateStudent } from '@/requests/students';
+import EditButton from '../ui/editButton';
+import DeleteButton from '../ui/deleteButton';
+import StudentForm from '../forms/StudentsForm';
 
 
-export default function TablaAlumnos() {
+export default function StudentsTable() {
   const [students, setStudents] = useState([]);
   const abortControllerRef = useRef(null);
   const [filtros, setFiltros] = useState({ nombre: '', apellidos: '', curso: '', contacto: '' });
-  const { data: session, status } = useSession();
-  const [user, setUser] = useState(null);
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-  useEffect(() => {
-    if (status === 'authenticated' && session?.user) {
-      setUser(session.user.id);
-    }
-  }, [session, status]);
+  // Obtener usuario de la sesión
+  const { user, session, status } = useAuthUser();
 
   useEffect(() => {
-    
-    if (!user) return;
+    if (!user || status !== 'authenticated') return; 
 
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -38,27 +33,19 @@ export default function TablaAlumnos() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    axios
-      .get(`${backendUrl}/students/`, {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-        signal: controller.signal,
-      })
-      .then((response) => {
-        console.log('Estudiantes--> ', response.data)
-        setStudents(response.data);
-      })
-      .catch((error) => {
+    setLoading(true);
+
+    getAllStudents(session.user.accessToken, controller.signal)
+      .then( (response) => setStudents(response.data) )
+      .catch( (error) => {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer los alumnos:', error);
         }
+        setLoading(false);
       });
 
-    return () => {
-      controller.abort();
-    };
-  }, [user]);
+    return () => { controller.abort(); };
+  }, [user, status, session]);
 
   const calcularEdad = (fechaNacimiento) => {
     const hoy = new Date();
@@ -72,12 +59,14 @@ export default function TablaAlumnos() {
   };
 
   const onCrear = async (nuevoAlumno) => {
-    try {
-      const response = await axios.post(`${backendUrl}/students/`, nuevoAlumno, {
-        headers: { Authorization: `Bearer ${session.user.accessToken}` },
-      });
-      setStudents((prev) => [...prev, response.data]);
+    try{
+      const resp = await createStudent(nuevoAlumno, session.user.accessToken)
       setIsModalOpen(false);
+      setIsEditing(false);
+      setStudents((prev) => {
+          const nuevos = [...prev, resp.data];
+          return nuevos; });
+
     } catch (error) {
       console.error('Error al crear alumno:', error);
     }
@@ -85,9 +74,7 @@ export default function TablaAlumnos() {
 
   const onEditar = async ({data, id}) => {
     try {
-      const response = await axios.put(`${backendUrl}/students/${id}/`, data, {
-        headers: { Authorization: `Bearer ${session.user.accessToken}` },
-      });
+      const response = await updateStudent(id, data, session.user.accessToken)
       setStudents((prev) =>
         prev.map((s) => (s.id === response.data.id ? response.data : s))
       );
@@ -98,19 +85,14 @@ export default function TablaAlumnos() {
     }
   };
 
-  const handleEliminar = (id) => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-    axios
-      .delete(`${backendUrl}/students/${id}`, {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-      })
-      .then(() => {
-        setStudents((prev) => prev.filter((alumno) => alumno.id !== id));
-      })
-      .catch((err) => console.error('Error al eliminar alumno:', err));
+  const handleEliminar = async (id) => {
+    try{
+      const controller = new AbortController();
+      await deleteStudent(id, session.user.accessToken, controller.signal);
+      setStudents((prev) => prev.filter((i) => i.id !== id));
+    } catch (err) {
+      console.error('Error al eliminar estudiante: ', err)
+    }
   };
 
   const abrirEditar = (student) => {
@@ -130,7 +112,7 @@ export default function TablaAlumnos() {
     (s.contact?.toLowerCase().includes(filtros.contacto.toLowerCase()))
   );
 
-  if (status === 'loading') return <p className="p-6">Cargando sesión...</p>;
+  if (status === loading) return <p className="p-6">Cargando datos...</p>;
   if (status === 'unauthenticated') return <p className="p-6">No estás autenticado.</p>;
 
   return (
@@ -183,9 +165,9 @@ export default function TablaAlumnos() {
                   </span>
                 </td>
                 <td className="p-2 border">{s.contact}</td>
-                <td className="p-2 border">
-                  <button className="text-blue-600 hover:underline mr-4" onClick={() => abrirEditar(s)}>Editar</button>
-                  <button className="text-red-600 hover:underline" onClick={() => handleEliminar(s.id)}>Eliminar</button>
+                <td className="p-2 border text-center">
+                  <EditButton onClick={() => abrirEditar(s)}/>
+                  <DeleteButton onClick={() => handleEliminar(s.id)}/>
                 </td>
               </tr>
             ))}

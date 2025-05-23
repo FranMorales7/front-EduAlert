@@ -42,15 +42,3 @@ export async function deleteLesson(id, token, signal = null) {
 
   return response;
 }
-
-export async function fetchIncidentsByUser(userId, token, signal = null) {
-  
-  const response = await axios.get(`${backendUrl}/lessons/user/${userId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    signal,
-  });
-
-  return response;
-}

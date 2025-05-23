@@ -1,5 +1,5 @@
 import BlurBackground from "@/components/BlurBackground";
-import TripsTable from "@/components/tripsTable";
+import TripsTable from "@/components/tables/TripsTable";
 
 export default function Trips() {
   return (

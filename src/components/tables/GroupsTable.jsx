@@ -1,52 +1,68 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { useSession } from 'next-auth/react';
 import { Dialog } from '@headlessui/react';
-import axios from 'axios';
-import GroupForm from './GroupForm';
+import useAuthUser from '@/hooks/useAuthUser';
+import EditButton from '../ui/editButton';
+import DeleteButton from '../ui/deleteButton';
+import GroupForm from '../forms/GroupForm';
+import { createGroup, deleteGroup, getAllGroups, updateGroup } from '@/requests/groups';
 
-export default function TablaGrupos() {
+export default function GroupsTable() {
+  const abortControllerRef = useRef(null);
   const [groups, setGroups] = useState([]);
   const [tutors, setTutors] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
-  const abortControllerRef = useRef(null);
+  const [loading, setLoading] = useState(true);
 
-  const { data: session, status } = useSession();
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  // Obtener usuario de la sesión
+  const { user, session, status } = useAuthUser();
 
   useEffect(() => {
-    if (!session?.user?.accessToken) return;
+    if (!user || status !== 'authenticated') return; 
 
-    if (abortControllerRef.current) abortControllerRef.current.abort();
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
     const controller = new AbortController();
     abortControllerRef.current = controller;
+    setLoading(true);
 
-    axios.get(`${backendUrl}/groups/`, {
-      headers: { Authorization: `Bearer ${session.user.accessToken}` },
-      signal: controller.signal,
-    })
-      .then((res) => setGroups(res.data))
-      .catch((err) => console.error('Error al cargar grupos:', err));
+    getAllGroups(session.user.accessToken, controller.signal)
+    .then((res) => {
+      const grupos = res.data;
+      setGroups(grupos);
 
-    axios.get(`${backendUrl}/teachers/`, {
-      headers: { Authorization: `Bearer ${session.user.accessToken}` },
+      // Obtener tutores únicos
+      const uniqueTutorsMap = new Map();
+      grupos.forEach(g => {
+        if (g.tutor && !uniqueTutorsMap.has(g.tutor.id)) {
+          uniqueTutorsMap.set(g.tutor.id, g.tutor);
+        }
+      });
+      setTutors(Array.from(uniqueTutorsMap.values()));
+
+      setLoading(false);
     })
-      .then((res) => setTutors(res.data))
-      .catch((err) => console.error('Error al cargar tutores:', err));
+    .catch((err) => {
+      console.error('Error al cargar grupos:', err);
+      setLoading(false);
+    });
 
     return () => controller.abort();
-  }, [session]);
+  }, [user, status, session]);
 
   const onCrear = async (nuevoGrupo) => {
     try {
-      const res = await axios.post(`${backendUrl}/groups/`, nuevoGrupo, {
-        headers: { Authorization: `Bearer ${session.user.accessToken}` },
-      });
-      setGroups((prev) => [...prev, res.data]);
+      const res = await createGroup(nuevoGrupo, session.user.accessToken)
       setIsModalOpen(false);
+      setIsEditing(false);
+      setGroups((prev) => {
+        const nuevos = [...prev, res.data];
+        return nuevos; });
     } catch (err) {
       console.error('Error al crear grupo:', err);
     }
@@ -54,9 +70,7 @@ export default function TablaGrupos() {
 
   const onEditar = async ({ data, id }) => {
     try {
-      const res = await axios.put(`${backendUrl}/groups/${id}/`, data, {
-        headers: { Authorization: `Bearer ${session.user.accessToken}` },
-      });
+      const res = await updateGroup(id, data, session.user.accessToken)
       setGroups((prev) => prev.map((g) => (g.id === id ? res.data : g)));
       setIsModalOpen(false);
       setIsEditing(false);
@@ -67,9 +81,8 @@ export default function TablaGrupos() {
 
   const onEliminar = async (id) => {
     try {
-      await axios.delete(`${backendUrl}/groups/${id}/`, {
-        headers: { Authorization: `Bearer ${session.user.accessToken}` },
-      });
+      const controller = new AbortController();
+      await deleteGroup(id, session.user.accessToken, controller.signal);
       setGroups((prev) => prev.filter((g) => g.id !== id));
     } catch (err) {
       console.error('Error al eliminar grupo:', err);
@@ -81,6 +94,9 @@ export default function TablaGrupos() {
     setIsEditing(true);
     setIsModalOpen(true);
   };
+
+  if (status === loading) return <p className="p-6">Cargando datos...</p>;
+  if (status === 'unauthenticated') return <p className="p-6">No estás autenticado.</p>;
 
   return (
     <div className="p-6 bg-white shadow-xl rounded-xl">
@@ -111,14 +127,13 @@ export default function TablaGrupos() {
               <tr key={g.id} className="hover:bg-gray-50">
                 <td className="p-2 border">{g.name}</td>
                 <td className="p-2 border">{g.location}</td>
-                <td className="p-2 border">{tutors.find(t => t.id === g.tutor_id)?.name || 'Sin tutor'}</td>
                 <td className="p-2 border">
-                  <button className="text-blue-600 hover:underline mr-4" onClick={() => abrirEditar(g)}>
-                    Editar
-                  </button>
-                  <button className="text-red-600 hover:underline" onClick={() => onEliminar(g.id)}>
-                    Eliminar
-                  </button>
+                  {g.tutor?.name} {g.tutor?.last_name_1} {g.tutor?.last_name_2 || ''}
+                </td>
+
+                <td className="p-2 border text-center">
+                  <EditButton onClick={() => abrirEditar(g)} />
+                  <DeleteButton onClick={() => onEliminar(g.id)} />
                 </td>
               </tr>
             ))}
@@ -134,7 +149,8 @@ export default function TablaGrupos() {
               onCrear={onCrear}
               onEditar={onEditar}
               isEditing={isEditing}
-              tutores={tutors}
+              clases={groups}
+              token={session?.user?.accessToken}
             />
           </Dialog.Panel>
         </div>
