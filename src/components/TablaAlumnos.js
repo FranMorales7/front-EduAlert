@@ -2,10 +2,10 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
-import api from '@/api/axios';
 import { useRouter } from 'next/navigation';
 import { Dialog } from '@headlessui/react';
 import StudentForm from './StudentsForm';
+import axios from 'axios';
 
 
 export default function TablaAlumnos() {
@@ -38,7 +38,7 @@ export default function TablaAlumnos() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    api
+    axios
       .get(`${backendUrl}/students/`, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
@@ -73,7 +73,7 @@ export default function TablaAlumnos() {
 
   const onCrear = async (nuevoAlumno) => {
     try {
-      const response = await api.post(`${backendUrl}/students/`, nuevoAlumno, {
+      const response = await axios.post(`${backendUrl}/students/`, nuevoAlumno, {
         headers: { Authorization: `Bearer ${session.user.accessToken}` },
       });
       setStudents((prev) => [...prev, response.data]);
@@ -85,7 +85,7 @@ export default function TablaAlumnos() {
 
   const onEditar = async ({data, id}) => {
     try {
-      const response = await api.put(`${backendUrl}/students/${id}/`, data, {
+      const response = await axios.put(`${backendUrl}/students/${id}/`, data, {
         headers: { Authorization: `Bearer ${session.user.accessToken}` },
       });
       setStudents((prev) =>
@@ -101,7 +101,7 @@ export default function TablaAlumnos() {
   const handleEliminar = (id) => {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-    api
+    axios
       .delete(`${backendUrl}/students/${id}`, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,

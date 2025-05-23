@@ -3,8 +3,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { Dialog } from '@headlessui/react';
-import api from '@/api/axios';
 import LessonForm from './LessonForm';
+import axios from 'axios';
 
 export default function TablaClases() {
   const [lessons, setLessons] = useState([]);
@@ -25,20 +25,20 @@ export default function TablaClases() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    api.get(`${backendUrl}/lessons/`, {
+    axios.get(`${backendUrl}/lessons/`, {
       headers: { Authorization: `Bearer ${session.user.accessToken}` },
       signal: controller.signal,
     })
       .then((res) => setLessons(res.data))
       .catch((err) => console.error('Error al cargar clases:', err));
 
-    api.get(`${backendUrl}/teachers/`, {
+    axios.get(`${backendUrl}/teachers/`, {
       headers: { Authorization: `Bearer ${session.user.accessToken}` },
     })
       .then((res) => setTeachers(res.data))
       .catch((err) => console.error('Error al cargar profesores:', err));
 
-    api.get(`${backendUrl}/groups/`, {
+    axios.get(`${backendUrl}/groups/`, {
       headers: { Authorization: `Bearer ${session.user.accessToken}` },
     }).then((res) => setGroups(res.data)).catch(console.error);
 
@@ -47,7 +47,7 @@ export default function TablaClases() {
 
   const onCrear = async (nuevaClase) => {
     try {
-      const res = await api.post(`${backendUrl}/lessons/`, nuevaClase, {
+      const res = await axios.post(`${backendUrl}/lessons/`, nuevaClase, {
         headers: { Authorization: `Bearer ${session.user.accessToken}` },
       });
       setLessons((prev) => [...prev, res.data]);
@@ -59,7 +59,7 @@ export default function TablaClases() {
 
   const onEditar = async ({ data, id }) => {
     try {
-      const res = await api.put(`${backendUrl}/lessons/${id}/`, data, {
+      const res = await axios.put(`${backendUrl}/lessons/${id}/`, data, {
         headers: { Authorization: `Bearer ${session.user.accessToken}` },
       });
       setLessons((prev) => prev.map((g) => (g.id === id ? res.data : g)));
@@ -72,7 +72,7 @@ export default function TablaClases() {
 
   const onEliminar = async (id) => {
     try {
-      await api.delete(`${backendUrl}/lessons/${id}/`, {
+      await axios.delete(`${backendUrl}/lessons/${id}/`, {
         headers: { Authorization: `Bearer ${session.user.accessToken}` },
       });
       setLessons((prev) => prev.filter((g) => g.id !== id));

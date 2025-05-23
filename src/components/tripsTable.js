@@ -1,33 +1,29 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { useSession } from 'next-auth/react';
-import api from '@/api/axios';
 import { Dialog } from '@headlessui/react';
-import FormularioAviso from './FormularioAvisos';
+import FormularioAviso from './forms/IncidentsForm';
 import { useRouter } from 'next/navigation';
+import useAuthUser from '@/hooks/useAuthUser';
+import { createTrip, deleteTrip, fetchTripsByUser, updateTrip } from '@/requests/trips';
+import EditButton from './ui/editButton';
+import DeleteButton from './ui/deleteButton';
+import TripsForm from './forms/TripsForm';
 
-export default function TablaSalidas() {
+export default function TripsTable() {
+  const [loading, setLoading] = useState(true);
   const [trips, setTrips] = useState([]);
   const abortControllerRef = useRef(null);
   const [filtros, setFiltros] = useState({ descripcion: '', alumno: '', fecha: '', aula: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTrips, setEditingTrips] = useState(null);
-  const { data: session, status } = useSession(); 
-  const [user, setUser] = useState(null);
   const router = useRouter();
 
-  // Cuando ya se tiene la sesión, guardamos el ID de usuario
-  useEffect(() => {
-    if (status === 'authenticated' && session?.user) {
-      setUser(session.user.id);
-    }
-  }, [session, status]);
+  // Obtener usuario de la sesión
+  const { user, session, status } = useAuthUser();
 
   useEffect(() => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-    if (!user) return; // Espera a que haya user
+    if (!user || status !== 'authenticated') return; 
 
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -36,135 +32,86 @@ export default function TablaSalidas() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    api
-      .get(`${backendUrl}/trips/user/${user}`, {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-        signal: controller.signal,
-      })
-      .then((response) => {
-        setTrips(response.data);
-      })
+    setLoading(true);
+
+    fetchTripsByUser(user.id, session.user.accessToken, controller.signal)
+      .then( (resp) => setTrips(resp.data) )
       .catch((error) => {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer las salidas:', error);
         }
+        setLoading(false);
       });
 
-    return () => {
-      controller.abort();
-    };
-  }, [user]);
+    return () => { controller.abort(); };
+  }, [user, status, session]);
 
   const handleFiltro = (e) => {
     setFiltros({ ...filtros, [e.target.name]: e.target.value });
   };
 
-  const handleEditarSubmit = (editado) => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const handleEditarSubmit = async (editado) => {
+    try {
+          await updateTrip(editado.id, {
+            id: editado.id,
+            is_solved: editado.is_solved,
+            description: editado.descripcion,
+            created_at: editado.fecha,
+          }, session.user.accessToken);
 
-    const datosFormateados = {
-      is_solved: editado.is_solved,
-      id: editado.id,
-      description: editado.descripcion,
-      created_at: editado.fecha,
-    };
-
-    api
-      .put(`${backendUrl}/trips/${editado.id}`, datosFormateados, {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-      })
-      .then(() => {
-        // Solo actualizamos los campos relevantes
         setTrips((prev) =>
           prev.map((inc) =>
             inc.id === editado.id
               ? {
                   ...inc,
-                  description: datosFormateados.description,
-                  created_at: datosFormateados.created_at,
+                  description: editado.description,
+                  created_at: editado.fecha,
                 }
               : inc
           )
         );
         setIsModalOpen(false);
         setEditingTrips(null);
-      })
-      .catch((err) => console.error('Error al editar salida:', err));
-  };
-
-  const handleEliminar = (id) => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-    if (!user) return; // Espera a que haya user
-
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
+      } catch (err) {
+      console.error('Error al editar salida:', err);
     }
-
-    const controller = new AbortController();
-    abortControllerRef.current = controller;
-
-    api
-      .delete(`${backendUrl}/trips/${id}`, {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-        signal: controller.signal,
-      })
-      .then(() => {
-        // Actualizar el estado de incidencias eliminando la incidencia eliminada
-        setTrips((prevTripss) => prevTripss.filter((trip) => trip.id !== id));
-      })
-      .catch((error) => {
-        if (error.name !== 'CanceledError') {
-          console.error('Error al eliminar las salidas:', error);
-        }
-      });
-
-    return () => {
-      controller.abort();
-    };
   };
 
-  const abrirModalEditar = (salida) => {
-    setEditingTrips(salida); // carga datos en formulario
-    setIsModalOpen(true);
-  }
+  const handleEliminar = async (id) => {
+    try {
+      const controller = new AbortController();
+      await deleteTrip(id, session.user.accessToken, controller.signal);
+      setTrips((prev) => prev.filter((i) => i.id !== id)) // Eliminar localmente
+    } catch (err) {
+      console.error('Error al eliminar salida:', err);
+    }
+  };
 
   const handleCrear = async (nueva) => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-    const datos = {
-      ...nueva,
-      teacher_id: user,
-    };
-
     try {
-      const res = await api.post(`${backendUrl}/trips`, datos, {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-      });
+      const nuevaSalida = {
+        ...nueva,
+        teacher_id: user.id,
+      };
 
-    setIsModalOpen(false);
-    setEditingTrips(null);
-    router.refresh();
-    api
-      .get(`${backendUrl}/trips/user/${user}`, {
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-        },
-      })
-      .then((response) => {
-        setTrips(response.data);
-      }); 
+      const resp = await createTrip(nuevaSalida, session.user.accessToken);
+      setIsModalOpen(false);
+      setEditingTrips(null);
+      console.log(resp.data)
+      setTrips((prev) => { 
+        const nuevos = [...prev, resp.data];
+        return nuevos; 
+      }); // Actualizar localmente
+
     } catch (err) {
       console.error('Error al crear la salida:', err);
     }
   };
+  
+  const abrirModalEditar = (salida) => {
+    setEditingTrips(salida); // carga datos en formulario
+    setIsModalOpen(true);
+  }
 
   const datosFiltrados = trips.filter((i) =>
     (i.description?.toLowerCase() ?? '').includes(filtros.descripcion.toLowerCase()) &&
@@ -228,8 +175,8 @@ export default function TablaSalidas() {
               <td className="p-2 border">{i.created_at?.slice(0, 10)}</td>
               <td className="p-2 border">{i.lesson?.location}</td>
               <td className="p-2 border">
-                <button className="cursor-pointer text-blue-600 hover:underline mr-4" onClick={() => abrirModalEditar(i)}>Editar</button>
-                <button className="cursor-pointer text-red-600 hover:underline" onClick={() => handleEliminar(i.id)}>Eliminar</button>
+                <EditButton onClick={() => abrirModalEditar(i)} /> 
+                <DeleteButton onClick={() => handleEliminar(i.id)}/>
               </td>
             </tr>
           ))}
@@ -244,11 +191,12 @@ export default function TablaSalidas() {
             <Dialog.Title className="text-lg font-semibold mb-4">
               {editingTrips ? 'Editar Salida' : 'Nueva Salida'}
             </Dialog.Title>
-            <FormularioAviso
+            <TripsForm
               initialData={editingTrips}
               onCrear={handleCrear}
               onEditar={handleEditarSubmit}
-              isEditing={!!editingTrips} />
+              isEditing={!!editingTrips} 
+            />
           </Dialog.Panel>
         </div>
       </Dialog>

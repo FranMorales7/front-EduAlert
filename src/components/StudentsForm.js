@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Dialog } from '@headlessui/react';
 import { useSession } from 'next-auth/react';
-import api from '@/api/axios';
+import axios from 'axios';
 
 export default function StudentForm({ initialData, onCrear, onEditar, isEditing }) {
   const [form, setForm] = useState({
@@ -50,7 +50,7 @@ export default function StudentForm({ initialData, onCrear, onEditar, isEditing 
 
     const fetchGrupos = async () => {
       try {
-        const res = await api.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/groups`, {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/groups`, {
           headers: {
             Authorization: `Bearer ${session.user.accessToken}`,
           },

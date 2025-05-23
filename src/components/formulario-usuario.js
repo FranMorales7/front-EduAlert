@@ -2,8 +2,10 @@
 
 import { useSession } from 'next-auth/react';
 import { useEffect, useState, useRef } from 'react';
-import api from '@/api/axios';
 import Image from 'next/image';
+import axios from 'axios';
+import UpdatePassword from './UpdatePassword';
+import { updatePassword } from '@/requests/authentication';
 
 export default function FormularioUsuario() {
   const abortControllerRef = useRef(null);
@@ -16,6 +18,8 @@ export default function FormularioUsuario() {
     last_name_1: '',
     last_name_2: '',
     email: '',
+    current_password: '',
+    new_password: '',
     image: '',
     imageFile: null,
     created_at: '',
@@ -39,7 +43,7 @@ export default function FormularioUsuario() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    api
+    axios
       .get(`${backendUrl}/teachers/byUser/${user}`, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
@@ -55,6 +59,7 @@ export default function FormularioUsuario() {
           last_name_1: data.last_name_1 ?? '',
           last_name_2: data.last_name_2 ?? '',
           email: data.email ?? '',
+          password: '',
           image: fullImageUrl,
           imageFile: null,
           created_at: data.created_at ?? '',
@@ -116,12 +121,29 @@ export default function FormularioUsuario() {
       if (formData[field]) form.append(field, formData[field]);
     });
 
+    if (formData.new_password && formData.current_password) {
+      try {
+        await updatePassword(
+          {
+            current_password: formData.current_password,
+            new_password: formData.new_password,
+            new_password_confirmation: formData.new_password,
+          },
+          session.user.accessToken
+        );
+      } catch (error) {
+        console.error('Error al actualizar la contraseña:', error.response?.data || error.message);
+        alert('No se pudo actualizar la contraseña.');
+        return;
+      }
+    }
+
     if (formData.imageFile) {
       form.append('image', formData.imageFile);
     }
 
     try {
-      const resp = await api.post(`${backendUrl}/teachers/byUser/${user}`, form, {
+      const resp = await axios.post(`${backendUrl}/teachers/byUser/${user}`, form, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
           'Content-Type': 'multipart/form-data',
@@ -132,6 +154,9 @@ export default function FormularioUsuario() {
         ...prev,
         image: resp?.data?.image ? `${backendUrl}/storage/${resp.data.image}?t=${Date.now()}` : '',
         imageFile: null,
+        password: '',
+        current_password: '',
+        new_password: '',
       }));
 
     } catch (error) {
@@ -154,7 +179,7 @@ export default function FormularioUsuario() {
           width={100}
           height={100}
           className="rounded-full ring ring-blue-500 object-cover"
-          style={{ width: '100px', height: '100px' }} // fuerza que sea cuadrado
+          style={{ width: '100px', height: '100px' }}
         />
 
       </div>
@@ -216,12 +241,10 @@ export default function FormularioUsuario() {
         </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Contraseña</label>
-        <p className="text-sm text-gray-500 italic">
-          Acude a un administrador/a para cambiar tu contraseña.
-        </p>
-      </div>
+      <UpdatePassword 
+        value={formData.password}
+        onChange={handleChange} 
+      />
 
       <div className="flex justify-between text-xs text-gray-400 mt-2">
         <span>Creado: {formData.created_at?.slice(0, 10)}</span>

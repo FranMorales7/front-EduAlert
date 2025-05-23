@@ -1,6 +1,5 @@
 /** Layout del lado servidor **/
 import { Geist, Geist_Mono } from "next/font/google";
-import "../../globals.css";
 import ClientLayout from './layout-client';
 
 const geistSans = Geist({

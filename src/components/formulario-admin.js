@@ -2,8 +2,8 @@
 
 import { useSession } from 'next-auth/react';
 import { useEffect, useState, useRef } from 'react';
-import api from '@/api/axios';
 import Image from 'next/image';
+import axios from 'axios';
 
 export default function FormularioAdmin() {
   const abortControllerRef = useRef(null);
@@ -39,7 +39,7 @@ export default function FormularioAdmin() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    api
+    axios
       .get(`${backendUrl}/users/${user}`, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
@@ -121,7 +121,7 @@ export default function FormularioAdmin() {
     }
 
     try {
-      const resp = await api.post(`${backendUrl}/users/${user}`, form, {
+      const resp = await axios.post(`${backendUrl}/users/${user}`, form, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
           'Content-Type': 'multipart/form-data',
