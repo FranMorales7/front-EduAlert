@@ -35,6 +35,7 @@ export default function AdminIncidentsTable() {
         if (!response?.data) throw new Error('No se encontraron incidencias');
 
         setIncidents(response.data);
+        
       } catch (error) {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer las incidencias:', error.message);
@@ -109,16 +110,16 @@ export default function AdminIncidentsTable() {
   const delSolvedIncidents = async () => {
     try {
         const controller = new AbortController();
+
         incidents.map((i) => {
+            const id =  i.id;
             if(i.is_solved == true){
-                const id =  i.id;
-                console.log('Incidente resuelto -- ', i.id);
-                
-                deleteIncident(id, session.user.accessToken, controller.signal);
-                setIncidents((prev) => prev.filter((inc) => inc.id !== id));
+              deleteIncident(id, session.user.accessToken, controller.signal);
+              setIncidents((prev) => prev.filter((inc) => inc.id !== id));
             };
+            setIncidents((prev) => prev.filter((i) => i.id !== id));
         })
-        setIncidents((prev) => prev.filter((i) => i.id !== id));
+        
         } catch (err) {
             console.error('Error al eliminar incidencias resueltas:', err.message);
         } finally {

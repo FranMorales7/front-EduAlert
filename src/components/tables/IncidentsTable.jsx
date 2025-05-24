@@ -17,7 +17,7 @@ export default function IncidentsTable() {
   const abortControllerRef = useRef(null);
 
   const { user, session, status } = useAuthUser();
-
+  
   useEffect(() => {
     if (!user || status !== 'authenticated') return;
 
@@ -32,6 +32,8 @@ export default function IncidentsTable() {
         if (!response?.data) throw new Error('No se encontraron incidencias');
 
         setIncidents(response.data);
+        console.log('Respuesta -- ', incidents);
+        
       } catch (error) {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer las incidencias:', error.message);
@@ -86,6 +88,7 @@ export default function IncidentsTable() {
     try {
       await createIncident(nueva, session.user.accessToken);
       const res = await fetchIncidentsByUser(user.id, session.user.accessToken);
+      
       setIncidents(res.data);
       cerrarModal();
     } catch (err) {
@@ -112,16 +115,25 @@ export default function IncidentsTable() {
     setIsModalOpen(true);
   };
 
-  const datosFiltrados = incidents.filter((i) =>
-    (i.description?.toLowerCase() ?? '').includes(filtros.descripcion.toLowerCase()) &&
-    (
-      `${i.student?.name ?? ''} ${i.student?.last_name_1 ?? ''} ${i.student?.last_name_2 ?? ''}`
-        .toLowerCase()
-        .includes(filtros.alumno.toLowerCase())
-    ) &&
-    (i.created_at?.includes(filtros.fecha) ?? '') &&
-    (i.lesson?.location?.name.toLowerCase().includes(filtros.aula.toLowerCase()) ?? '')
-  );
+  const datosFiltrados = incidents.filter((i) => {
+    const descripcionMatch =
+      filtros.descripcion === '' ||
+      (i.description?.toLowerCase() ?? '').includes(filtros.descripcion.toLowerCase());
+
+    const alumnoTexto = `${i.student?.name ?? ''} ${i.student?.last_name_1 ?? ''} ${i.student?.last_name_2 ?? ''}`.toLowerCase();
+    const alumnoMatch =
+      filtros.alumno === '' || alumnoTexto.includes(filtros.alumno.toLowerCase());
+
+    const fechaMatch =
+      filtros.fecha === '' || i.created_at?.slice(0, 10) === filtros.fecha;
+
+    const aulaMatch =
+      filtros.aula === '' ||
+      (i.lesson?.location?.name?.toLowerCase() ?? '').includes(filtros.aula.toLowerCase());
+
+    return descripcionMatch && alumnoMatch && fechaMatch && aulaMatch;
+  });
+
 
   if (loading) return <p className="p-4">Cargando panel de avisos...</p>;
 
@@ -140,7 +152,6 @@ export default function IncidentsTable() {
       <div className="grid grid-cols-4 gap-4 mb-4">
         <input name="descripcion" value={filtros.descripcion} onChange={handleFiltro} placeholder="Filtrar por descripción" className="border px-3 py-2 rounded" />
         <input name="alumno" value={filtros.alumno} onChange={handleFiltro} placeholder="Filtrar por alumno" className="border px-3 py-2 rounded" />
-        <input name="fecha" type="date" value={filtros.fecha} onChange={handleFiltro} className="border px-3 py-2 rounded" />
         <input name="aula" value={filtros.aula} onChange={handleFiltro} placeholder="Filtrar por aula" className="border px-3 py-2 rounded" />
       </div>
 

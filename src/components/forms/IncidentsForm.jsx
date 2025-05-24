@@ -73,7 +73,7 @@ export default function IncidentsForm({ initialData, onCrear, onEditar, isEditin
   const seleccionarClase = (clase) => {
     setForm((prev) => ({
       ...prev,
-      aula: clase.location,
+      aula: clase.name,
       lesson_id: clase.id,
     }));
     setShowClaseModal(false);

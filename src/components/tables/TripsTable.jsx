@@ -111,21 +111,29 @@ export default function TripsTable() {
     setIsModalOpen(true);
   }
 
-  const datosFiltrados = trips.filter((i) =>
-    (i.description?.toLowerCase() ?? '').includes(filtros.descripcion.toLowerCase()) &&
-    (
-      `${i.student?.name ?? ''} ${i.student?.last_name_1 ?? ''} ${i.student?.last_name_2 ?? ''}`
-        .toLowerCase()
-        .includes(filtros.alumno.toLowerCase())
-    ) &&
-    (i.created_at?.includes(filtros.fecha) ?? '') &&
-    (i.lesson?.location?.toLowerCase().includes(filtros.aula.toLowerCase()) ?? '')
-  );
+   const datosFiltrados = trips.filter((i) => {
+      const descripcionMatch =
+        filtros.descripcion === '' ||
+        (i.description?.toLowerCase() ?? '').includes(filtros.descripcion.toLowerCase());
+
+      const alumnoTexto = `${i.student?.name ?? ''} ${i.student?.last_name_1 ?? ''} ${i.student?.last_name_2 ?? ''}`.toLowerCase();
+      const alumnoMatch =
+        filtros.alumno === '' || alumnoTexto.includes(filtros.alumno.toLowerCase());
+
+      const fechaMatch =
+        filtros.fecha === '' || i.created_at?.slice(0, 10) === filtros.fecha;
+
+      const aulaMatch =
+        filtros.aula === '' ||
+        (i.lesson?.location?.name?.toLowerCase() ?? '').includes(filtros.aula.toLowerCase());
+
+      return descripcionMatch && alumnoMatch && fechaMatch && aulaMatch;
+    });
 
   if (loading) return <p className="p-6">Cargando datos...</p>;
 
   return (
-    <div className="p-6 bg-white shadow-xl rounded-xl">
+    <div className="p-6 bg-white shadow-xl rounded-xl inset-shadow-sm">
       <div className="flex justify-end mb-4">
         <button
           onClick={() => setIsModalOpen(true)}
@@ -139,7 +147,6 @@ export default function TripsTable() {
       <div className="grid grid-cols-4 gap-4 mb-4">
         <input name="descripcion" value={filtros.descripcion} onChange={handleFiltro} placeholder="Filtrar por descripción" className="border px-3 py-2 rounded" />
         <input name="alumno" value={filtros.alumno} onChange={handleFiltro} placeholder="Filtrar por alumno" className="border px-3 py-2 rounded" />
-        <input name="fecha" type="date" value={filtros.fecha} onChange={handleFiltro} className="border px-3 py-2 rounded" />
         <input name="aula" value={filtros.aula} onChange={handleFiltro} placeholder="Filtrar por aula" className="border px-3 py-2 rounded" />
       </div>
 

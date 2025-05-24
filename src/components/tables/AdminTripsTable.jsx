@@ -115,7 +115,6 @@ export default function AdminTripsTable() {
         trips.map((i) => {
             if(i.is_solved == true){
                 const id =  i.id;
-                
                 deleteTrip(id, session.user.accessToken, controller.signal);
                 setTrips((prev) => prev.filter((tr) => tr.id !== id));
             };

@@ -76,7 +76,7 @@ export default function TripsForm({ initialData, onCrear, onEditar, isEditing, t
   const seleccionarClase = (clase) => {
     setForm((prev) => ({
       ...prev,
-      aula: clase.location,
+      aula: clase.name,
       lesson_id: clase.id,
     }));
     setShowClaseModal(false);

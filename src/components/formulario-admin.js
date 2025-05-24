@@ -173,7 +173,7 @@ export default function FormularioUsuario() {
 
       <div className="flex justify-center">
         <Image
-          src={preview || formData.image || '/images/Avatar_m_2.jpg'}
+          src={preview || formData.image || '/images/SF_logo-fa.png'}
           alt="Foto de perfil"
           sizes='64px'
           width={100}

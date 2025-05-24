@@ -42,7 +42,7 @@ export default function UserCard() {
   if (!user) return null;
 
   const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL;
-  const fullImageUrl = user.image ? `${imageUrl}storage/${user.image}` : '/images/Avatar_m_2.jpg';
+  const fullImageUrl = user.image ? `${imageUrl}storage/${user.image}` : '/images/SF_logo-fa.png';
 
   return (
     <div className="flex flex-col items-center p-4 max-w-xs bg-white rounded-2xl inset-shadow-sm transition-shadow shadow-md hover:shadow-lg">
