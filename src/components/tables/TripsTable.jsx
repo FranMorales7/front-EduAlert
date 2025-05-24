@@ -194,6 +194,7 @@ export default function TripsTable() {
               onCrear={handleCrear}
               onEditar={handleEditarSubmit}
               isEditing={!!editingTrips} 
+              token={session.user.accessToken}
             />
           </Dialog.Panel>
         </div>

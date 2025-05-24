@@ -6,8 +6,8 @@ import { deleteIncident, getAllIncidents, updateIncident } from '@/requests/inci
 import useAuthUser from '@/hooks/useAuthUser';
 import EditButton from '../ui/editButton';
 import DeleteButton from '../ui/deleteButton';
-import IncidentsForm from '../forms/IncidentsForm';
 import ConfirmModal from '../ui/confirmModal';
+import AdminIncidentsForm from '../forms/AdminIncidentsForm';
 
 export default function AdminIncidentsTable() {
   const [loading, setLoading] = useState(true);
@@ -58,9 +58,6 @@ export default function AdminIncidentsTable() {
         editado.id,
         {
           is_solved: editado.is_solved,
-          description: editado.descripcion,
-          student_id: editado.student_id,
-          lesson_id: editado.lesson_id,
         },
         session.user.accessToken
       );
@@ -208,10 +205,11 @@ export default function AdminIncidentsTable() {
             <Dialog.Title className="text-lg font-semibold mb-4">
               {editingIncident ? 'Editar Incidencia' : ''}
             </Dialog.Title>
-            <IncidentsForm
+            <AdminIncidentsForm
               initialData={editingIncident}
               onEditar={handleEditarSubmit}
               isEditing={!!editingIncident}
+              token={session.user.accessToken}
             />
           </Dialog.Panel>
         </div>

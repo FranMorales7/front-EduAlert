@@ -1,6 +1,6 @@
 import { Dialog } from '@headlessui/react';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { getAllTeachers } from '@/requests/teachers';
 
 export default function TeacherSelector({ open, onClose, onSelect, token }) {
   const [teachers, setTeachers] = useState([]);
@@ -15,11 +15,7 @@ export default function TeacherSelector({ open, onClose, onSelect, token }) {
 
     const fetchProfesores = async () => {
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/teachers`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await getAllTeachers(token)
         setTeachers(res.data);
       } catch (err) {
         console.error('Error al cargar profesores', err);

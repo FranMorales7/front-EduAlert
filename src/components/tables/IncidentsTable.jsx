@@ -194,6 +194,7 @@ export default function IncidentsTable() {
               onCrear={handleCrear}
               onEditar={handleEditarSubmit}
               isEditing={!!editingIncident}
+              token={session.user.accessToken}
             />
           </Dialog.Panel>
         </div>

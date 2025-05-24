@@ -8,6 +8,7 @@ import DeleteButton from '../ui/deleteButton';
 import ConfirmModal from '../ui/confirmModal';
 import { deleteTrip, getAllTrips, updateTrip } from '@/requests/trips';
 import TripsForm from '../forms/TripsForm';
+import AdminTripsForm from '../forms/AdminTripsForm';
 
 export default function AdminTripsTable() {
   const [loading, setLoading] = useState(true);
@@ -205,10 +206,11 @@ export default function AdminTripsTable() {
             <Dialog.Title className="text-lg font-semibold mb-4">
               {editingTrip ? 'Editar Incidencia' : ''}
             </Dialog.Title>
-            <TripsForm
+            <AdminTripsForm
               initialData={editingTrip}
               onEditar={handleEditarSubmit}
               isEditing={!!editingTrip}
+              token={session.user.accessToken}
             />
           </Dialog.Panel>
         </div>

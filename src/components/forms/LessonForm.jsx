@@ -28,23 +28,31 @@ export default function LessonForm({
 
   useEffect(() => {
     if (initialData) {
+      console.log('Data ', initialData);
+      
       setFormData({
         description: initialData.description || '',
-        location: initialData.location || '',
+        location: initialData.location.id || '',
         teacher_id: initialData.teacher_id || '',
         group_id: initialData.group_id || '',
         day: initialData.day || '',
         starts_at: initialData.starts_at || '',
         ends_at: initialData.ends_at || '',
       });
-
-      if (initialData.group) setSelectedGroup(initialData.group);
     }
   }, [initialData]);
 
   useEffect(() => {
     if (initialData?.teacher) {
       setSelectedTeacher(initialData.teacher);
+      setFormData((prev) => ({ ...prev, teacher_id: initialData.teacher.id }));
+    }
+  }, [initialData]);
+
+  useEffect(() => {
+    if (initialData.group) {
+      setSelectedGroup(initialData.group);
+      setFormData((prev) => ({ ...prev, group_id: initialData.group.id }));
     }
   }, [initialData]);
 
@@ -62,7 +70,7 @@ export default function LessonForm({
     e.preventDefault();
     const data = {
       description: formData.description || null,
-      location: formData.location || null,
+      location: formData.location.id || null,
       teacher_id: formData.teacher_id || null,
       group_id: formData.group_id || null,
       day: formData.day || null,
@@ -113,7 +121,9 @@ export default function LessonForm({
         <div className="flex items-center gap-2">
           <input
             type="text"
-            value={selectedTeacher}
+            value={
+              selectedTeacher? `${selectedTeacher.name} ${selectedTeacher.last_name_1} ${selectedTeacher.last_name_2 || ''}`: ''
+            }
             readOnly
             className="flex-1 border px-3 py-2 rounded bg-gray-100 cursor-not-allowed"
           />
@@ -138,7 +148,9 @@ export default function LessonForm({
         <div className="flex items-center gap-2">
           <input
             type="text"
-            value={selectedGroup}
+            value={
+              selectedGroup? selectedGroup.name : '' 
+            }
             readOnly
             className="flex-1 border px-3 py-2 rounded bg-gray-100 cursor-not-allowed"
           />
