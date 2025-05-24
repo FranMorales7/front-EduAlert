@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import TeacherSelector from '../lists/TeachersList';
+import GroupsSelector from '../lists/GroupsList';
 
 export default function LessonForm({
   initialData = null,
   onCrear,
   onEditar,
   isEditing = false,
-  profesores = [],
-  grupos = [],
+  token,
 }) {
   const [formData, setFormData] = useState({
     description: '',
@@ -19,6 +20,11 @@ export default function LessonForm({
     starts_at: '',
     ends_at: '',
   });
+  
+  const [showTeacherSelector, setShowTeacherSelector] = useState(false);
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [showGroupSelector, setShowGroupSelector] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState(null);
 
   useEffect(() => {
     if (initialData) {
@@ -31,8 +37,21 @@ export default function LessonForm({
         starts_at: initialData.starts_at || '',
         ends_at: initialData.ends_at || '',
       });
+
+      if (initialData.group) setSelectedGroup(initialData.group);
     }
   }, [initialData]);
+
+  useEffect(() => {
+    if (initialData?.teacher) {
+      setSelectedTeacher(initialData.teacher);
+    }
+  }, [initialData]);
+
+  const handleTeacherSelect = (teacher) => {
+    setFormData((prev) => ({ ...prev, teacher_id: teacher.id }));
+    setSelectedTeacher(`${teacher.name || 'Sin profesor'} ${teacher.last_name_1} ${teacher.last_name_2 || ''}`);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -75,47 +94,71 @@ export default function LessonForm({
 
       <div>
         <label className="block text-sm font-medium">Ubicación</label>
-        <input
-          type="text"
-          name="location"
-          value={formData.location}
-          onChange={handleChange}
-          className="mt-1 block w-full p-2 border border-gray-300 rounded"
-        />
+        <div className="flex items-center gap-2">
+
+        </div>
+        <GroupsSelector
+        open={showGroupSelector}
+        onClose={() => setShowGroupSelector(false)}
+        onSelect={(group) => {
+          setSelectedGroup(group);
+          setFormData((prev) => ({ ...prev, group_id: group.id }));
+        }}
+        token={token}
+      />
       </div>
 
       <div>
         <label className="block text-sm font-medium">Profesor/a</label>
-        <select
-          name="teacher_id"
-          value={formData.teacher_id}
-          onChange={handleChange}
-          className="mt-1 block w-full p-2 border border-gray-300 rounded"
-        >
-          <option value="">-- Seleccionar profesor/a --</option>
-          {profesores.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.name}
-            </option>
-          ))}
-        </select>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={selectedTeacher}
+            readOnly
+            className="flex-1 border px-3 py-2 rounded bg-gray-100 cursor-not-allowed"
+          />
+          <button
+            type="button"
+            onClick={() => setShowTeacherSelector(true)}
+            className="bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded text-sm"
+          >
+            Elegir
+          </button>
+        </div>
+        <TeacherSelector
+          open={showTeacherSelector}
+          onClose={() => setShowTeacherSelector(false)}
+          onSelect={handleTeacherSelect}
+          token={token}
+        />
       </div>
 
       <div>
         <label className="block text-sm font-medium">Grupo</label>
-        <select
-          name="group_id"
-          value={formData.group_id}
-          onChange={handleChange}
-          className="mt-1 block w-full p-2 border border-gray-300 rounded"
-        >
-          <option value="">-- Seleccionar grupo --</option>
-          {grupos.map((g) => (
-            <option key={g.id} value={g.id}>
-              {g.name}
-            </option>
-          ))}
-        </select>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={selectedGroup}
+            readOnly
+            className="flex-1 border px-3 py-2 rounded bg-gray-100 cursor-not-allowed"
+          />
+          <button
+            type="button"
+            onClick={() => setShowGroupSelector(true)}
+            className="bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded text-sm"
+          >
+            Elegir
+          </button>
+        </div>
+        <GroupsSelector
+          open={showGroupSelector}
+          onClose={() => setShowGroupSelector(false)}
+          onSelect={(group) => {
+            setSelectedGroup(group);
+            setFormData((prev) => ({ ...prev, group_id: group.id }));
+          }}
+          token={token}
+        />
       </div>
 
       <div>
@@ -159,6 +202,7 @@ export default function LessonForm({
       >
         {isEditing ? 'Guardar cambios' : 'Crear Clase'}
       </button>
+
     </form>
   );
 }

@@ -19,8 +19,6 @@ export default function AdminTripsTable() {
   const abortControllerRef = useRef(null);
 
   const { user, session, status } = useAuthUser();
-  console.log('Usuario : ', session);
-  
 
   useEffect(() => {
     if (!user || status !== 'authenticated') return;
