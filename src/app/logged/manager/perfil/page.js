@@ -1,4 +1,4 @@
-import BlurBackground from "@/components/BlurBackground";
+import BlurBackground from "@/components/ui/BlurBackground";
 
 export default function Configuration() {
   return (

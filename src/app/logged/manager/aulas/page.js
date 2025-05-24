@@ -1,4 +1,4 @@
-import BlurBackground from '@/components/BlurBackground';
+import BlurBackground from '@/components/ui/BlurBackground';
 import ClassRoomsTable from '@/components/tables/ClassRoomsTable';
 
 export default function StudentssList() {

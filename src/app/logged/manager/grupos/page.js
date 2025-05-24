@@ -1,4 +1,4 @@
-import BlurBackground from '@/components/BlurBackground';
+import BlurBackground from '@/components/ui/BlurBackground';
 import GroupsTable from '@/components/tables/GroupsTable';
 
 export default function GroupsPage() {

@@ -1,4 +1,4 @@
-import BlurBackground from '@/components/BlurBackground';
+import BlurBackground from '@/components/ui/BlurBackground';
 import TeachersTable from '@/components/tables/TeachersTable';
 
 export default function TeacherPage() {

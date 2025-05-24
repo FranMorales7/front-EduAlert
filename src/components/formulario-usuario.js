@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
-import UpdatePassword from './UpdatePassword';
+import UpdatePassword from '../hooks/UpdatePassword';
 import { updatePassword } from '@/requests/authentication';
 
 export default function FormularioUsuario() {

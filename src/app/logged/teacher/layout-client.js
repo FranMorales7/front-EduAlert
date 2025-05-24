@@ -2,7 +2,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import Sidebar from '@/components/sidebar_users';
+import Sidebar from '@/components/ui/sidebar_users';
 
 export default function ClientLayout({ children }) {
   /** 

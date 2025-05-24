@@ -1,4 +1,4 @@
-import BlurBackground from "@/components/BlurBackground";
+import BlurBackground from "@/components/ui/BlurBackground";
 import IncidentsCard from "@/components/cards/IncidentsCard";
 import TripsCard from "@/components/cards/TripsCard";
 

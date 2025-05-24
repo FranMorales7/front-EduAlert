@@ -1,7 +1,7 @@
 'use client'
-import BlurBackground from "@/components/BlurBackground";
-import Header from "@/components/header";
-import Schedule from "@/components/schedule";
+import BlurBackground from "@/components/ui/BlurBackground";
+import Header from "@/components/ui/header";
+import Schedule from "@/components/ui/schedule";
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';

@@ -1,5 +1,5 @@
-import BlurBackground from "@/components/BlurBackground";
-import Header from "@/components/header";
+import BlurBackground from "@/components/ui/BlurBackground";
+import Header from "@/components/ui/header";
 
 export default function IndexPage() {
   return (

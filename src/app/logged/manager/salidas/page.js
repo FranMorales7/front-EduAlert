@@ -1,4 +1,4 @@
-import BlurBackground from "@/components/BlurBackground";
+import BlurBackground from "@/components/ui/BlurBackground";
 import AdminTripsTable from "@/components/tables/AdminTripsTable";
 
 export default function Trips() {

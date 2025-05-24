@@ -1,4 +1,4 @@
-import BlurBackground from "@/components/BlurBackground";
+import BlurBackground from "@/components/ui/BlurBackground";
 import AdminIncidentsTable from "@/components/tables/AdminIncidentsTable";
 
 export default function IncidentsPage() {

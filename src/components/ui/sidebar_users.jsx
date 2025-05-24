@@ -11,9 +11,9 @@ import {
   ToiletIcon,
 } from 'lucide-react';
 import Image from 'next/image';
-import logo from '../../public/images/SF_logo.png';
+import logo from '/public/images/SF_logo.png';
 import { signOut } from 'next-auth/react';
-import UserCard from './UserCard';
+import UserCard from '../cards/UserCard';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -30,7 +30,7 @@ export default function Sidebar() {
     <aside className="fixed top-0 left-0 w-64 h-screen bg-white shadow-lg flex flex-col justify-between p-4 border-r border-gray-200 z-30">
       {/* Logo */}
       <div className="flex flex-col items-center mb-6">
-        <Image src={logo} alt="EduAlert Logo" width={110} height={110} className="mb-1" />
+        <Image src="/public/images/SF_logo.png" alt="EduAlert Logo" width={110} height={110} className="mb-1" />
       </div>
 
       {/* Navigation */}

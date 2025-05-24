@@ -1,4 +1,4 @@
-import BlurBackground from "@/components/BlurBackground";
+import BlurBackground from "@/components/ui/BlurBackground";
 import FormularioUsuario from "@/components/formulario-usuario";
 
 export default function Configuration() {

@@ -1,4 +1,4 @@
-import BlurBackground from "@/components/BlurBackground";
+import BlurBackground from "@/components/ui/BlurBackground";
 import FormularioAdmin from "@/components/formulario-admin";
 
 export default function Configuration() {
