@@ -4,8 +4,10 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
+import UpdatePassword from './UpdatePassword';
+import { updatePassword } from '@/requests/authentication';
 
-export default function FormularioAdmin() {
+export default function FormularioUsuario() {
   const abortControllerRef = useRef(null);
   const { data: session, status } = useSession();
   const [user, setUser] = useState(null);
@@ -16,6 +18,8 @@ export default function FormularioAdmin() {
     last_name_1: '',
     last_name_2: '',
     email: '',
+    current_password: '',
+    new_password: '',
     image: '',
     imageFile: null,
     created_at: '',
@@ -55,6 +59,7 @@ export default function FormularioAdmin() {
           last_name_1: data.last_name_1 ?? '',
           last_name_2: data.last_name_2 ?? '',
           email: data.email ?? '',
+          password: '',
           image: fullImageUrl,
           imageFile: null,
           created_at: data.created_at ?? '',
@@ -112,16 +117,33 @@ export default function FormularioAdmin() {
 
     const form = new FormData();
 
-    ['name', 'last_name_1', 'last_name_2'].forEach((field) => {
+    ['name', 'last_name_1', 'last_name_2', 'email'].forEach((field) => {
       if (formData[field]) form.append(field, formData[field]);
     });
+
+    if (formData.new_password && formData.current_password) {
+      try {
+        await updatePassword(
+          {
+            current_password: formData.current_password,
+            new_password: formData.new_password,
+            new_password_confirmation: formData.new_password,
+          },
+          session.user.accessToken
+        );
+      } catch (error) {
+        console.error('Error al actualizar la contraseña:', error.response?.data || error.message);
+        alert('No se pudo actualizar la contraseña.');
+        return;
+      }
+    }
 
     if (formData.imageFile) {
       form.append('image', formData.imageFile);
     }
 
     try {
-      const resp = await axios.post(`${backendUrl}/users/${user}`, form, {
+      const resp = await axios.put(`${backendUrl}/users/${user}`, form, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
           'Content-Type': 'multipart/form-data',
@@ -132,6 +154,9 @@ export default function FormularioAdmin() {
         ...prev,
         image: resp?.data?.image ? `${backendUrl}/storage/${resp.data.image}?t=${Date.now()}` : '',
         imageFile: null,
+        password: '',
+        current_password: '',
+        new_password: '',
       }));
 
     } catch (error) {
@@ -154,7 +179,7 @@ export default function FormularioAdmin() {
           width={100}
           height={100}
           className="rounded-full ring ring-blue-500 object-cover"
-          style={{ width: '100px', height: '100px' }} // fuerza que sea cuadrado
+          style={{ width: '100px', height: '100px' }}
         />
 
       </div>
@@ -210,18 +235,16 @@ export default function FormularioAdmin() {
             type="email"
             name="email"
             value={formData.email}
-            readOnly
-            className="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-500 cursor-not-allowed"
+            onChange={handleChange}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
           />
         </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Contraseña</label>
-        <p className="text-sm text-gray-500 italic">
-          Acude a un administrador/a para cambiar tu contraseña.
-        </p>
-      </div>
+      <UpdatePassword 
+        value={formData.password}
+        onChange={handleChange} 
+      />
 
       <div className="flex justify-between text-xs text-gray-400 mt-2">
         <span>Creado: {formData.created_at?.slice(0, 10)}</span>

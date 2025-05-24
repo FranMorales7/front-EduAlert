@@ -9,7 +9,7 @@ export const getAllTrips = async (token, signal = null) => {
     signal,
   });
 
-  return response.data;
+  return response;
 };
 
 export async function createTrip(data, token) {

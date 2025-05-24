@@ -2,13 +2,12 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { Dialog } from '@headlessui/react';
-import FormularioAviso from './forms/IncidentsForm';
 import { useRouter } from 'next/navigation';
 import useAuthUser from '@/hooks/useAuthUser';
 import { createTrip, deleteTrip, fetchTripsByUser, updateTrip } from '@/requests/trips';
-import EditButton from './ui/editButton';
-import DeleteButton from './ui/deleteButton';
-import TripsForm from './forms/TripsForm';
+import EditButton from '../ui/editButton';
+import DeleteButton from '../ui/deleteButton';
+import TripsForm from '../forms/TripsForm';
 
 export default function TripsTable() {
   const [loading, setLoading] = useState(true);
@@ -97,7 +96,6 @@ export default function TripsTable() {
       const resp = await createTrip(nuevaSalida, session.user.accessToken);
       setIsModalOpen(false);
       setEditingTrips(null);
-      console.log(resp.data)
       setTrips((prev) => { 
         const nuevos = [...prev, resp.data];
         return nuevos; 
@@ -123,10 +121,8 @@ export default function TripsTable() {
     (i.created_at?.includes(filtros.fecha) ?? '') &&
     (i.lesson?.location?.toLowerCase().includes(filtros.aula.toLowerCase()) ?? '')
   );
-  
 
-  if (status === 'loading') return <p className="p-6">Cargando sesión...</p>;
-  if (status === 'unauthenticated') return <p className="p-6">No estás autenticado.</p>;
+  if (loading) return <p className="p-6">Cargando datos...</p>;
 
   return (
     <div className="p-6 bg-white shadow-xl rounded-xl">
@@ -148,40 +144,42 @@ export default function TripsTable() {
       </div>
 
       {/* Tabla */}
-      <table className="w-full border border-gray-300">
-        <thead>
-          <tr className="bg-gray-100 text-left">
-            <th className="p-2 border">Estado</th>
-            <th className="p-2 border max-w-2xl">Descripción</th>
-            <th className="p-2 border">Alumno</th>
-            <th className="p-2 border">Fecha</th>
-            <th className="p-2 border">Aula</th>
-            <th className="p-2 border">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {datosFiltrados.map((i) => (
-            <tr key={i.id} className="hover:bg-gray-50">
-              <td className="p-2 border">
-                <span className={`px-2 py-1 rounded text-white text-sm font-semibold
-                  ${i.is_solved ? 'bg-green-500' : 'bg-red-500'}`}>
-                  {i.is_solved ? 'Resuelto' : 'Pendiente'}
-                </span>
-              </td>
-              <td className="p-2 border max-w-2xl">{i.description}</td>
-              <td className="p-2 border">
-                {i.student?.name} {i.student?.last_name_1} {i.student?.last_name_2}
-              </td>
-              <td className="p-2 border">{i.created_at?.slice(0, 10)}</td>
-              <td className="p-2 border">{i.lesson?.location}</td>
-              <td className="p-2 border">
-                <EditButton onClick={() => abrirModalEditar(i)} /> 
-                <DeleteButton onClick={() => handleEliminar(i.id)}/>
-              </td>
+      <div className='max-h-[520px] overflow-y-auto border border-gray-300'>
+        <table className="w-full">
+          <thead>
+            <tr className="bg-gray-100 text-left">
+              <th className="p-2 border">Estado</th>
+              <th className="p-2 border max-w-2xl">Descripción</th>
+              <th className="p-2 border">Alumno</th>
+              <th className="p-2 border">Fecha</th>
+              <th className="p-2 border">Aula</th>
+              <th className="p-2 border">Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {datosFiltrados.map((i) => (
+              <tr key={i.id} className="hover:bg-gray-50">
+                <td className="p-2 border text-center">
+                  <span className={`px-2 py-1 rounded text-white text-sm font-semibold
+                    ${i.is_solved ? 'bg-green-500' : 'bg-red-500'}`}>
+                    {i.is_solved ? 'Resuelto' : 'Pendiente'}
+                  </span>
+                </td>
+                <td className="p-2 border max-w-2xl">{i.description}</td>
+                <td className="p-2 border">
+                  {i.student?.name} {i.student?.last_name_1} {i.student?.last_name_2}
+                </td>
+                <td className="p-2 border">{i.created_at?.slice(0, 10)}</td>
+                <td className="p-2 border">{i.lesson?.location}</td>
+                <td className="p-2 border text-center">
+                  <EditButton onClick={() => abrirModalEditar(i)} /> 
+                  <DeleteButton onClick={() => handleEliminar(i.id)}/>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* Modal */}
       <Dialog open={isModalOpen} onClose={() => { setIsModalOpen(false); setEditingTrips(null); }} className="relative z-50">

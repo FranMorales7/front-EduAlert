@@ -1,96 +1,192 @@
+import { useState, useEffect, useRef } from 'react';
 import { Dialog } from '@headlessui/react';
-import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import axios from 'axios';
+import GroupsSelector from '../lists/GroupsList';
 
-export default function StudentsSelector({ open, onClose, onSelect, token }) {
-  const [alumnos, setAlumnos] = useState([]);
-  const [filtros, setFiltros] = useState({
-    name: '',
-    last_name_1: '',
-    last_name_2: '',
-    group: '',
+export default function StudentForm({ initialData, onCrear, onEditar, isEditing }) {
+  const [form, setForm] = useState({
+    nombre: '',
+    apellido1: '',
+    apellido2: '',
+    nacimiento: '',
+    contacto: '',
+    grupo: '',
+    group_id: null,
+    imagen: null,
   });
 
-  useEffect(() => {
-    if (!open || !token) return;
+  const { data: session, status } = useSession();
+  const [user, setUser] = useState(null);
+  const [showGrupoModal, setShowGrupoModal] = useState(false);
+  const [grupos, setGrupos] = useState([]);
+  const abortControllerRef = useRef(null);
 
-    const fetchAlumnos = async () => {
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user) {
+      setUser(session.user.id);
+    }
+  }, [session, status]);
+
+  useEffect(() => {
+    if (initialData) {
+      setForm({
+        nombre: initialData.name || '',
+        apellido1: initialData.last_name_1 || '',
+        apellido2: initialData.last_name_2 || '',
+        nacimiento: initialData.birthdate || '',
+        contacto: initialData.contact || '',
+        grupo: initialData.group?.name || '',
+        group_id: initialData.group?.id || null,
+      });
+    }
+  }, [initialData]);
+
+  useEffect(() => {
+    if (!showGrupoModal || !session?.user?.accessToken) return;
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    const fetchGrupos = async () => {
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/students`, {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/groups`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${session.user.accessToken}`,
           },
+          signal: controller.signal,
         });
-        setAlumnos(res.data);
+        setGrupos(res.data);
       } catch (err) {
-        console.error('Error al cargar alumnos', err);
+        if (err.name !== 'CanceledError') {
+          console.error('Error al cargar grupos', err);
+        }
       }
     };
 
-    fetchAlumnos();
-  }, [open, token]);
+    fetchGrupos();
+  }, [showGrupoModal, session?.user?.accessToken]);
 
-  const handleFiltro = (e) => {
-    setFiltros({ ...filtros, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+      setForm({ ...form, [name]: value });
   };
 
-  const alumnosFiltrados = alumnos.filter((a) =>
-    (a.name || '').toLowerCase().includes(filtros.name.toLowerCase()) &&
-    (a.last_name_1 || '').toLowerCase().includes(filtros.last_name_1.toLowerCase()) &&
-    (a.last_name_2 || '').toLowerCase().includes(filtros.last_name_2.toLowerCase()) &&
-    (a.group?.name || '').toLowerCase().includes(filtros.group.toLowerCase())
-  );
+  const seleccionarGrupo = (grupo) => {
+    setForm({
+      ...form,
+      grupo: grupo.name,
+      group_id: grupo.id,
+    });
+    setShowGrupoModal(false);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const data = new FormData();
+    data.append('name', form.nombre);
+    data.append('last_name_1', form.apellido1);
+    if (form.apellido2) data.append('last_name_2', form.apellido2);
+    data.append('birthdate', form.nacimiento);
+    data.append('contact', form.contacto);
+    data.append('group_id', form.group_id);
+
+    if (isEditing && initialData?.id) {
+        onEditar({ data, id: initialData.id }); 
+    } else {
+        onCrear(data);
+    }
+  };
 
   return (
-    <Dialog open={open} onClose={onClose} className="relative z-50">
-      <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-      <div className="fixed inset-0 flex justify-end p-4">
-        <Dialog.Panel className="w-full max-w-sm bg-white p-6 shadow-lg rounded">
-          <Dialog.Title className="text-lg font-semibold mb-4">Selecciona un alumno</Dialog.Title>
-
-          <div className="space-y-2 mb-4">
-            {[
-              { label: 'Nombre', key: 'name' },
-              { label: 'Primer Apellido', key: 'last_name_1' },
-              { label: 'Segundo Apellido', key: 'last_name_2' },
-              { label: 'Grupo', key: 'group' },
-            ].map(({ label, key }) => (
-              <input
-                key={key}
-                type="text"
-                name={key}
-                placeholder={`Filtrar por ${label}`}
-                value={filtros[key]}
-                onChange={handleFiltro}
-                className="w-full px-3 py-2 border rounded"
-              />
-            ))}
-          </div>
-
-          <ul className="space-y-2 max-h-[60vh] overflow-y-auto border-t pt-2">
-            {alumnosFiltrados.map((a) => (
-              <li key={a.id}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onSelect(a);
-                    onClose();
-                  }}
-                  className="w-full text-left px-4 py-2 hover:bg-blue-100 rounded"
-                >
-                  {a.name} {a.last_name_1} {a.last_name_2}
-                  {a.group?.name && (
-                    <span className="block text-sm text-amber-100">Grupo: {a.group.name}</span>
-                  )}
-                </button>
-              </li>
-            ))}
-            {alumnosFiltrados.length === 0 && (
-              <li className="text-sm text-gray-400 text-center py-4">No se encontraron alumnos.</li>
-            )}
-          </ul>
-        </Dialog.Panel>
+    <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
+      <div>
+        <span className="text-gray-700">Nombre:</span>
+        <input
+          name="nombre"
+          value={form.nombre}
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+          required
+        />
       </div>
-    </Dialog>
+
+      <div>
+        <span className="text-gray-700">Primer Apellido:</span>
+        <input
+          name="apellido1"
+          value={form.apellido1}
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+          required
+        />
+      </div>
+
+      <div>
+        <span className="text-gray-700">Segundo Apellido:</span>
+        <input
+          name="apellido2"
+          value={form.apellido2}
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+        />
+      </div>
+
+      <div>
+        <span className="text-gray-700">Fecha de nacimiento:</span>
+        <input
+          type="date"
+          name="nacimiento"
+          value={form.nacimiento}
+          onChange={handleChange}
+          className="w-full border px-3 py-2 rounded"
+          required
+        />
+      </div>
+
+      <div>
+        <span className="text-gray-700">Contacto:</span>
+        <input
+          name="contacto"
+          value={form.contacto}
+          onChange={handleChange}
+          placeholder="Teléfono o email de contacto"
+          className="w-full border px-3 py-2 rounded"
+          required
+        />
+      </div>
+
+      <div>
+        <span className="text-gray-700">Grupo:</span>
+        <div className="flex items-center gap-2">
+          <input
+            name="grupo"
+            value={form.grupo}
+            readOnly
+            className="flex-1 border px-3 py-2 rounded bg-gray-100 cursor-not-allowed"
+          />
+          <button
+            type="button"
+            onClick={() => setShowGrupoModal(true)}
+            className="bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded text-sm"
+          >
+            Asignar
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+        {isEditing ? 'Guardar cambios' : 'Crear Estudiante'}
+      </button>
+
+      {/* Modal de selección de grupo */}
+      <GroupsSelector 
+        open={showGrupoModal}
+        onClose={() => setShowGrupoModal(false)}
+        onSelect={seleccionarGrupo}
+        token={session?.user?.accessToken}
+      />
+    </form>
   );
 }

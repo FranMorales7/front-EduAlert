@@ -1,5 +1,5 @@
 import BlurBackground from '@/components/BlurBackground';
-import TablaGrupos from '@/components/TablaGrupos';
+import TablaGrupos from '@/components/tables/GroupsTable';
 
 export default function GroupsPage() {
 

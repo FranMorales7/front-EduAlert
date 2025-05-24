@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import useAuthUser from '@/hooks/useAuthUser';
 import { getAllStudents } from '@/requests/students';
 import { getAllLessons } from '@/requests/lessons';
-import ClassesSelector from './ClassesForm';
-import StudentsSelector from './StudentsForm';
+import ClassesSelector from '../lists/ClassesList';
+import StudentsSelector from '../lists/StudentsList';
 import SolvedToggleButton from '../ui/solvedToogledButton';
 
 export default function IncidentsForm({ initialData, onCrear, onEditar, isEditing }) {
@@ -93,7 +93,11 @@ export default function IncidentsForm({ initialData, onCrear, onEditar, isEditin
       ...(isEditing ? { is_solved: form.is_solved } : { teacher_id: user.id }),
     };
 
-    (isEditing ? onEditar : onCrear)(data);
+    if (isEditing && onEditar) {
+      onEditar(data);
+    } else if (!isEditing && onCrear) {
+      onCrear(data);
+    }
   };
 
   return (

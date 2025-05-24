@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { Eye, EyeClosed } from 'lucide-react';
 
 export default function TeacherForm({ initialData = null, onSubmit, isEditing = false }) {
   const [preview, setPreview] = useState(null);
@@ -92,8 +93,8 @@ export default function TeacherForm({ initialData = null, onSubmit, isEditing = 
       data.append('image', formData.imageFile);
     }
 
-    data.append('is_admin', formData.is_admin ? 'true' : 'false'); 
-    data.append('is_active', formData.is_active ? 'true' : 'false');
+    data.append('is_admin', formData.is_admin ? true : false); 
+    data.append('is_active', formData.is_active ? true : false);
 
     await onSubmit(data);
   };
@@ -176,46 +177,57 @@ export default function TeacherForm({ initialData = null, onSubmit, isEditing = 
         </div>
       </div>
 
-        <div>
-            <label className="block text-sm font-medium text-gray-700">Contraseña</label>
-            <div className="relative">
-                <input
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-lg pr-20"
-                placeholder={isEditing ? 'Dejar en blanco para mantener la actual' : ''}
-                />
-                <button
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute right-2 top-2 text-sm text-blue-600 hover:underline"
-                >
-                {showPassword ? 'Ocultar' : 'Mostrar'}
-                </button>
-            </div>
+      <div className="block text-sm font-medium text-gray-700 mt-4">
+        <label htmlFor="new_password">Contraseña</label>
+        <div className="relative">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder={isEditing ? "Dejar en blanco para mantener la actual" : "Ingresar contraseña"}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
+          />
+          <button
+            type="button"
+            className="absolute right-0 bottom-2 top-0 h-full px-2"
+            onClick={() => setShowPassword((prev) => !prev)}
+          >
+            {showPassword ? <Eye className="-my-1" /> : <EyeClosed className="-my-1" />}
+          </button>
         </div>
-
-
-      <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          name="is_active"
-          checked={formData.is_active}
-          onChange={handleChange}
-        />
-        <label className="text-sm font-medium text-gray-700">¿Activo?</label>
       </div>
 
-      <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          name="is_admin"
-          checked={formData.is_admin}
-          onChange={handleChange}
-        />
-        <label className="text-sm font-medium text-gray-700">¿Es administrador?</label>
+      <div className="flex items-start">
+        <label className="text-sm font-medium text-gray-700" htmlFor="is_active">¿Activo?</label>
+        <label className="relative inline-flex ml-4 items-center cursor-pointer">
+          <input
+            type="checkbox"
+            id="is_active"
+            name="is_active"
+            checked={formData.is_active}
+            onChange={handleChange}
+            className="sr-only peer"
+          />
+          <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-200"></div>
+          <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow-md transform peer-checked:translate-x-full transition-transform duration-200"></div>
+        </label>
+      </div>
+
+      <div className="flex items-start mt-2">
+        <label className="text-sm font-medium text-gray-700" htmlFor="is_admin">¿Es administrador?</label>
+        <label className="relative inline-flex ml-4 items-center cursor-pointer">
+          <input
+            type="checkbox"
+            id="is_admin"
+            name="is_admin"
+            checked={formData.is_admin}
+            onChange={handleChange}
+            className="sr-only peer"
+          />
+          <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-200"></div>
+          <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow-md transform peer-checked:translate-x-full transition-transform duration-200"></div>
+        </label>
       </div>
 
       {isEditing && (

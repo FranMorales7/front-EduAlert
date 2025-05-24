@@ -1,6 +1,6 @@
 import BlurBackground from "@/components/BlurBackground";
-import CardIncidentes from "@/components/card-incidentes";
-import CardSalidas from "@/components/card-salidas";
+import IncidentsCard from "@/components/cards/IncidentsCard";
+import TripsCard from "@/components/cards/TripsCard";
 
 export default function Notices() {
   return (
@@ -10,11 +10,11 @@ export default function Notices() {
       <div className="flex justify-center items-start gap-12 px-6 py-10 h-full">
         <div className="w-1/2 bg-gray-100 rounded p-5 shadow-md">
           <h2 className="text-xl font-semibold mb-8">Últimas incidencias</h2>
-          <CardIncidentes/>
+          <IncidentsCard/>
         </div>
         <div className="w-1/2 bg-gray-100 rounded p-5 shadow-md">
           <h2 className="text-xl font-semibold mb-4">Últimas salidas</h2>
-          <CardSalidas />
+          <TripsCard />
         </div>
       </div>
     </BlurBackground>
