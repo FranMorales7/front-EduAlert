@@ -98,7 +98,7 @@ export default function AdminTripsTable() {
       id: salida.id,
       descripcion: salida.description ?? '',
       fecha: salida.created_at?.slice(0, 10) ?? '',
-      aula: salida.lesson?.location ?? '',
+      aula: salida.lesson?.location?.name ?? '',
       alumno: `${salida.student?.name ?? ''} ${salida.student?.last_name_1 ?? ''} ${salida.student?.last_name_2 ?? ''}`.trim(),
       student_id: salida.student?.id ?? null,
       lesson_id: salida.lesson?.id ?? null,
@@ -135,7 +135,7 @@ export default function AdminTripsTable() {
         .includes(filtros.alumno.toLowerCase())
     ) &&
     (i.created_at?.includes(filtros.fecha) ?? '') &&
-    (i.lesson?.location?.toLowerCase().includes(filtros.aula.toLowerCase()) ?? '')
+    (i.lesson?.location?.name.toLowerCase().includes(filtros.aula.toLowerCase()) ?? '')
   );
 
   if (loading) return <p className="p-4">Cargando panel de salidas...</p>;
@@ -185,7 +185,7 @@ export default function AdminTripsTable() {
                     {i.student?.name} {i.student?.last_name_1} {i.student?.last_name_2}
                 </td>
                 <td className="p-2 border">{i.created_at?.slice(0, 10)}</td>
-                <td className="p-2 border">{i.lesson?.location}</td>
+                <td className="p-2 border">{i.lesson?.location?.name}</td>
                 <td className="p-2 border text-center">
                     <EditButton onClick={() => abrirModalEditar(i)} />
                     <DeleteButton onClick={() => handleEliminar(i.id)} />

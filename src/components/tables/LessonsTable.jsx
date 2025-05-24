@@ -119,7 +119,7 @@ export default function LessonsTable() {
             {lessons.map((l) => (
               <tr key={l.id} className="hover:bg-gray-50">
                 <td className="p-2 border">{l.description}</td>
-                <td className="p-2 border">{l.location}</td>
+                <td className="p-2 border">{l.location.name}</td>
                 <td className="p-2 border">
                   {l.teacher?.name || 'Sin profesor asignado'} {l.teacher?.last_name_1 || ''} {l.teacher?.last_name_2 || ''}
                 </td>

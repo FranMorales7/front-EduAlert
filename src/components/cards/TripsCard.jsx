@@ -25,7 +25,8 @@ export default function TripsCard() {
     setLoading(true);
 
     getAllTrips(session.user.accessToken, controller.signal)
-      .then((resp) => { setTrips(resp.data); setLoading(false); })
+      .then((resp) => { setTrips(resp.data); setLoading(false); 
+        console.log('Localizacion ', resp.data);})
       .catch((error) => {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer las salidas:', error);
@@ -36,6 +37,9 @@ export default function TripsCard() {
     return () => {
       controller.abort();
     };
+
+    
+    
   }, [user, status, session]);
 
   if (loading) return <p className="p-4">Cargando salidas...</p>;
@@ -60,7 +64,7 @@ export default function TripsCard() {
               }`}
             />
             {/* Localización de la salida */}
-            <span>{i.lesson?.location}</span>
+            <span>{i.lesson?.location?.name ?? 'Sin aula asignada'}</span>
 
             {/* Hora de creación */}
             <span className="text-sm text-amber-100">

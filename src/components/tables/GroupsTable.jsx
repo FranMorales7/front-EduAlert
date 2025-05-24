@@ -126,7 +126,7 @@ export default function GroupsTable() {
             {groups.map((g) => (
               <tr key={g.id} className="hover:bg-gray-50">
                 <td className="p-2 border">{g.name}</td>
-                <td className="p-2 border">{g.location}</td>
+                <td className="p-2 border">{g.location.name}</td>
                 <td className="p-2 border">
                   {g.tutor?.name} {g.tutor?.last_name_1} {g.tutor?.last_name_2 || ''}
                 </td>

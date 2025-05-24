@@ -103,7 +103,7 @@ export default function IncidentsTable() {
       id: incidente.id,
       descripcion: incidente.description ?? '',
       fecha: incidente.created_at?.slice(0, 10) ?? '',
-      aula: incidente.lesson?.location ?? '',
+      aula: incidente.lesson?.location?.name ?? '',
       alumno: `${incidente.student?.name ?? ''} ${incidente.student?.last_name_1 ?? ''} ${incidente.student?.last_name_2 ?? ''}`.trim(),
       student_id: incidente.student?.id ?? null,
       lesson_id: incidente.lesson?.id ?? null,
@@ -120,7 +120,7 @@ export default function IncidentsTable() {
         .includes(filtros.alumno.toLowerCase())
     ) &&
     (i.created_at?.includes(filtros.fecha) ?? '') &&
-    (i.lesson?.location?.toLowerCase().includes(filtros.aula.toLowerCase()) ?? '')
+    (i.lesson?.location?.name.toLowerCase().includes(filtros.aula.toLowerCase()) ?? '')
   );
 
   if (loading) return <p className="p-4">Cargando panel de avisos...</p>;
@@ -170,7 +170,7 @@ export default function IncidentsTable() {
                   {i.student?.name} {i.student?.last_name_1} {i.student?.last_name_2}
                 </td>
                 <td className="p-2 border">{i.created_at?.slice(0, 10)}</td>
-                <td className="p-2 border">{i.lesson?.location}</td>
+                <td className="p-2 border">{i.lesson?.location?.name}</td>
                 <td className="p-2 border text-center">
                   <EditButton onClick={() => abrirModalEditar(i)} />
                   <DeleteButton onClick={() => handleEliminar(i.id)} />
