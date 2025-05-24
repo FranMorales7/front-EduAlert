@@ -64,7 +64,6 @@ export default function AdminIncidentsTable() {
         },
         session.user.accessToken
       );
-      toast.success(`Edición realizada correctamente`);
 
       // Refrescar datos en la página
       const res = await getAllIncidents(session.user.accessToken);
