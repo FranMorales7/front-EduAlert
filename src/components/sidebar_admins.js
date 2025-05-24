@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { PiChalkboardTeacherBold, PiChalkboardTeacherFill, PiChalkboardTeacherLight, PiStudentFill } from "react-icons/pi";
+import { MdMeetingRoom } from "react-icons/md";
 import { GiTeacher } from "react-icons/gi";
 import { Bell, BookOpenText, Home, LogOutIcon, Settings, ThumbsDown, Toilet } from 'lucide-react'; // Puedes usar lucide-react o tus propios íconos
 import Image from 'next/image';
@@ -23,6 +24,7 @@ export default function Sidebar() {
       { href: '/logged/manager/profesorado', label: 'Profesores', icon: <PiChalkboardTeacherFill size={20} /> },
       { href: '/logged/manager/grupos', label: 'Grupos', icon: <GiTeacher size={20} /> },
       { href: '/logged/manager/clases', label: 'Clases', icon: <BookOpenText size={20} /> },
+      { href: '/logged/manager/aulas', label: 'Aulas', icon: <MdMeetingRoom size={20} /> },
 
       { href: '/logged/manager/configuracion', label: 'Configuración', icon: <Settings size={20} /> },
     ];

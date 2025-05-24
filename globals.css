@@ -246,6 +246,21 @@ button.btDelete {
   box-shadow: 0 0 0 2px #fca5a5; /* ring-2-red */
 }
 
+button.btSuccess {
+  background: #16a34a; 
+  color: white;
+  padding: 0.25rem 0.75rem; 
+  border-radius: 0.25rem;    
+  margin-right: 0.5rem;    
+  border: none;
+  cursor: pointer;
+}
+
+button.btSuccess:hover {
+  background: #15803d;
+}
+
+
 .sidebar {
   background: rgba(240, 248, 255, 0.75);
   backdrop-filter: blur(8px);

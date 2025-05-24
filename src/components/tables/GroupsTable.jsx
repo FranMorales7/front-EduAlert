@@ -99,7 +99,7 @@ export default function GroupsTable() {
   if (status === 'unauthenticated') return <p className="p-6">No estás autenticado.</p>;
 
   return (
-    <div className="p-6 bg-white shadow-xl rounded-xl">
+    <div className="p-6 bg-white shadow-xl rounded-xl inset-shadow-sm">
       <div className="flex justify-end mb-4">
         <button
           onClick={() => {
@@ -126,7 +126,7 @@ export default function GroupsTable() {
             {groups.map((g) => (
               <tr key={g.id} className="hover:bg-gray-50">
                 <td className="p-2 border">{g.name}</td>
-                <td className="p-2 border">{g.location}</td>
+                <td className="p-2 border">{g.location.name}</td>
                 <td className="p-2 border">
                   {g.tutor?.name} {g.tutor?.last_name_1} {g.tutor?.last_name_2 || ''}
                 </td>

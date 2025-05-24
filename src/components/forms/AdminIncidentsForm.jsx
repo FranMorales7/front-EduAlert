@@ -8,7 +8,7 @@ import ClassesSelector from '../lists/ClassesList';
 import StudentsSelector from '../lists/StudentsList';
 import SolvedToggleButton from '../ui/solvedToogledButton';
 
-export default function IncidentsForm({ initialData, onCrear, onEditar, isEditing, token }) {
+export default function AdminIncidentsForm({ initialData, onCrear, onEditar, isEditing, token }) {
   const [form, setForm] = useState({
     descripcion: '',
     fecha: '',
@@ -101,53 +101,14 @@ export default function IncidentsForm({ initialData, onCrear, onEditar, isEditin
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <Input label="Descripción" name="descripcion" value={form.descripcion} onChange={handleChange} />
-      <div>
-        <span className="text-gray-700">Alumno:</span>
-        <div className="flex items-center gap-2">
-          <input
-            name="alumno"
-            value={form.alumno}
-            readOnly
-            className="flex-1 border px-3 py-2 rounded bg-gray-100 cursor-not-allowed"
-          />
-          <button
-            type="button"
-            onClick={() => setShowAlumnoModal(true)}
-            className="bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded text-sm"
-          >
-            Elegir
-          </button>
-        </div>
+  <form onSubmit={handleSubmit} className="space-y-4">
+    {isEditing ? (
+      <>
+        <Input label="Descripción" name="descripcion" value={form.descripcion} readOnly />
+        <Input label="Alumno" name="alumno" value={form.alumno} readOnly />
+        <Input label="Fecha" name="fecha" value={form.fecha} type="date" readOnly />
+        <Input label="Aula" name="aula" value={form.aula} readOnly />
 
-        <StudentsSelector
-          open={showAlumnoModal}
-          onClose={() => setShowAlumnoModal(false)}
-          onSelect={(a) =>
-            setForm((prev) => ({
-              ...prev,
-              alumno: `${a.name} ${a.last_name_1}`,
-              student_id: a.id,
-            }))
-          }
-          token={user?.accessToken}
-        />
-      </div>
-
-      <Input label="Fecha" type="date" name="fecha" value={form.fecha} onChange={handleChange} />
-      <div>
-        <label className="block text-sm font-medium">Ubicación</label>
-        <ClassesSelector
-          aula={form.aula}
-          clases={clases}
-          showModal={showClaseModal}
-          setShowModal={setShowClaseModal}
-          onSelect={seleccionarClase}
-          token={token}
-        />
-      </div>
-      {isEditing && (
         <div>
           <span className="text-gray-700 mr-4">Estado:</span>
           <SolvedToggleButton 
@@ -157,20 +118,70 @@ export default function IncidentsForm({ initialData, onCrear, onEditar, isEditin
             }
           />
         </div>
-      )}
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-      >
-        {isEditing ? 'Guardar cambios' : 'Crear'}
-      </button>
-    </form>
+      </>
+    ) : (
+      <>
+        <Input label="Descripción" name="descripcion" value={form.descripcion} onChange={handleChange} />
+        <div>
+          <span className="text-gray-700">Alumno:</span>
+          <div className="flex items-center gap-2">
+            <input
+              name="alumno"
+              value={form.alumno}
+              readOnly
+              className="flex-1 border px-3 py-2 rounded bg-gray-100 cursor-not-allowed"
+            />
+            <button
+              type="button"
+              onClick={() => setShowAlumnoModal(true)}
+              className="bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded text-sm"
+            >
+              Elegir
+            </button>
+          </div>
+
+          <StudentsSelector
+            open={showAlumnoModal}
+            onClose={() => setShowAlumnoModal(false)}
+            onSelect={(a) =>
+              setForm((prev) => ({
+                ...prev,
+                alumno: `${a.name} ${a.last_name_1}`,
+                student_id: a.id,
+              }))
+            }
+            token={user?.accessToken}
+          />
+        </div>
+
+        <Input label="Fecha" type="date" name="fecha" value={form.fecha} onChange={handleChange} />
+
+        <div>
+          <label className="block text-sm font-medium">Ubicación</label>
+          <ClassesSelector
+            aula={form.aula}
+            clases={clases}
+            showModal={showClaseModal}
+            setShowModal={setShowClaseModal}
+            onSelect={seleccionarClase}
+            token={token}
+          />
+        </div>
+      </>
+    )}
+
+    <button
+      type="submit"
+      className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+    >
+      {isEditing ? 'Guardar estado' : 'Crear'}
+    </button>
+  </form>
   );
+
 }
 
-// COMPONENTES AUXILIARES
-
-function Input({ label, name, value, onChange, type = 'text' }) {
+function Input({ label, name, value, onChange, type = 'text', readOnly = false }) {
   return (
     <div>
       <span className="text-gray-700">{label}:</span>
@@ -179,7 +190,8 @@ function Input({ label, name, value, onChange, type = 'text' }) {
         type={type}
         value={value}
         onChange={onChange}
-        className="w-full border px-3 py-2 rounded"
+        readOnly={readOnly}
+        className={`w-full border px-3 py-2 rounded ${readOnly ? 'bg-gray-100 cursor-not-allowed' : ''}`}
       />
     </div>
   );

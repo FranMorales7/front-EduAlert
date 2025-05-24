@@ -8,7 +8,7 @@ import ClassesSelector from '../lists/ClassesList';
 import StudentsSelector from '../lists/StudentsList';
 import SolvedToggleButton from '../ui/solvedToogledButton';
 
-export default function TripsForm({ initialData, onCrear, onEditar, isEditing }) {
+export default function TripsForm({ initialData, onCrear, onEditar, isEditing, token }) {
   const [form, setForm] = useState({
     descripcion: '',
     fecha: '',
@@ -135,12 +135,14 @@ export default function TripsForm({ initialData, onCrear, onEditar, isEditing })
       </div>
 
       <Input label="Fecha" type="date" name="fecha" value={form.fecha} onChange={handleChange} />
+      
+      <span className="text-gray-700">Ubicación:</span>
       <ClassesSelector
         aula={form.aula}
-        clases={clases}
         showModal={showClaseModal}
         setShowModal={setShowClaseModal}
         onSelect={seleccionarClase}
+        token={token}
       />
       {isEditing && (
         <div>

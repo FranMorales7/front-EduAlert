@@ -8,6 +8,7 @@ import DeleteButton from '../ui/deleteButton';
 import ConfirmModal from '../ui/confirmModal';
 import { deleteTrip, getAllTrips, updateTrip } from '@/requests/trips';
 import TripsForm from '../forms/TripsForm';
+import AdminTripsForm from '../forms/AdminTripsForm';
 
 export default function AdminTripsTable() {
   const [loading, setLoading] = useState(true);
@@ -19,8 +20,6 @@ export default function AdminTripsTable() {
   const abortControllerRef = useRef(null);
 
   const { user, session, status } = useAuthUser();
-  console.log('Usuario : ', session);
-  
 
   useEffect(() => {
     if (!user || status !== 'authenticated') return;
@@ -100,7 +99,7 @@ export default function AdminTripsTable() {
       id: salida.id,
       descripcion: salida.description ?? '',
       fecha: salida.created_at?.slice(0, 10) ?? '',
-      aula: salida.lesson?.location ?? '',
+      aula: salida.lesson?.location?.name ?? '',
       alumno: `${salida.student?.name ?? ''} ${salida.student?.last_name_1 ?? ''} ${salida.student?.last_name_2 ?? ''}`.trim(),
       student_id: salida.student?.id ?? null,
       lesson_id: salida.lesson?.id ?? null,
@@ -137,7 +136,7 @@ export default function AdminTripsTable() {
         .includes(filtros.alumno.toLowerCase())
     ) &&
     (i.created_at?.includes(filtros.fecha) ?? '') &&
-    (i.lesson?.location?.toLowerCase().includes(filtros.aula.toLowerCase()) ?? '')
+    (i.lesson?.location?.name.toLowerCase().includes(filtros.aula.toLowerCase()) ?? '')
   );
 
   if (loading) return <p className="p-4">Cargando panel de salidas...</p>;
@@ -187,7 +186,7 @@ export default function AdminTripsTable() {
                     {i.student?.name} {i.student?.last_name_1} {i.student?.last_name_2}
                 </td>
                 <td className="p-2 border">{i.created_at?.slice(0, 10)}</td>
-                <td className="p-2 border">{i.lesson?.location}</td>
+                <td className="p-2 border">{i.lesson?.location?.name}</td>
                 <td className="p-2 border text-center">
                     <EditButton onClick={() => abrirModalEditar(i)} />
                     <DeleteButton onClick={() => handleEliminar(i.id)} />
@@ -207,10 +206,11 @@ export default function AdminTripsTable() {
             <Dialog.Title className="text-lg font-semibold mb-4">
               {editingTrip ? 'Editar Incidencia' : ''}
             </Dialog.Title>
-            <TripsForm
+            <AdminTripsForm
               initialData={editingTrip}
               onEditar={handleEditarSubmit}
               isEditing={!!editingTrip}
+              token={session.user.accessToken}
             />
           </Dialog.Panel>
         </div>

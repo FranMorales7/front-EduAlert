@@ -60,7 +60,7 @@ export default function IncidentsCard() {
               }`}
             />
             {/* Localización de la lección */}
-            <span>{i.lesson?.location}</span>
+            <span>{i.lesson?.location?.name}</span>
 
             {/* Hora de creación */}
             <span className="text-sm text-amber-100">

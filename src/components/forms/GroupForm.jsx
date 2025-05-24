@@ -9,8 +9,6 @@ export default function GroupForm({
   onCrear,
   onEditar,
   isEditing = false,
-  tutores = [],
-  clases = [], 
   token = ''
 }) {
   const [formData, setFormData] = useState({
@@ -25,6 +23,8 @@ export default function GroupForm({
 
   useEffect(() => {
     if (initialData) {
+      console.log('Dtas' ,initialData);
+      
       setFormData({
         name: initialData.name || '',
         location: initialData.location || '',
@@ -85,11 +85,11 @@ export default function GroupForm({
       <div>
         <label className="block text-sm font-medium">Ubicación</label>
         <ClassesSelector
-          aula={formData.location}
-          clases={clases}
+          aula={formData.location.name}
           showModal={showClassSelector}
           setShowModal={setShowClassSelector}
           onSelect={handleClassSelect}
+          token={token}
         />
       </div>
 
