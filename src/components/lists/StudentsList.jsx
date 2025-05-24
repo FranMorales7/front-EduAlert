@@ -1,6 +1,7 @@
 import { Dialog } from '@headlessui/react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export default function StudentsSelector({ open, onClose, onSelect, token }) {
   const [alumnos, setAlumnos] = useState([]);
@@ -24,6 +25,7 @@ export default function StudentsSelector({ open, onClose, onSelect, token }) {
         setAlumnos(res.data);
       } catch (err) {
         console.error('Error al cargar alumnos', err);
+        toast.error('Error al mostrar listado de estudiantes');
       }
     };
 

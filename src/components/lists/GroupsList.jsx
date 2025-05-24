@@ -1,6 +1,7 @@
 import { Dialog } from '@headlessui/react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export default function GroupsSelector({ open, onClose, onSelect, token }) {
   const [groups, setGroups] = useState([]);
@@ -19,6 +20,7 @@ export default function GroupsSelector({ open, onClose, onSelect, token }) {
         setGroups(res.data);
       } catch (err) {
         console.error('Error al cargar grupos', err);
+        toast.error('Error al mostrar grupos');
       }
     };
 

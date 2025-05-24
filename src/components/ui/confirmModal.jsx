@@ -4,11 +4,23 @@ import React from 'react';
 import { Dialog } from '@headlessui/react';
 import { XCircle } from 'lucide-react';
 import clsx from 'clsx';
-import DeleteButton from './deleteButton';
+import toast from 'react-hot-toast';
 
 export default function ConfirmModal({ message, actionType, onConfirm, onClose, isOpen }) {
   const actionLabel = actionType === 'eliminar' ? 'Eliminar' : 'Editar';
   const actionColor = actionType === 'eliminar' ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700';
+
+  const handleConfirm = async () => {
+    try {
+      await onConfirm(); // Ejecuta la acción pasada como prop
+      toast.success(`${actionLabel} realizado correctamente`);
+    } catch (error) {
+      toast.error(`Error al intentar ${actionLabel.toLowerCase()}`);
+      console.error(error.message);
+    } finally {
+      onClose(); // Cierra el modal
+    }
+  };
 
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
@@ -38,10 +50,7 @@ export default function ConfirmModal({ message, actionType, onConfirm, onClose, 
           {/* Boton */}
           <div className="flex justify-center gap-4">
             <button
-              onClick={() => {
-                onConfirm();
-                onClose();
-              }}
+              onClick={handleConfirm}
               className={clsx(
                 'px-4 py-2 rounded-xl btDelete',
                 actionColor

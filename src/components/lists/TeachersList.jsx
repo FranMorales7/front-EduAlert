@@ -1,6 +1,7 @@
 import { Dialog } from '@headlessui/react';
 import { useEffect, useState } from 'react';
 import { getAllTeachers } from '@/requests/teachers';
+import toast from 'react-hot-toast';
 
 export default function TeacherSelector({ open, onClose, onSelect, token }) {
   const [teachers, setTeachers] = useState([]);
@@ -19,6 +20,7 @@ export default function TeacherSelector({ open, onClose, onSelect, token }) {
         setTeachers(res.data);
       } catch (err) {
         console.error('Error al cargar profesores', err);
+        toast.error('Error al mostrar lisatdo de profesores');
       }
     };
 

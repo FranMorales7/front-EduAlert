@@ -7,6 +7,7 @@ import useAuthUser from '@/hooks/useAuthUser';
 import { createLesson, deleteLesson, getAllLessons, updateLesson } from '@/requests/lessons';
 import EditButton from '../ui/editButton';
 import DeleteButton from '../ui/deleteButton';
+import toast from 'react-hot-toast';
 
 export default function LessonsTable() {
   const [lessons, setLessons] = useState([]);
@@ -33,7 +34,12 @@ export default function LessonsTable() {
 
    getAllLessons(session.user.accessToken, controller.signal)
       .then((res) => setLessons(res.data))
-      .catch((err) => {console.error('Error al cargar clases:', err); setLoading(false)});
+      .catch((err) => {
+        console.error('Error al cargar clases:', err),
+        setLoading(false),
+        toast.error('Error al obtener las clases')
+        }
+      );
 
       return () => controller.abort();
     }, [user, status, session]);
@@ -44,9 +50,11 @@ export default function LessonsTable() {
       setIsModalOpen(false);
       setIsEditing(false);
       setLessons((prev) => [...prev, res.data]);
+      toast.success('Clase creada correctamente')
 
     } catch (err) {
       console.error('Error al crear clase:', err);
+      toast.error('Error en la creación de la clase');
     }
   };
 
@@ -56,8 +64,11 @@ export default function LessonsTable() {
       setLessons((prev) => prev.map((g) => (g.id === id ? res.data : g)));
       setIsModalOpen(false);
       setIsEditing(false);
+      toast.success('Clase actualizada correctamente')
+
     } catch (err) {
       console.error('Error al editar clase:', err);
+      toast.error('Error al actualizar datos de la clase');
     }
   };
 
@@ -66,8 +77,11 @@ export default function LessonsTable() {
       const controller = new AbortController();
       await deleteLesson(id, session.user.accessToken, controller.signal);
       setLessons((prev) => prev.filter((g) => g.id !== id));
+      toast.success('Clase eliminada correctamente');
+
     } catch (err) {
-      console.error('Error al eliminar clase:', err);
+      console.error('Error al eliminar lección:', err);
+      toast.error('Error al eliminar la clase')
     }
   };
 

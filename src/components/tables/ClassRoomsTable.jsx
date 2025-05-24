@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { createClassRooms, deleteClassRooms, getAllClassRooms, updateClassRooms } from '@/requests/classRooms';
 import EditButton from '../ui/editButton';
 import DeleteButton from '../ui/deleteButton';
+import toast from 'react-hot-toast';
 
 export default function ClassRoomsTable() {
   const { data: session } = useSession();
@@ -21,6 +22,7 @@ export default function ClassRoomsTable() {
       setClassRooms(res.data);
     } catch (error) {
       console.error('Error al obtener las aulas:', error);
+      toast.error('Error al obtener las aulas')
     } finally {
       setLoading(false);
     }
@@ -32,8 +34,10 @@ export default function ClassRoomsTable() {
       await createClassRooms({ name: newName }, token);
       setNewName('');
       fetchClassRooms();
+      toast.success('Aula creada correctamente')
     } catch (error) {
       console.error('Error creando aula:', error);
+      toast.error('Error en la creación del aula')
     }
   };
 
@@ -41,8 +45,11 @@ export default function ClassRoomsTable() {
     try {
       await deleteClassRooms(id, token);
       fetchClassRooms();
+      toast.success('Aula eliminada con éxito')
+
     } catch (error) {
       console.error('Error eliminando aula:', error);
+      toast.error('Error al eliminar el aula')
     }
   };
 

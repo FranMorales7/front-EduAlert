@@ -6,6 +6,7 @@ import Image from 'next/image';
 import axios from 'axios';
 import UpdatePassword from '../hooks/UpdatePassword';
 import { updatePassword } from '@/requests/authentication';
+import toast from 'react-hot-toast';
 
 export default function FormularioUsuario() {
   const abortControllerRef = useRef(null);
@@ -70,6 +71,7 @@ export default function FormularioUsuario() {
       .catch((error) => {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer información sobre el usuario:', error);
+          toast.error('Error al obtener información del usuario');
         }
       });
 
@@ -131,9 +133,10 @@ export default function FormularioUsuario() {
           },
           session.user.accessToken
         );
+        toast.success('COntraseña cambiada correctamente');
       } catch (error) {
         console.error('Error al actualizar la contraseña:', error.response?.data || error.message);
-        alert('No se pudo actualizar la contraseña.');
+        toast.error('Error actualizando contraseña')
         return;
       }
     }
@@ -158,10 +161,12 @@ export default function FormularioUsuario() {
         current_password: '',
         new_password: '',
       }));
+      
+      toast.success('Perfil actualizado con éxito');
 
     } catch (error) {
       console.error('Error al actualizar el perfil:', error);
-      alert('Error al actualizar el perfil. Inténtalo nuevamente.');
+      toast.error('Error actualizando perfil');
     }
   };
 

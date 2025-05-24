@@ -50,7 +50,8 @@ export default function TripsForm({ initialData, onCrear, onEditar, isEditing, t
       getAllStudents(user.accessToken, controller.signal)
         .then((res) => setAlumnos(res.data))
         .catch((err) => {
-          if (err.name !== 'CanceledError') console.error('Error al cargar alumnos', err);
+          console.error('Error al cargar alumnos', err);
+            toast.error('Error al mostrar al alumnado');
         });
       return () => controller.abort();
     }
@@ -62,7 +63,10 @@ export default function TripsForm({ initialData, onCrear, onEditar, isEditing, t
       getAllLessons(user.accessToken, controller.signal)
         .then((res) => setClases(res.data))
         .catch((err) => {
-          if (err.name !== 'CanceledError') console.error('Error al cargar clases', err);
+          if (err.name !== 'CanceledError') {
+            console.error('Error al cargar clases', err);
+            toast.error('Error al mostrar las clases');
+          }
         });
       return () => controller.abort();
     }

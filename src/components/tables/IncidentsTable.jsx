@@ -7,6 +7,7 @@ import useAuthUser from '@/hooks/useAuthUser';
 import EditButton from '../ui/editButton';
 import DeleteButton from '../ui/deleteButton';
 import IncidentsForm from '../forms/IncidentsForm';
+import toast from 'react-hot-toast';
 
 export default function IncidentsTable() {
   const [loading, setLoading] = useState(true);
@@ -37,6 +38,7 @@ export default function IncidentsTable() {
       } catch (error) {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer las incidencias:', error.message);
+          toast.error('Error al obtener incidencias')
         }
       } finally {
         setLoading(false);
@@ -67,8 +69,11 @@ export default function IncidentsTable() {
       const res = await fetchIncidentsByUser(user.id, session.user.accessToken);
       setIncidents(res.data);
       cerrarModal();
+      toast.success('Incidencia actualizada correctamente')
+
     } catch (err) {
       console.error('Error al editar incidencia:', err.message);
+      toast.error('Error al actualizar la incidencia')
     }
   };
 
@@ -79,8 +84,10 @@ export default function IncidentsTable() {
       const controller = new AbortController();
       await deleteIncident(id, session.user.accessToken, controller.signal);
       setIncidents((prev) => prev.filter((i) => i.id !== id));
+      toast.success('Incidencia eliminada con éxito')
     } catch (err) {
       console.error('Error al eliminar incidencia:', err.message);
+      toast.error('Error al eliminar incidencia')
     }
   };
 
@@ -91,8 +98,10 @@ export default function IncidentsTable() {
       
       setIncidents(res.data);
       cerrarModal();
+      toast.success('Incidencia creada correctamente')
     } catch (err) {
       console.error('Error al crear incidencia:', err.message);
+      toast.error('Error al crear incidencia')
     }
   };
 

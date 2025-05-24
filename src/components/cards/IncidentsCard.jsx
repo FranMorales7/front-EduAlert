@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Tab } from '@headlessui/react';
 import { getAllIncidents } from '@/requests/incidents';
 import useAuthUser from '@/hooks/useAuthUser';
+import toast from 'react-hot-toast';
 
 export default function IncidentsCard() {
   const [incidents, setIncidents] = useState([]);
@@ -29,6 +30,7 @@ export default function IncidentsCard() {
       .catch((error) => {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer las incidencias:', error);
+          toast.error('Error al obtener las incidencias');
         }
         setLoading(false);
       });

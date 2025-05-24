@@ -8,6 +8,7 @@ import EditButton from '../ui/editButton';
 import DeleteButton from '../ui/deleteButton';
 import ConfirmModal from '../ui/confirmModal';
 import AdminIncidentsForm from '../forms/AdminIncidentsForm';
+import toast from 'react-hot-toast';
 
 export default function AdminIncidentsTable() {
   const [loading, setLoading] = useState(true);
@@ -39,6 +40,7 @@ export default function AdminIncidentsTable() {
       } catch (error) {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer las incidencias:', error.message);
+          toast.error('Error al mostrar las incidencias');
         }
       } finally {
         setLoading(false);
@@ -62,14 +64,17 @@ export default function AdminIncidentsTable() {
         },
         session.user.accessToken
       );
+      toast.success(`Edición realizada correctamente`);
 
       // Refrescar datos en la página
       const res = await getAllIncidents(session.user.accessToken);
       setIncidents(res.data);
       cerrarModal();
-
+      toast.success('Incidente actualizado con éxito');
     } catch (err) {
-      console.error('Error al editar incidencia:', err.message);
+      toast.error(`Error al editar datos`);
+      console.error(err.message);
+      toast.error('Error al actualizar la incidencia');
     }
   };
 
@@ -80,9 +85,11 @@ export default function AdminIncidentsTable() {
       
       // Refrescar datos
       setIncidents((prev) => prev.filter((i) => i.id !== id));
+      toast.success('Incidencia eliminada correctamente');
 
     } catch (err) {
       console.error('Error al eliminar incidencia:', err.message);
+      toast.error('Error al eliminar la incidencia');
     }
   };
 
@@ -119,9 +126,10 @@ export default function AdminIncidentsTable() {
             };
             setIncidents((prev) => prev.filter((i) => i.id !== id));
         })
-        
+        toast.success('Las incidencias resueltas han sido eliminadas');
         } catch (err) {
             console.error('Error al eliminar incidencias resueltas:', err.message);
+            toast.error('Error al eliminar las incidencias resueltas');
         } finally {
             // Refrescar datos
             setShowConfirm(false); // Cerramos el modal después de la acción

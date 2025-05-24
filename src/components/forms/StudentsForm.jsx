@@ -3,6 +3,7 @@ import { Dialog } from '@headlessui/react';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import GroupsSelector from '../lists/GroupsList';
+import toast from 'react-hot-toast';
 
 export default function StudentForm({ initialData, onCrear, onEditar, isEditing }) {
   const [form, setForm] = useState({
@@ -60,6 +61,7 @@ export default function StudentForm({ initialData, onCrear, onEditar, isEditing 
       } catch (err) {
         if (err.name !== 'CanceledError') {
           console.error('Error al cargar grupos', err);
+          toast.error('Error al obtener la información de los grupos')
         }
       }
     };

@@ -8,6 +8,7 @@ import { createTrip, deleteTrip, fetchTripsByUser, updateTrip } from '@/requests
 import EditButton from '../ui/editButton';
 import DeleteButton from '../ui/deleteButton';
 import TripsForm from '../forms/TripsForm';
+import toast from 'react-hot-toast';
 
 export default function TripsTable() {
   const [loading, setLoading] = useState(true);
@@ -38,6 +39,7 @@ export default function TripsTable() {
       .catch((error) => {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer las salidas:', error);
+          toast.error('Error al obtener las salidas')
         }
         setLoading(false);
       });
@@ -71,8 +73,11 @@ export default function TripsTable() {
         );
         setIsModalOpen(false);
         setEditingTrips(null);
+        toast.success('Salida actualizada correctamente');
+
       } catch (err) {
       console.error('Error al editar salida:', err);
+      toast.error('Error al editar la salida');
     }
   };
 
@@ -81,8 +86,10 @@ export default function TripsTable() {
       const controller = new AbortController();
       await deleteTrip(id, session.user.accessToken, controller.signal);
       setTrips((prev) => prev.filter((i) => i.id !== id)) // Eliminar localmente
+      toast.success('Salida eliminada con éxito');
     } catch (err) {
       console.error('Error al eliminar salida:', err);
+      toast.error('Error al eliminar la salida');
     }
   };
 
@@ -100,9 +107,11 @@ export default function TripsTable() {
         const nuevos = [...prev, resp.data];
         return nuevos; 
       }); // Actualizar localmente
+      toast.success('Salida creada correctamente');
 
     } catch (err) {
       console.error('Error al crear la salida:', err);
+      toast.error('Error en la creación de la salida');
     }
   };
   

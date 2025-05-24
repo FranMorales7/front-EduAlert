@@ -9,6 +9,7 @@ import ConfirmModal from '../ui/confirmModal';
 import { deleteTrip, getAllTrips, updateTrip } from '@/requests/trips';
 import TripsForm from '../forms/TripsForm';
 import AdminTripsForm from '../forms/AdminTripsForm';
+import toast from 'react-hot-toast';
 
 export default function AdminTripsTable() {
   const [loading, setLoading] = useState(true);
@@ -38,6 +39,7 @@ export default function AdminTripsTable() {
       } catch (error) {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer las salidas:', error.message);
+          toast.error('Error al obtener las salida')
         }
       } finally {
         setLoading(false);
@@ -64,6 +66,7 @@ export default function AdminTripsTable() {
         },
         session.user.accessToken
       );
+      toast.success(`Actualización realizada correctamente`);
 
       // Refrescar datos en la página
       const res = await getAllTrips(session.user.accessToken);
@@ -71,7 +74,8 @@ export default function AdminTripsTable() {
       cerrarModal();
 
     } catch (err) {
-      console.error('Error al editar salida:', err.message);
+      toast.error(`Error al editar datos`);
+      console.error('Error al actualizar salida:', err.message);
     }
   };
 
@@ -82,9 +86,10 @@ export default function AdminTripsTable() {
       
       // Refrescar datos
       setTrips((prev) => prev.filter((i) => i.id !== id));
-
+      toast.success('Salida eliminada con éxito')
     } catch (err) {
       console.error('Error al eliminar salida:', err.message);
+      toast.error('Error al eliminar salida');
     }
   };
 

@@ -3,6 +3,7 @@
 import { getAllClassRooms } from '@/requests/classRooms';
 import { Dialog } from '@headlessui/react';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function ClassesSelector({ aula, showModal, setShowModal, onSelect, token }) {
   const [classrooms, setClassrooms] = useState([]);
@@ -17,6 +18,7 @@ export default function ClassesSelector({ aula, showModal, setShowModal, onSelec
         setClassrooms(res.data);
       } catch (err) {
         console.error('Error al cargar aulas:', err);
+        toast.error('Error al mostrar listado de clases');
       }
     };
 

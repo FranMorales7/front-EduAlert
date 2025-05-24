@@ -7,6 +7,7 @@ import { getAllLessons } from '@/requests/lessons';
 import ClassesSelector from '../lists/ClassesList';
 import StudentsSelector from '../lists/StudentsList';
 import SolvedToggleButton from '../ui/solvedToogledButton';
+import toast from 'react-hot-toast';
 
 export default function AdminIncidentsForm({ initialData, onCrear, onEditar, isEditing, token }) {
   const [form, setForm] = useState({
@@ -47,7 +48,10 @@ export default function AdminIncidentsForm({ initialData, onCrear, onEditar, isE
       getAllStudents(user.accessToken, controller.signal)
         .then((res) => setAlumnos(res.data))
         .catch((err) => {
-          if (err.name !== 'CanceledError') console.error('Error al cargar alumnos', err);
+          if (err.name !== 'CanceledError') {
+            console.error('Error al cargar alumnos', err);
+            toast.error('Error al mostrar al alumnado');
+          }
         });
       return () => controller.abort();
     }
@@ -59,7 +63,10 @@ export default function AdminIncidentsForm({ initialData, onCrear, onEditar, isE
       getAllLessons(user.accessToken, controller.signal)
         .then((res) => setClases(res.data))
         .catch((err) => {
-          if (err.name !== 'CanceledError') console.error('Error al cargar clases', err);
+          if (err.name !== 'CanceledError') {
+            console.error('Error al cargar clases', err);
+            toast.error('Error al mostrar las clases');
+          }
         });
       return () => controller.abort();
     }

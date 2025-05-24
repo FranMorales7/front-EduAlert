@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Tab } from '@headlessui/react';
 import useAuthUser from '@/hooks/useAuthUser';
 import { getAllTrips } from '@/requests/trips';
+import toast from 'react-hot-toast';
 
 export default function TripsCard() {
   const [trips, setTrips] = useState([]);
@@ -30,6 +31,7 @@ export default function TripsCard() {
       .catch((error) => {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer las salidas:', error);
+          toast.error('Error al obtener las salidas');
         }
         setLoading(false);
       });

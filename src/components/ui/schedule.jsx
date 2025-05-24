@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export default function Schedule() {
   const abortControllerRef = useRef(null);
@@ -54,6 +55,7 @@ export default function Schedule() {
       .catch((error) => {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer información sobre el usuario:', error);
+          toast.error('Error al obtener horario');
         }
       });
 

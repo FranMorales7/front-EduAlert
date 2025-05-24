@@ -8,6 +8,7 @@ import { createStudent, deleteStudent, getAllStudents, updateStudent } from '@/r
 import EditButton from '../ui/editButton';
 import DeleteButton from '../ui/deleteButton';
 import StudentForm from '../forms/StudentsForm';
+import toast from 'react-hot-toast';
 
 
 export default function StudentsTable() {
@@ -66,9 +67,11 @@ export default function StudentsTable() {
       setStudents((prev) => {
           const nuevos = [...prev, resp.data];
           return nuevos; });
-
+      toast.success('Estudiante creado con éxito');
+    
     } catch (error) {
       console.error('Error al crear alumno:', error);
+      toast.error('Error en la creación del estudiante');
     }
   };
 
@@ -80,8 +83,11 @@ export default function StudentsTable() {
       );
       setIsModalOpen(false);
       setIsEditing(false);
+      toast.success('Datos del estudiante actualizado correctamente')
+
     } catch (error) {
       console.error('Error al editar alumno:', error);
+      toast.error('Error al actualizar datos del estudiante')
     }
   };
 
@@ -90,8 +96,11 @@ export default function StudentsTable() {
       const controller = new AbortController();
       await deleteStudent(id, session.user.accessToken, controller.signal);
       setStudents((prev) => prev.filter((i) => i.id !== id));
+      toast.success('Estudiante eliminado con éxito')
+
     } catch (err) {
       console.error('Error al eliminar estudiante: ', err)
+      toast.error('Error al eliminar estudiante');
     }
   };
 

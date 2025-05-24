@@ -34,6 +34,7 @@ export default function UserCard() {
         .catch((error) => {
           if (error.name !== 'CanceledError') {
             console.error('Error al obtener el usuario:', error);
+            toast.error('Error al obtener el usuario');
           }
         });
     }

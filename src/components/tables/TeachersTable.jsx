@@ -7,6 +7,7 @@ import TeacherForm from '../forms/TeacherForm';
 import EditButton from '../ui/editButton';
 import DeleteButton from '../ui/deleteButton';
 import { createTeacher, deleteTeacher, getAllTeachers, updateTeacher } from '@/requests/teachers';
+import toast from 'react-hot-toast';
 
 export default function TeachersTable() {
   const [teachers, setTeachers] = useState([]);
@@ -52,9 +53,11 @@ export default function TeachersTable() {
       setTeachers((prev) => {
           const nuevos = [...prev, response.data];
           return nuevos; });
-
+      toast.success('Profesor creado correctamente');
+        
     } catch (error) {
       console.error('Error al crear profesor:', error);
+      toast.error('Error en la creación de un profesor')
     }
   };
 
@@ -64,8 +67,11 @@ export default function TeachersTable() {
       setTeachers((prev) => prev.map((t) => (t.id === response.data.id ? response.data : t)));
       setIsModalOpen(false);
       setIsEditing(false);
+      toast.success('Datos del profesor actualizados correctamente')
+
     } catch (error) {
       console.error('Error al editar profesor:', error);
+      toast.error('Error al actualizar datos del profesor')
     }
   };
 
@@ -76,6 +82,7 @@ export default function TeachersTable() {
       setTeachers((prev) => prev.filter((i) => i.id !== id));
     } catch (err) {
       console.error('Error al eliminar profesor: ', err)
+      toast.error('Error al eliminar al profesor')
     }
   };
 

@@ -7,6 +7,7 @@ import EditButton from '../ui/editButton';
 import DeleteButton from '../ui/deleteButton';
 import GroupForm from '../forms/GroupForm';
 import { createGroup, deleteGroup, getAllGroups, updateGroup } from '@/requests/groups';
+import toast from 'react-hot-toast';
 
 export default function GroupsTable() {
   const abortControllerRef = useRef(null);
@@ -50,6 +51,7 @@ export default function GroupsTable() {
     .catch((err) => {
       console.error('Error al cargar grupos:', err);
       setLoading(false);
+      toast.error('Error al obtener los grupos')
     });
 
     return () => controller.abort();
@@ -63,8 +65,10 @@ export default function GroupsTable() {
       setGroups((prev) => {
         const nuevos = [...prev, res.data];
         return nuevos; });
+      toast.success('Grupo creado correctamente')
     } catch (err) {
       console.error('Error al crear grupo:', err);
+      toast.error('Error en la creación del grupo')
     }
   };
 
@@ -74,8 +78,11 @@ export default function GroupsTable() {
       setGroups((prev) => prev.map((g) => (g.id === id ? res.data : g)));
       setIsModalOpen(false);
       setIsEditing(false);
+      toast.success('Grupo actualizado correctamente')
+
     } catch (err) {
       console.error('Error al editar grupo:', err);
+      toast.error('Error al actualizar el grupo')
     }
   };
 
@@ -84,8 +91,11 @@ export default function GroupsTable() {
       const controller = new AbortController();
       await deleteGroup(id, session.user.accessToken, controller.signal);
       setGroups((prev) => prev.filter((g) => g.id !== id));
+      toast.success('Grupo eliminado con éxito')
+
     } catch (err) {
       console.error('Error al eliminar grupo:', err);
+      toast.error('Error al eliminar el grupo')
     }
   };
 
