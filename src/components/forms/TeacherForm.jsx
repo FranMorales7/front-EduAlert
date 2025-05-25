@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Eye, EyeClosed } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function TeacherForm({ initialData = null, onSubmit, isEditing = false }) {
   const [preview, setPreview] = useState(null);
@@ -65,12 +66,12 @@ export default function TeacherForm({ initialData = null, onSubmit, isEditing = 
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      alert('Selecciona un archivo de imagen válido.');
+      toast.error('Selecciona un archivo de imagen válido.');
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      alert('La imagen debe ser menor a 2MB.');
+      toast.error('La imagen debe ser menor a 2MB.');
       return;
     }
 

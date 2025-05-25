@@ -4,11 +4,11 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
-import UpdatePassword from '../hooks/UpdatePassword';
+import UpdatePassword from '../../requests/UpdatePassword';
 import { updatePassword } from '@/requests/authentication';
 import toast from 'react-hot-toast';
 
-export default function FormularioUsuario() {
+export default function UserForm() {
   const abortControllerRef = useRef(null);
   const { data: session, status } = useSession();
   const [user, setUser] = useState(null);
@@ -45,7 +45,7 @@ export default function FormularioUsuario() {
     abortControllerRef.current = controller;
 
     axios
-      .get(`${backendUrl}/users/${user}`, {
+      .get(`${backendUrl}/teachers/byUser/${user}`, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
         },
@@ -67,12 +67,11 @@ export default function FormularioUsuario() {
           updated_at: data.updated_at ?? '',
         });
         setIsLoading(false);
-
       })
       .catch((error) => {
         if (error.name !== 'CanceledError') {
-          toast.error('Error en la infromación del usuario')
           console.error('Error al traer información sobre el usuario:', error);
+          toast.error('Error al obtener información del usuario');
         }
       });
 
@@ -120,7 +119,7 @@ export default function FormularioUsuario() {
 
     const form = new FormData();
 
-    ['name', 'last_name_1', 'last_name_2', 'email'].forEach((field) => {
+    ['name', 'last_name_1', 'last_name_2'].forEach((field) => {
       if (formData[field]) form.append(field, formData[field]);
     });
 
@@ -134,10 +133,10 @@ export default function FormularioUsuario() {
           },
           session.user.accessToken
         );
-        toast.success('Contraseña cambiada con éxito');
+        toast.success('COntraseña cambiada correctamente');
       } catch (error) {
         console.error('Error al actualizar la contraseña:', error.response?.data || error.message);
-        toast.error('Error al actualizar contraseña');
+        toast.error('Error actualizando contraseña')
         return;
       }
     }
@@ -147,7 +146,7 @@ export default function FormularioUsuario() {
     }
 
     try {
-      const resp = await axios.put(`${backendUrl}/users/${user}`, form, {
+      const resp = await axios.post(`${backendUrl}/teachers/byUser/${user}`, form, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
           'Content-Type': 'multipart/form-data',
@@ -162,8 +161,9 @@ export default function FormularioUsuario() {
         current_password: '',
         new_password: '',
       }));
+      
+      toast.success('Perfil actualizado con éxito');
 
-      toast.success('Perfil actualizado correctamente');
     } catch (error) {
       console.error('Error al actualizar el perfil:', error);
       toast.error('Error actualizando perfil');
@@ -173,7 +173,7 @@ export default function FormularioUsuario() {
   if (isLoading) return <p>Cargando datos del usuario...</p>;
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg space-y-4">
+    <form onSubmit={handleSubmit} className="max-w-xl mx-auto -my-10 bg-white p-6 rounded-xl shadow-lg space-y-4 inset-shadow-sm">
       <h2 className="text-xl font-bold text-gray-800 mb-4">Mi perfil</h2>
 
       <div className="flex justify-center">
@@ -240,8 +240,8 @@ export default function FormularioUsuario() {
             type="email"
             name="email"
             value={formData.email}
-            onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
+            readOnly
+            className="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-500 cursor-not-allowed"
           />
         </div>
       </div>

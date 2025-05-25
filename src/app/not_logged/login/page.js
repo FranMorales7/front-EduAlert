@@ -4,7 +4,7 @@ import { signIn, getSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import logo from '../../../../public/images/CF_logo.png';
-import fondo from '../../../../public/images/patron.jpg';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -30,14 +30,14 @@ const Login = () => {
       }
     } else {
       console.error('Error de autenticación', result.error);
-      alert('Credenciales incorrectas');
+      toast.error('Credenciales incorrectas');
     }
   };
 
   return (
     <div 
     className="z-20 relative w-full h-screen flex items-center justify-center overflow-hidden bg-radial-[at_50%_75%] from-sky-200 via-blue-400 to-indigo-900 to-90%"
-    //style={{ backgroundImage: `url(${fondo.src})` }}
+    
     >
       <div className="ring-4 ring-blue-500 relative z-10 flex w-4/5 h-4/5 backdrop-blur-md bg-white/60 rounded-xl shadow-xl overflow-hidden">
         <div className="ring-2 ring-blue-500/50 w-1/2 flex items-center justify-center bg-white/70">

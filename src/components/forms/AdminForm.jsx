@@ -4,11 +4,11 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
-import UpdatePassword from '../hooks/UpdatePassword';
+import UpdatePassword from '../../requests/UpdatePassword';
 import { updatePassword } from '@/requests/authentication';
 import toast from 'react-hot-toast';
 
-export default function FormularioUsuario() {
+export default function AdminForm() {
   const abortControllerRef = useRef(null);
   const { data: session, status } = useSession();
   const [user, setUser] = useState(null);
