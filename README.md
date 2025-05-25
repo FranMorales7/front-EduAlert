@@ -73,10 +73,10 @@ FRONT-EDU/
 
 ## 🌐 Variables de entorno
 El archivo .env.local debe incluir
-    **NEXT_PUBLIC_BACKEND_URL** =http://[back-end]/api
-    **NEXT_PUBLIC_IMAGE_URL**=http://[back-end]/
-    **NEXTAUTH_URL**=http://localhost:3000/
-    **BROADCAST_CONNECTION**=pusher
+-  **NEXT_PUBLIC_BACKEND_URL** =http://[back-end]/api
+-  **NEXT_PUBLIC_IMAGE_URL**=http://[back-end]/
+-  **NEXTAUTH_URL**=http://localhost:3000/
+-  **BROADCAST_CONNECTION**=pusher
 
 ---
 
