@@ -61,7 +61,7 @@ FRONT-EDU/
 ## ⚙️ Instalación y uso
 
  ### Clonar el repositorio
-    git clone https://github.com/tu-usuario/front-edu.git
+    git clone https://github.com/FranMorales7/front-EduAlert.git
     cd front-edu
 
  ### Instalar dependencias
