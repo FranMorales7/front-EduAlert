@@ -60,14 +60,14 @@ FRONT-EDU/
 
 ## ⚙️ Instalación y uso
 
-    # Clonar el repositorio
+ ### Clonar el repositorio
     git clone https://github.com/tu-usuario/front-edu.git
     cd front-edu
 
-    # Instalar dependencias
+ ### Instalar dependencias
     npm install
 
-    # Ejecutar en entorno de desarrollo
+ ### Ejecutar en entorno de desarrollo
     npm run dev
 ---
 
