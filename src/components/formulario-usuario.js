@@ -101,12 +101,12 @@ export default function FormularioUsuario() {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      alert('Por favor selecciona un archivo de imagen válido.');
+      toast.error('Por favor selecciona un archivo de imagen válido.');
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      alert('La imagen debe ser menor a 2MB.');
+      toast.error('La imagen debe ser menor a 2MB.');
       return;
     }
 

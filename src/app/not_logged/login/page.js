@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import logo from '../../../../public/images/CF_logo.png';
 import fondo from '../../../../public/images/patron.jpg';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -30,7 +31,7 @@ const Login = () => {
       }
     } else {
       console.error('Error de autenticación', result.error);
-      alert('Credenciales incorrectas');
+      toast.error('Credenciales incorrectas');
     }
   };
 

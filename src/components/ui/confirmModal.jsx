@@ -13,9 +13,7 @@ export default function ConfirmModal({ message, actionType, onConfirm, onClose, 
   const handleConfirm = async () => {
     try {
       await onConfirm(); // Ejecuta la acción pasada como prop
-      toast.success(`${actionLabel} realizado correctamente`);
     } catch (error) {
-      toast.error(`Error al intentar ${actionLabel.toLowerCase()}`);
       console.error(error.message);
     } finally {
       onClose(); // Cierra el modal

@@ -35,7 +35,8 @@ export default function TripsTable() {
     setLoading(true);
 
     fetchTripsByUser(user.id, session.user.accessToken, controller.signal)
-      .then( (resp) => setTrips(resp.data) )
+      .then( (resp) => {setTrips(resp.data); console.log('Resp -- ', resp.data);
+       })
       .catch((error) => {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer las salidas:', error);
@@ -186,7 +187,7 @@ export default function TripsTable() {
                   {i.student?.name} {i.student?.last_name_1} {i.student?.last_name_2}
                 </td>
                 <td className="p-2 border">{i.created_at?.slice(0, 10)}</td>
-                <td className="p-2 border">{i.lesson?.location}</td>
+                <td className="p-2 border">{i.lesson?.location?.name}</td>
                 <td className="p-2 border text-center">
                   <EditButton onClick={() => abrirModalEditar(i)} /> 
                   <DeleteButton onClick={() => handleEliminar(i.id)}/>

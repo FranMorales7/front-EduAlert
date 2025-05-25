@@ -33,7 +33,7 @@ export default function IncidentsTable() {
         if (!response?.data) throw new Error('No se encontraron incidencias');
 
         setIncidents(response.data);
-        console.log('Respuesta -- ', incidents);
+        console.log('Respuesta -- ', response.data);
         
       } catch (error) {
         if (error.name !== 'CanceledError') {
