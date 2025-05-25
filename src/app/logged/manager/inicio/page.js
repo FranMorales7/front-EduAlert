@@ -4,6 +4,7 @@ import BlurBackground from "@/components/ui/BlurBackground";
 import Header from "@/components/ui/header";
 
 export default function IndexPage() {
+ // Página de renderizado de datos de la plataforma
  
   return (
     <BlurBackground>
