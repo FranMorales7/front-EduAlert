@@ -55,7 +55,7 @@ FRONT-EDU/
 ├── next.config.mjs          # Configuración de Next.js
 ├── package.json             # Dependencias y scripts
 └── package-lock.json
-
+```
 ---
 
 ## ⚙️ Instalación y uso
