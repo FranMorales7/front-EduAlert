@@ -44,10 +44,12 @@ export default function Schedule() {
         },
         signal: controller.signal,
       })
-      .then((resp) => {
+      .then((resp) => {console.log('Horario --> ', resp)
         const sortedSchedule = resp.data.sort((a, b) => {
           if (a.day !== b.day) return a.day - b.day;
+          
           return new Date(a.starts_at) - new Date(b.starts_at);
+          
         });
         setSchedule(sortedSchedule);
         setIsLoading(false);

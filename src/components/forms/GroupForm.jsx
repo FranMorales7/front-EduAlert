@@ -23,8 +23,6 @@ export default function GroupForm({
 
   useEffect(() => {
     if (initialData) {
-      console.log('Dtas' ,initialData);
-      
       setFormData({
         name: initialData.name || '',
         location: initialData.location || '',

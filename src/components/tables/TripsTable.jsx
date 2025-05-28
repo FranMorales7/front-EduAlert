@@ -35,8 +35,7 @@ export default function TripsTable() {
     setLoading(true);
 
     fetchTripsByUser(user.id, session.user.accessToken, controller.signal)
-      .then( (resp) => {setTrips(resp.data); console.log('Resp -- ', resp.data);
-       })
+      .then( (resp) => {setTrips(resp.data)})
       .catch((error) => {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer las salidas:', error);

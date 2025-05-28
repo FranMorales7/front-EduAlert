@@ -26,8 +26,7 @@ export default function TripsCard() {
     setLoading(true);
 
     getAllTrips(session.user.accessToken, controller.signal)
-      .then((resp) => { setTrips(resp.data); setLoading(false); 
-        console.log('Localizacion ', resp.data);})
+      .then((resp) => { setTrips(resp.data); setLoading(false)})
       .catch((error) => {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer las salidas:', error);

@@ -33,7 +33,6 @@ export default function IncidentsTable() {
         if (!response?.data) throw new Error('No se encontraron incidencias');
 
         setIncidents(response.data);
-        console.log('Respuesta -- ', response.data);
         
       } catch (error) {
         if (error.name !== 'CanceledError') {
@@ -78,7 +77,6 @@ export default function IncidentsTable() {
   };
 
   const handleEliminar = async (id) => {
-    console.log("Access Token para edición:", session?.user?.accessToken);
 
     try {
       const controller = new AbortController();

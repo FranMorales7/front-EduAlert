@@ -28,8 +28,6 @@ export default function LessonForm({
 
   useEffect(() => {
     if (initialData) {
-      console.log('Data ', initialData);
-      
       setFormData({
         description: initialData.description || '',
         location: initialData.location.id || '',
