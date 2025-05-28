@@ -9,9 +9,11 @@ export default function GlobalNotificationListener() {
     const channel = echo.channel('notifications');
 
     // En front-end el nombre del evento debe llevar el prefijo "."
-    channel.listen('.NewNotificationCreated', (event) => {
-      toast.success(`🔔 ${event.data.title}`, {
-        description: event.data.message,
+    channel.listen('.new-notification', (event) => {
+      console.log('Notification: ', event);
+      
+      toast.success(`🔔 ${event.title}`, {
+        description: event.message,
         duration: 8000,
       });
     });
