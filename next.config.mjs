@@ -1,10 +1,8 @@
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    appDir: true,
-  },
+  appDir: true,
   images: {
-    domains: ['api-edualert.dvl.to'],
+    domains: ['https://apiedualert-production.up.railway.app/'],
   },
 };
 
