@@ -1,14 +1,13 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 export default function Schedule() {
   const abortControllerRef = useRef(null);
   const { data: session, status } = useSession();
-  const [user, setUser] = useState(null);
   const [schedule, setSchedule] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -21,14 +20,15 @@ export default function Schedule() {
   };
 
   useEffect(() => {
-    if (status === 'authenticated' && session?.user) {
-      setUser(session.user.id);
-    }
-  }, [session, status]);
-
-  useEffect(() => {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-    if (!user) return;
+
+    if (
+      status !== 'authenticated' ||
+      !session?.user?.id ||
+      !session?.user?.accessToken
+    ) {
+      return;
+    }
 
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -38,7 +38,7 @@ export default function Schedule() {
     abortControllerRef.current = controller;
 
     axios
-      .get(`${backendUrl}/lessons/schedule/${user}`, {
+      .get(`${backendUrl}/lessons/schedule/${session.user.id}`, {
         headers: {
           Authorization: `Bearer ${session.user.accessToken}`,
         },
@@ -47,22 +47,20 @@ export default function Schedule() {
       .then((resp) => {
         const sortedSchedule = resp.data.sort((a, b) => {
           if (a.day !== b.day) return a.day - b.day;
-          
           return new Date(a.starts_at) - new Date(b.starts_at);
-          
         });
         setSchedule(sortedSchedule);
         setIsLoading(false);
       })
       .catch((error) => {
         if (error.name !== 'CanceledError') {
-          console.error('Error al traer información sobre el usuario:', error);
+          console.error('❌ Error al traer horario:', error);
           toast.error('Error al obtener horario');
         }
       });
 
     return () => controller.abort();
-  }, [user, session, status]);
+  }, [session, status]);
 
   if (isLoading) return <p>Cargando horario del usuario...</p>;
 
@@ -84,8 +82,15 @@ export default function Schedule() {
             <tr key={index} className="hover:bg-gray-100">
               <td className="border px-4 py-2">{diasSemana[clase.day]}</td>
               <td className="border px-4 py-2">
-                {new Date(clase.starts_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{' '}
-                {new Date(clase.ends_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {new Date(clase.starts_at).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}{' '}
+                -{' '}
+                {new Date(clase.ends_at).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
               </td>
               <td className="border px-4 py-2">{clase.subject}</td>
               <td className="border px-4 py-2">{clase.location}</td>

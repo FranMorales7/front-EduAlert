@@ -13,7 +13,6 @@ export const authOptions = {
       },
       async authorize(credentials) {
         const url = `${process.env.NEXT_PUBLIC_BACKEND_URL.replace(/\/$/, '')}/login`;
-        console.log('🚀 ENV:', url);
         try {
           const res = await axios.post(
             url,
