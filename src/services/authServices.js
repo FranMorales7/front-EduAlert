@@ -8,8 +8,6 @@ export async function login(email, password) {
         const response = await axios.post(`${backendUrl}/login`, {
             email,
             password,
-        }, {
-            withCredentials: true, // ⬅️ Importante para Sanctum (envía cookies)
         });
 
         return response.data; // Devuelve la respuesta (user, role, etc.)
