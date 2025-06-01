@@ -14,7 +14,7 @@ export const authOptions = {
       async authorize(credentials) {
         try {
           const res = await axios.post(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL_WO_API}/login`,
+            `${process.env.NEXT_PUBLIC_BACKEND_IMAGE_URL}login`,
             {
               email: credentials.email,
               password: credentials.password,
