@@ -20,6 +20,7 @@ export const authOptions = {
         const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/login`, params, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json',
           },
     });
 
