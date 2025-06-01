@@ -12,32 +12,31 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-      try {
-        const params = new URLSearchParams();
-        params.append('email', credentials.email);
-        params.append('password', credentials.password);
+        try {
+          const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/login`, {
+            email: credentials.email,
+            password: credentials.password,
+          }, {
+            headers: {
+              'Accept': 'application/json',
+            },
+          });
 
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/login`, params, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'application/json',
-          },
-    });
+          const user = res.data.user;
+          const token = res.data.token;
 
-    const user = res.data.user;
+          if (user && token) {
+            return {
+              ...user,
+              token,
+            };
+          }
 
-    if (user && res.data.token) {
-      return {
-        ...user,
-        token: res.data.token,
-      };
-    }
-
-    return null;
-  } catch (err) {
-    console.error('Error en autorización', err?.response?.data || err);
-    return null;
-  }
+          return null;
+        } catch (err) {
+          console.error('Error en autorización', err.response?.data || err.message);
+          return null;
+        }
       },
     }),
   ],
