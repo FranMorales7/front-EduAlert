@@ -12,10 +12,11 @@ export const authOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        console.log('🚀 ENV:', `${process.env.NEXT_PUBLIC_IMAGE_URL}/login`);
+        const url = `${process.env.NEXT_PUBLIC_BACKEND_URL.replace(/\/$/, '')}/login`;
+        console.log('🚀 ENV:', url);
         try {
           const res = await axios.post(
-            `${process.env.NEXT_PUBLIC_IMAGE_URL}/login`,
+            url,
             {
               email: credentials.email,
               password: credentials.password,
