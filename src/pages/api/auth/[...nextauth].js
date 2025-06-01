@@ -12,6 +12,7 @@ export const authOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
+        console.log('BackUrl = ',process.env.NEXT_PUBLIC_BACKEND_URL )
         try {
           const res = await axios.post(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/login`,
@@ -25,7 +26,6 @@ export const authOptions = {
               },
             }
           );
- console.log('🔐 Respuesta del backend:', res.data);
           const user = res.data.user;
           const token = res.data.token;
 

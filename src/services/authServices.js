@@ -4,6 +4,7 @@ import axios from 'axios';
 export async function login(email, password) {
     // Usamos la variable de entorno para la URL base
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    console.log('URl del back: ', backendUrl)
     try {
         const response = await axios.post(`${backendUrl}/login`, {
             email,
