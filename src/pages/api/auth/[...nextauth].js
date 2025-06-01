@@ -12,7 +12,6 @@ export const authOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        console.log('BackUrl = ',process.env.NEXT_PUBLIC_BACKEND_URL )
         try {
           const res = await axios.post(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/login`,
@@ -24,6 +23,7 @@ export const authOptions = {
               headers: {
                 Accept: 'application/json',
               },
+               withCredentials: true,
             }
           );
           const user = res.data.user;
