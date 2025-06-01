@@ -5,7 +5,7 @@ export async function login(email, password) {
     // Usamos la variable de entorno para la URL base
     const backendUrl = process.env.NEXT_PUBLIC_IMAGE_URL;
     try {
-        const response = await axios.post(`${backendUrl}login`, {
+        const response = await axios.post(`${backendUrl}/login`, {
             email,
             password,
         });
