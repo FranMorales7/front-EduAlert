@@ -44,7 +44,7 @@ export default function Schedule() {
         },
         signal: controller.signal,
       })
-      .then((resp) => {console.log('Horario --> ', resp)
+      .then((resp) => {
         const sortedSchedule = resp.data.sort((a, b) => {
           if (a.day !== b.day) return a.day - b.day;
           
