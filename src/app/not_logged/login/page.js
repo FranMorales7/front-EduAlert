@@ -14,25 +14,37 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const result = await signIn('credentials', {
-      redirect: false,
-      email,
-      password,
-    });
+    try {
+      // 1. Obtener cookie CSRF de Sanctum
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/sanctum/csrf-cookie`, {
+        credentials: 'include',
+      });
 
-    if (result.ok) {
-      const session = await getSession();
+      // 2. Autenticación vía NextAuth
+      const result = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+      });
 
-      if (session?.user?.is_admin) {
-        router.push('/logged/manager/inicio');
+      if (result.ok) {
+        const session = await getSession();
+
+        if (session?.user?.is_admin) {
+          router.push('/logged/manager/inicio');
+        } else {
+          router.push('/logged/teacher/inicio');
+        }
       } else {
-        router.push('/logged/teacher/inicio');
+        console.error('Error de autenticación', result.error);
+        toast.error('Credenciales incorrectas');
       }
-    } else {
-      console.error('Error de autenticación', result.error);
-      toast.error('Credenciales incorrectas');
+    } catch (error) {
+      console.error('Error en login', error);
+      toast.error('Error del servidor');
     }
   };
+
 
   return (
     <div 
