@@ -25,7 +25,7 @@ export const authOptions = {
               },
             }
           );
-
+ console.log('🔐 Respuesta del backend:', res.data);
           const user = res.data.user;
           const token = res.data.token;
 

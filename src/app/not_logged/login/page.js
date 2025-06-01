@@ -34,8 +34,8 @@ const Login = () => {
       toast.error('Credenciales incorrectas');
     }
   } catch (error) {
-    console.error('Error en login', error);
-    toast.error('Error del servidor');
+    console.error('Error de autenticacion', error);
+    toast.error('Credenciales incorrectas');
   }
 };
 
