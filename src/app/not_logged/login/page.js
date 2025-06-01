@@ -12,8 +12,9 @@ const Login = () => {
   const router = useRouter();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
+  try {
     const result = await signIn('credentials', {
       redirect: false,
       email,
@@ -32,7 +33,13 @@ const Login = () => {
       console.error('Error de autenticación', result.error);
       toast.error('Credenciales incorrectas');
     }
-  };
+  } catch (error) {
+    console.error('Error de autenticacion', error);
+    toast.error('Credenciales incorrectas');
+  }
+};
+
+
 
   return (
     <div 
