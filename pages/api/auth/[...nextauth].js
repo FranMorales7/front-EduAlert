@@ -12,6 +12,7 @@ export const authOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
+        console.log('🚀 ENV:', process.env.NEXT_PUBLIC_BACKEND_URL);
         try {
           const res = await axios.post(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/login`,
