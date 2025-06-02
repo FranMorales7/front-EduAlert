@@ -24,7 +24,7 @@ export default function AdminTripsForm({ initialData, onCrear, onEditar, isEditi
   const [submitting, setSubmitting] = useState(false);
   const [clases, setClases] = useState([]);
 
-  const { user } = useAuthUser();
+  const { user, session } = useAuthUser();
 
   useEffect(() => {
       if (initialData) {
@@ -41,7 +41,7 @@ export default function AdminTripsForm({ initialData, onCrear, onEditar, isEditi
     }, [initialData]);
   
     useEffect(() => {
-      if (user?.accessToken && showAlumnoModal) {
+      if (session?.accessToken && showAlumnoModal) {
         const controller = new AbortController();
         getAllStudents(session.accessToken, controller.signal)
           .then((res) => setAlumnos(res.data))
@@ -56,7 +56,7 @@ export default function AdminTripsForm({ initialData, onCrear, onEditar, isEditi
     }, [showAlumnoModal, user]);
   
     useEffect(() => {
-      if (user?.accessToken && showClaseModal) {
+      if (session?.accessToken && showClaseModal) {
         const controller = new AbortController();
         getAllLessons(session.accessToken, controller.signal)
           .then((res) => setClases(res.data))
@@ -155,7 +155,7 @@ export default function AdminTripsForm({ initialData, onCrear, onEditar, isEditi
                   student_id: a.id,
                 }))
               }
-              token={user?.accessToken}
+              token={token}
             />
           </div>
   
