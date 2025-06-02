@@ -10,9 +10,11 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const [loading, setLoading] = useState(false); 
 
   const handleSubmit = async (e) => {
   e.preventDefault();
+  setLoading(true);
 
   try {
     const result = await signIn('credentials', {
@@ -32,10 +34,12 @@ const Login = () => {
     } else {
       console.error('Error de autenticación', result.error);
       toast.error('Credenciales incorrectas');
+      setLoading(false);
     }
   } catch (error) {
     console.error('Error de autenticacion', error);
     toast.error('Credenciales incorrectas');
+    setLoading(false);
   }
 };
 
@@ -71,7 +75,7 @@ const Login = () => {
               type="submit"
               className="cursor-pointer w-full p-3 bg-[#1c3f95] text-white rounded hover:bg-blue-900"
             >
-              Iniciar sesión
+              {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
             </button>
           </form>
         </div>
