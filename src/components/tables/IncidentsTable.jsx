@@ -90,6 +90,8 @@ export default function IncidentsTable() {
   };
 
   const handleCrear = async (nueva) => {
+    console.log('Access token:', session?.accessToken);
+
     try {
       await createIncident(nueva, session.accessToken);
       const res = await fetchIncidentsByUser(user.id, session.accessToken);
