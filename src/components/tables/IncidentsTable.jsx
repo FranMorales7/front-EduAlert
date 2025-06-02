@@ -20,7 +20,7 @@ export default function IncidentsTable() {
   const { user, session, status } = useAuthUser();
   
   useEffect(() => {
-    if (!user || status !== 'authenticated' || session) return;
+    if (!user || status !== 'authenticated') return;
 
     const controller = new AbortController();
     abortControllerRef.current = controller;

@@ -24,7 +24,6 @@ export const authOptions = {
               headers: {
                 Accept: 'application/json',
               },
-               withCredentials: true,
             }
           );
           const user = res.data.user;

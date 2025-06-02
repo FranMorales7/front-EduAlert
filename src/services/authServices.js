@@ -12,7 +12,6 @@ export async function login(email, password) {
             headers: {
                 Accept: 'application/json',
               },
-            withCredentials: true, // ⬅️ Importante para Sanctum (envía cookies)
         });
 
         return response.data; // Devuelve la respuesta (user, role, etc.)
