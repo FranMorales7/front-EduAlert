@@ -36,7 +36,7 @@ export default function StudentsTable() {
 
     setLoading(true);
 
-    getAllStudents(session.user.accessToken, controller.signal)
+    getAllStudents(session.accessToken, controller.signal)
       .then( (response) => setStudents(response.data) )
       .catch( (error) => {
         if (error.name !== 'CanceledError') {
@@ -61,7 +61,7 @@ export default function StudentsTable() {
 
   const onCrear = async (nuevoAlumno) => {
     try{
-      const resp = await createStudent(nuevoAlumno, session.user.accessToken)
+      const resp = await createStudent(nuevoAlumno, session.accessToken)
       setIsModalOpen(false);
       setIsEditing(false);
       setStudents((prev) => {
@@ -77,7 +77,7 @@ export default function StudentsTable() {
 
   const onEditar = async ({data, id}) => {
     try {
-      const response = await updateStudent(id, data, session.user.accessToken)
+      const response = await updateStudent(id, data, session.accessToken)
       setStudents((prev) =>
         prev.map((s) => (s.id === response.data.id ? response.data : s))
       );
@@ -94,7 +94,7 @@ export default function StudentsTable() {
   const handleEliminar = async (id) => {
     try{
       const controller = new AbortController();
-      await deleteStudent(id, session.user.accessToken, controller.signal);
+      await deleteStudent(id, session.accessToken, controller.signal);
       setStudents((prev) => prev.filter((i) => i.id !== id));
       toast.success('Estudiante eliminado con éxito')
 

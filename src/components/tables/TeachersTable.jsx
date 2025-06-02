@@ -33,7 +33,7 @@ export default function TeachersTable() {
 
     setLoading(true);
 
-    getAllTeachers(session.user.accessToken, controller.signal)
+    getAllTeachers(session.accessToken, controller.signal)
       .then((res) => setTeachers(res.data))
       .catch((err) => {
         if (err.name !== 'CanceledError') {
@@ -47,7 +47,7 @@ export default function TeachersTable() {
 
   const onCrear = async (nuevoTeacher) => {
     try {
-      const response = await createTeacher(nuevoTeacher, session.user.accessToken)
+      const response = await createTeacher(nuevoTeacher, session.accessToken)
       setIsModalOpen(false)
       setIsEditing(false);
       setTeachers((prev) => {
@@ -63,7 +63,7 @@ export default function TeachersTable() {
 
   const onEditar = async ({ data, id }) => {
     try {
-      const response = await updateTeacher(id, data, session.user.accessToken)
+      const response = await updateTeacher(id, data, session.accessToken)
       setTeachers((prev) => prev.map((t) => (t.id === response.data.id ? response.data : t)));
       setIsModalOpen(false);
       setIsEditing(false);
@@ -78,7 +78,7 @@ export default function TeachersTable() {
   const handleEliminar = async (id) => {
     try{
       const controller = new AbortController();
-      await deleteTeacher(id, session.user.accessToken, controller.signal);
+      await deleteTeacher(id, session.accessToken, controller.signal);
       setTeachers((prev) => prev.filter((i) => i.id !== id));
     } catch (err) {
       console.error('Error al eliminar profesor: ', err)

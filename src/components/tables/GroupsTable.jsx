@@ -32,7 +32,7 @@ export default function GroupsTable() {
     abortControllerRef.current = controller;
     setLoading(true);
 
-    getAllGroups(session.user.accessToken, controller.signal)
+    getAllGroups(session.accessToken, controller.signal)
     .then((res) => {
       const grupos = res.data;
       setGroups(grupos);
@@ -59,7 +59,7 @@ export default function GroupsTable() {
 
   const onCrear = async (nuevoGrupo) => {
     try {
-      const res = await createGroup(nuevoGrupo, session.user.accessToken)
+      const res = await createGroup(nuevoGrupo, session.accessToken)
       setIsModalOpen(false);
       setIsEditing(false);
       setGroups((prev) => {
@@ -74,7 +74,7 @@ export default function GroupsTable() {
 
   const onEditar = async ({ data, id }) => {
     try {
-      const res = await updateGroup(id, data, session.user.accessToken)
+      const res = await updateGroup(id, data, session.accessToken)
       setGroups((prev) => prev.map((g) => (g.id === id ? res.data : g)));
       setIsModalOpen(false);
       setIsEditing(false);
@@ -89,7 +89,7 @@ export default function GroupsTable() {
   const onEliminar = async (id) => {
     try {
       const controller = new AbortController();
-      await deleteGroup(id, session.user.accessToken, controller.signal);
+      await deleteGroup(id, session.accessToken, controller.signal);
       setGroups((prev) => prev.filter((g) => g.id !== id));
       toast.success('Grupo eliminado con éxito')
 

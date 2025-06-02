@@ -28,7 +28,7 @@ export default function IncidentsTable() {
 
     const fetchData = async () => {
       try {
-        const response = await fetchIncidentsByUser(user.id, session.user.accessToken, controller.signal);
+        const response = await fetchIncidentsByUser(user.id, session.accessToken, controller.signal);
 
         if (!response?.data) throw new Error('No se encontraron incidencias');
 
@@ -62,10 +62,10 @@ export default function IncidentsTable() {
           student_id: editado.student_id,
           lesson_id: editado.lesson_id,
         },
-        session.user.accessToken
+        session.accessToken
       );
 
-      const res = await fetchIncidentsByUser(user.id, session.user.accessToken);
+      const res = await fetchIncidentsByUser(user.id, session.accessToken);
       setIncidents(res.data);
       cerrarModal();
       toast.success('Incidencia actualizada correctamente')
@@ -80,7 +80,7 @@ export default function IncidentsTable() {
 
     try {
       const controller = new AbortController();
-      await deleteIncident(id, session.user.accessToken, controller.signal);
+      await deleteIncident(id, session.accessToken, controller.signal);
       setIncidents((prev) => prev.filter((i) => i.id !== id));
       toast.success('Incidencia eliminada con éxito')
     } catch (err) {
@@ -91,8 +91,8 @@ export default function IncidentsTable() {
 
   const handleCrear = async (nueva) => {
     try {
-      await createIncident(nueva, session.user.accessToken);
-      const res = await fetchIncidentsByUser(user.id, session.user.accessToken);
+      await createIncident(nueva, session.accessToken);
+      const res = await fetchIncidentsByUser(user.id, session.accessToken);
       
       setIncidents(res.data);
       cerrarModal();
@@ -212,7 +212,7 @@ export default function IncidentsTable() {
               onCrear={handleCrear}
               onEditar={handleEditarSubmit}
               isEditing={!!editingIncident}
-              token={session.user.accessToken}
+              token={session.accessToken}
             />
           </Dialog.Panel>
         </div>

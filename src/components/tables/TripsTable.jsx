@@ -34,7 +34,7 @@ export default function TripsTable() {
 
     setLoading(true);
 
-    fetchTripsByUser(user.id, session.user.accessToken, controller.signal)
+    fetchTripsByUser(user.id, session.accessToken, controller.signal)
       .then( (resp) => {setTrips(resp.data)})
       .catch((error) => {
         if (error.name !== 'CanceledError') {
@@ -58,7 +58,7 @@ export default function TripsTable() {
             is_solved: editado.is_solved,
             description: editado.descripcion,
             created_at: editado.fecha,
-          }, session.user.accessToken);
+          }, session.accessToken);
 
         setTrips((prev) =>
           prev.map((inc) =>
@@ -84,7 +84,7 @@ export default function TripsTable() {
   const handleEliminar = async (id) => {
     try {
       const controller = new AbortController();
-      await deleteTrip(id, session.user.accessToken, controller.signal);
+      await deleteTrip(id, session.accessToken, controller.signal);
       setTrips((prev) => prev.filter((i) => i.id !== id)) // Eliminar localmente
       toast.success('Salida eliminada con éxito');
     } catch (err) {
@@ -100,7 +100,7 @@ export default function TripsTable() {
         teacher_id: user.id,
       };
 
-      const resp = await createTrip(nuevaSalida, session.user.accessToken);
+      const resp = await createTrip(nuevaSalida, session.accessToken);
       setIsModalOpen(false);
       setEditingTrips(null);
       setTrips((prev) => { 
@@ -210,7 +210,7 @@ export default function TripsTable() {
               onCrear={handleCrear}
               onEditar={handleEditarSubmit}
               isEditing={!!editingTrips} 
-              token={session.user.accessToken}
+              token={session.accessToken}
             />
           </Dialog.Panel>
         </div>

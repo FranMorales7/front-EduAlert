@@ -32,7 +32,7 @@ export default function LessonsTable() {
 
     setLoading(true);
 
-   getAllLessons(session.user.accessToken, controller.signal)
+   getAllLessons(session.accessToken, controller.signal)
       .then((res) => setLessons(res.data))
       .catch((err) => {
         console.error('Error al cargar clases:', err),
@@ -46,7 +46,7 @@ export default function LessonsTable() {
 
   const onCrear = async (nuevaClase) => {
     try {
-      const res = await createLesson(nuevaClase,session.user.accessToken)
+      const res = await createLesson(nuevaClase,session.accessToken)
       setIsModalOpen(false);
       setIsEditing(false);
       setLessons((prev) => [...prev, res.data]);
@@ -60,7 +60,7 @@ export default function LessonsTable() {
 
   const onEditar = async ({ data, id }) => {
     try {
-      const res = await updateLesson(id, data, session.user.accessToken);
+      const res = await updateLesson(id, data, session.accessToken);
       setLessons((prev) => prev.map((g) => (g.id === id ? res.data : g)));
       setIsModalOpen(false);
       setIsEditing(false);
@@ -75,7 +75,7 @@ export default function LessonsTable() {
   const onEliminar = async (id) => {
     try {
       const controller = new AbortController();
-      await deleteLesson(id, session.user.accessToken, controller.signal);
+      await deleteLesson(id, session.accessToken, controller.signal);
       setLessons((prev) => prev.filter((g) => g.id !== id));
       toast.success('Clase eliminada correctamente');
 

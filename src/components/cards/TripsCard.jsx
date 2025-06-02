@@ -25,7 +25,7 @@ export default function TripsCard() {
 
     setLoading(true);
 
-    getAllTrips(session.user.accessToken, controller.signal)
+    getAllTrips(session.accessToken, controller.signal)
       .then((resp) => { setTrips(resp.data); setLoading(false)})
       .catch((error) => {
         if (error.name !== 'CanceledError') {

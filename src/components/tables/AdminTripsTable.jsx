@@ -31,7 +31,7 @@ export default function AdminTripsTable() {
 
     const fetchData = async () => {
       try {
-        const response = await getAllTrips(session.user.accessToken, controller.signal);
+        const response = await getAllTrips(session.accessToken, controller.signal);
 
         if (!response?.data) throw new Error('No se encontraron salidas');
 
@@ -64,12 +64,12 @@ export default function AdminTripsTable() {
           student_id: editado.student_id,
           lesson_id: editado.lesson_id,
         },
-        session.user.accessToken
+        session.accessToken
       );
       toast.success(`Actualización realizada correctamente`);
 
       // Refrescar datos en la página
-      const res = await getAllTrips(session.user.accessToken);
+      const res = await getAllTrips(session.accessToken);
       setTrips(res.data);
       cerrarModal();
 
@@ -82,7 +82,7 @@ export default function AdminTripsTable() {
   const handleEliminar = async (id) => {
     try {
       const controller = new AbortController();
-      await deleteTrip(id, session.user.accessToken, controller.signal);
+      await deleteTrip(id, session.accessToken, controller.signal);
       
       // Refrescar datos
       setTrips((prev) => prev.filter((i) => i.id !== id));
@@ -120,7 +120,7 @@ export default function AdminTripsTable() {
         trips.map((i) => {
             if(i.is_solved == true){
                 const id =  i.id;
-                deleteTrip(id, session.user.accessToken, controller.signal);
+                deleteTrip(id, session.accessToken, controller.signal);
                 setTrips((prev) => prev.filter((tr) => tr.id !== id));
             };
         })
@@ -214,7 +214,7 @@ export default function AdminTripsTable() {
               initialData={editingTrip}
               onEditar={handleEditarSubmit}
               isEditing={!!editingTrip}
-              token={session.user.accessToken}
+              token={session.accessToken}
             />
           </Dialog.Panel>
         </div>

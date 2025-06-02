@@ -31,7 +31,7 @@ export default function AdminIncidentsTable() {
 
     const fetchData = async () => {
       try {
-        const response = await getAllIncidents(session.user.accessToken, controller.signal);
+        const response = await getAllIncidents(session.accessToken, controller.signal);
 
         if (!response?.data) throw new Error('No se encontraron incidencias');
 
@@ -62,11 +62,11 @@ export default function AdminIncidentsTable() {
         {
           is_solved: editado.is_solved,
         },
-        session.user.accessToken
+        session.accessToken
       );
 
       // Refrescar datos en la página
-      const res = await getAllIncidents(session.user.accessToken);
+      const res = await getAllIncidents(session.accessToken);
       setIncidents(res.data);
       cerrarModal();
       toast.success('Incidente actualizado con éxito');
@@ -80,7 +80,7 @@ export default function AdminIncidentsTable() {
   const handleEliminar = async (id) => {
     try {
       const controller = new AbortController();
-      await deleteIncident(id, session.user.accessToken, controller.signal);
+      await deleteIncident(id, session.accessToken, controller.signal);
       
       // Refrescar datos
       setIncidents((prev) => prev.filter((i) => i.id !== id));
@@ -120,7 +120,7 @@ export default function AdminIncidentsTable() {
         incidents.map((i) => {
             const id =  i.id;
             if(i.is_solved == true){
-              deleteIncident(id, session.user.accessToken, controller.signal);
+              deleteIncident(id, session.accessToken, controller.signal);
               setIncidents((prev) => prev.filter((inc) => inc.id !== id));
             };
             setIncidents((prev) => prev.filter((i) => i.id !== id));
@@ -217,7 +217,7 @@ export default function AdminIncidentsTable() {
               initialData={editingIncident}
               onEditar={handleEditarSubmit}
               isEditing={!!editingIncident}
-              token={session.user.accessToken}
+              token={session.accessToken}
             />
           </Dialog.Panel>
         </div>

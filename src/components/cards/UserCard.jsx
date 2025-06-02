@@ -27,7 +27,7 @@ export default function UserCard() {
       axios
         .get(`${backendUrl}/users/${idUser}`, {
           headers: {
-            Authorization: `Bearer ${session.user.accessToken}`,
+            Authorization: `Bearer ${session.accessToken}`,
           },
           signal: controller.signal,
         })

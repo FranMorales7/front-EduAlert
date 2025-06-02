@@ -29,7 +29,7 @@ export default function ChangePassword() {
     setMensaje(null);
 
     try {
-      await updatePassword(formData, session.user.accessToken);
+      await updatePassword(formData, session.accessToken);
       setMensaje('Contraseña actualizada exitosamente.');
       setFormData({
         current_password: '',

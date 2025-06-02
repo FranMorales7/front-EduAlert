@@ -53,7 +53,7 @@ export default function StudentForm({ initialData, onCrear, onEditar, isEditing 
       try {
         const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/groups`, {
           headers: {
-            Authorization: `Bearer ${session.user.accessToken}`,
+            Authorization: `Bearer ${session.accessToken}`,
           },
           signal: controller.signal,
         });

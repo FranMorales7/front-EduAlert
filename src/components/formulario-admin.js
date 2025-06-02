@@ -47,7 +47,7 @@ export default function FormularioUsuario() {
     axios
       .get(`${backendUrl}/users/${user}`, {
         headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
+          Authorization: `Bearer ${session.accessToken}`,
         },
         signal: controller.signal,
       })
@@ -132,7 +132,7 @@ export default function FormularioUsuario() {
             new_password: formData.new_password,
             new_password_confirmation: formData.new_password,
           },
-          session.user.accessToken
+          session.accessToken
         );
         toast.success('Contraseña cambiada con éxito');
       } catch (error) {
@@ -149,7 +149,7 @@ export default function FormularioUsuario() {
     try {
       const resp = await axios.put(`${backendUrl}/users/${user}`, form, {
         headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
+          Authorization: `Bearer ${session.accessToken}`,
           'Content-Type': 'multipart/form-data',
         },
       });

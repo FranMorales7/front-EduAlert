@@ -40,7 +40,7 @@ export default function Schedule() {
     axios
       .get(`${backendUrl}/lessons/schedule/${session.user.id}`, {
         headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
+          Authorization: `Bearer ${session.accessToken}`,
         },
         signal: controller.signal,
       })
