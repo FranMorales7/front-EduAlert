@@ -13,7 +13,7 @@ export default function UserCard() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    if (status === 'authenticated' && session?.user?.id) {
+    if (status === 'authenticated' && session?.user?.id && session?.user?.accessToken) {
       const idUser = session.user.id;
 
       if (abortControllerRef.current) {
@@ -30,7 +30,6 @@ export default function UserCard() {
           signal: controller.signal,
         })
         .then((response) => {
-          console.log('Respuesta user -->', response)
           setUser(response.data);
         })
         .catch((error) => {
