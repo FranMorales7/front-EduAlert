@@ -44,7 +44,7 @@ export default function StudentForm({ initialData, onCrear, onEditar, isEditing 
   }, [initialData]);
 
   useEffect(() => {
-    if (!showGrupoModal || !session?.user?.accessToken) return;
+    if (!showGrupoModal || !session?.accessToken) return;
 
     const controller = new AbortController();
     abortControllerRef.current = controller;
@@ -67,7 +67,7 @@ export default function StudentForm({ initialData, onCrear, onEditar, isEditing 
     };
 
     fetchGrupos();
-  }, [showGrupoModal, session?.user?.accessToken]);
+  }, [showGrupoModal, session?.accessToken]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -187,7 +187,7 @@ export default function StudentForm({ initialData, onCrear, onEditar, isEditing 
         open={showGrupoModal}
         onClose={() => setShowGrupoModal(false)}
         onSelect={seleccionarGrupo}
-        token={session?.user?.accessToken}
+        token={session?.accessToken}
       />
     </form>
   );

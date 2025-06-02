@@ -25,7 +25,7 @@ export default function Schedule() {
     if (
       status !== 'authenticated' ||
       !session?.user?.id ||
-      !session?.user?.accessToken
+      !session?.accessToken
     ) {
       return;
     }

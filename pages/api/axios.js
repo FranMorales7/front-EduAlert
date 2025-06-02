@@ -6,7 +6,7 @@ const api = axios.create({
 
 api.interceptors.request.use(async (config) => {
   const session = await getSession();
-  const token = session?.user?.accessToken;
+  const token = session?.accessToken;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

@@ -18,7 +18,7 @@ export default function GroupGraphics() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = session?.user?.accessToken;
+        const token = session?.accessToken;
 
         const [groupsRes, studentsRes, incidentsRes] = await Promise.all([
           getAllGroups(token),
@@ -53,7 +53,7 @@ export default function GroupGraphics() {
       }
     };
 
-    if (session?.user?.accessToken) fetchData();
+    if (session?.accessToken) fetchData();
   }, [session]);
 
   return (

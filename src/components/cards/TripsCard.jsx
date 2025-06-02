@@ -15,7 +15,7 @@ export default function TripsCard() {
   const { user, session, status } = useAuthUser();
 
   useEffect(() => {
-    if (status !== 'authenticated' || !session?.user?.accessToken) return;
+    if (status !== 'authenticated' || !session?.accessToken) return;
 
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();

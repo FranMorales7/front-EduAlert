@@ -160,7 +160,7 @@ export default function GroupsTable() {
               onEditar={onEditar}
               isEditing={isEditing}
               clases={groups}
-              token={session?.user?.accessToken}
+              token={session?.accessToken}
             />
           </Dialog.Panel>
         </div>

@@ -26,7 +26,7 @@ export default function IndexGraphic() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = session?.user?.accessToken;
+        const token = session?.accessToken;
 
         const [
           teachersRes,
@@ -55,7 +55,7 @@ export default function IndexGraphic() {
       }
     };
 
-    if (session?.user?.accessToken) fetchData();
+    if (session?.accessToken) fetchData();
   }, [session]);
 
   return (

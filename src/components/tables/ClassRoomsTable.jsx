@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 
 export default function ClassRoomsTable() {
   const { data: session } = useSession();
-  const token = session?.user?.accessToken;
+  const token = session?.accessToken;
 
   const [classRooms, setClassRooms] = useState([]);
   const [loading, setLoading] = useState(true);

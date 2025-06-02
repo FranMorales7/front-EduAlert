@@ -162,7 +162,7 @@ export default function LessonsTable() {
               onCrear={onCrear}
               onEditar={onEditar}
               isEditing={isEditing}
-              token={session?.user?.accessToken}
+              token={session?.accessToken}
             />
           </Dialog.Panel>
         </div>

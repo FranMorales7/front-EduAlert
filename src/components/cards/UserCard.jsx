@@ -15,7 +15,7 @@ export default function UserCard() {
   useEffect(() => {
      console.log('Session:', session);
   console.log('Status:', status);
-    if (status === 'authenticated' && session?.user?.id && session?.user?.accessToken) {
+    if (status === 'authenticated' && session?.user?.id && session?.accessToken) {
       const idUser = session.user.id;
 
       if (abortControllerRef.current) {
