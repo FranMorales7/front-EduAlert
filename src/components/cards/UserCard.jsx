@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { Mail } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function UserCard() {
   const abortControllerRef = useRef(null);
