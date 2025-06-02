@@ -91,22 +91,11 @@ export default function ClassRoomsTable() {
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-xl">
       <h2 className="text-2xl font-bold mb-4 text-gray-800">Administración de Aulas</h2>
 
-      {/* Filtro de búsqueda */}
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Buscar aula..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-      </div>
-
       {/* Toggle Formulario Crear Aula */}
       <div className="mb-6">
         <button
           onClick={() => setShowCreateForm(!showCreateForm)}
-          className="text-sm text-blue-600 hover:underline mb-2"
+          className="cursor-pointer px-4 py-2 bg-green-600 text-white rounded hover:bg-green-900"
         >
           {showCreateForm ? 'Ocultar formulario' : 'Crear nueva aula'}
         </button>
@@ -128,6 +117,17 @@ export default function ClassRoomsTable() {
             </button>
           </div>
         )}
+      </div>
+
+      {/* Filtro de búsqueda */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Buscar aula..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
       </div>
 
       {/* Lista de aulas */}
