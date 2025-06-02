@@ -23,7 +23,7 @@ export default function UserCard() {
       abortControllerRef.current = controller;
 
       axios
-        .get(`${backendUrl}/users/${idUser}`, {
+        .get(`${backendUrl}/api/users/${idUser}`, {
           headers: {
             Authorization: `Bearer ${session.user.accessToken}`,
           },
