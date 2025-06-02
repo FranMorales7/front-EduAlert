@@ -13,6 +13,8 @@ export default function UserCard() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+     console.log('Session:', session);
+  console.log('Status:', status);
     if (status === 'authenticated' && session?.user?.id && session?.user?.accessToken) {
       const idUser = session.user.id;
 
