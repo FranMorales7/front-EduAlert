@@ -54,7 +54,7 @@ export const authOptions = {
         token.id = user.id;
         token.email = user.email;
         token.is_admin = user.is_admin;
-        token.accessToken = user.accessToken;
+        token.accessToken = session.accessToken;
       }
       return token;
     },

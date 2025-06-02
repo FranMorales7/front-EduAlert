@@ -45,7 +45,7 @@ export default function AdminIncidentsForm({ initialData, onCrear, onEditar, isE
   useEffect(() => {
     if (user?.accessToken && showAlumnoModal) {
       const controller = new AbortController();
-      getAllStudents(user.accessToken, controller.signal)
+      getAllStudents(session.accessToken, controller.signal)
         .then((res) => setAlumnos(res.data))
         .catch((err) => {
           if (err.name !== 'CanceledError') {
@@ -60,7 +60,7 @@ export default function AdminIncidentsForm({ initialData, onCrear, onEditar, isE
   useEffect(() => {
     if (user?.accessToken && showClaseModal) {
       const controller = new AbortController();
-      getAllLessons(user.accessToken, controller.signal)
+      getAllLessons(session.accessToken, controller.signal)
         .then((res) => setClases(res.data))
         .catch((err) => {
           if (err.name !== 'CanceledError') {
