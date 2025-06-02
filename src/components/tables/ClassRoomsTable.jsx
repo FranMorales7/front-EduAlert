@@ -88,7 +88,7 @@ export default function ClassRoomsTable() {
   if (loading) return <div>Cargando aulas...</div>;
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-xl">
+    <div className="max-w-2xl mx-auto mt-8 p-6 bg-white shadow-lg rounded-xl">
       <h2 className="text-2xl font-bold mb-4 text-gray-800">Administración de Aulas</h2>
 
       {/* Toggle Formulario Crear Aula */}
