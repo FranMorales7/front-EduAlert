@@ -30,6 +30,7 @@ export default function UserCard() {
           signal: controller.signal,
         })
         .then((response) => {
+          console.log('Respuesta user -->', response)
           setUser(response.data);
         })
         .catch((error) => {
