@@ -53,7 +53,7 @@ export default function GroupGraphics() {
       }
     };
 
-    if (session.accessToken) fetchData();
+    if (session?.accessToken) fetchData();
   }, [session]);
 
   return (
