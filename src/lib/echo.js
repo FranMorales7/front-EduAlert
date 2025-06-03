@@ -1,8 +1,8 @@
-import Pusher from 'pusher-js';
-import Echo from 'laravel-echo';
-
-export function createEcho() {
+export async function createEcho() {
   if (typeof window !== 'undefined') {
+    const Pusher = (await import('pusher-js')).default;
+    const Echo = (await import('laravel-echo')).default;
+
     window.Pusher = Pusher;
 
     return new Echo({
@@ -13,5 +13,5 @@ export function createEcho() {
     });
   }
 
-  return null; // Retorna null si no está en el navegador
+  return null;
 }
