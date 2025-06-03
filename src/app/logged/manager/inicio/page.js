@@ -9,7 +9,7 @@ export default function IndexPage() {
   return (
     <BlurBackground>
       <Header />
-      <h2 className="text-md text-gray-600 ml-4 mb-4">Estadísticas generales de la plataforma</h2>
+      <h2 className="text-md text-gray-600 ml-4 mb-4">Estadísticas informativas de la plataforma</h2>
       <div className="flex grid grid-cols-2 gap-5">
         <IndexGraphic />
         <GroupGraphics />

@@ -1,35 +1,23 @@
-"use client";
+"use client"
 
-import { useEffect } from "react";
-import toast from "react-hot-toast";
+import echo from '@/lib/echo';
+import { useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 export default function GlobalNotificationListener() {
   useEffect(() => {
-    let echo;
-    let channel;
+    const channel = echo.channel('notifications');
 
-    const setupEcho = async () => {
-      const { createEcho } = await import('@/lib/echo');
-      echo = createEcho();
-
-      if (!echo) return;
-
-      channel = echo.channel("notifications");
-      channel.listen(".new-notification", (event) => {
-        toast.success(`🔔 ${event.title}`, {
-          description: event.message,
-          duration: 8000,
-        });
+    // En front-end el nombre del evento debe llevar el prefijo "."
+    channel.listen('.NewNotificationCreated', (event) => {
+      toast.success(`🔔 ${event.data.title}`, {
+        description: event.data.message,
+        duration: 8000,
       });
-    };
-
-    setupEcho();
+    });
 
     return () => {
-      if (channel) {
-        channel.stopListening(".new-notification");
-        channel.unsubscribe();
-      }
+      echo.leaveChannel('notifications');
     };
   }, []);
 

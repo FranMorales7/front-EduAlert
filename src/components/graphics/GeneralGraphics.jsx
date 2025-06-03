@@ -59,6 +59,7 @@ export default function IndexGraphic() {
 
   return (
     <div className="w-full h-full -ml-10">
+      <h2 className="text-lg font-semibold mb-2">Datos generales</h2>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
