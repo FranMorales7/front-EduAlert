@@ -135,7 +135,7 @@ export default function IncidentsTable() {
       filtros.aula === '' ||
       (i.lesson?.location?.name?.toLowerCase() ?? '').includes(filtros.aula.toLowerCase());
 
-    return descripcionMatch && alumnoMatch && fechaMatch && aulaMatch;
+    return descripcionMatch && alumnoMatch && aulaMatch;
   });
 
 
