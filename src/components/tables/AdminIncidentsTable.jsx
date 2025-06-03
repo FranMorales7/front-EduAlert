@@ -13,7 +13,7 @@ import toast from 'react-hot-toast';
 export default function AdminIncidentsTable() {
   const [loading, setLoading] = useState(true);
   const [incidents, setIncidents] = useState([]);
-  const [filtros, setFiltros] = useState({ descripcion: '', alumno: '', fecha: '', aula: '' });
+  const [filtros, setFiltros] = useState({ descripcion: '', alumno: '', aula: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [editingIncident, setEditingIncident] = useState(null);
@@ -163,7 +163,6 @@ export default function AdminIncidentsTable() {
       <div className="grid grid-cols-4 gap-4 mb-4">
         <input name="descripcion" value={filtros.descripcion} onChange={handleFiltro} placeholder="Filtrar por descripción" className="border px-3 py-2 rounded" />
         <input name="alumno" value={filtros.alumno} onChange={handleFiltro} placeholder="Filtrar por alumno" className="border px-3 py-2 rounded" />
-        <input name="fecha" type="date" value={filtros.fecha} onChange={handleFiltro} className="border px-3 py-2 rounded" />
         <input name="aula" value={filtros.aula} onChange={handleFiltro} placeholder="Filtrar por aula" className="border px-3 py-2 rounded" />
       </div>
 
@@ -175,7 +174,6 @@ export default function AdminIncidentsTable() {
                 <th className="p-2 border">Estado</th>
                 <th className="p-2 border max-w-2xl">Descripción</th>
                 <th className="p-2 border">Alumno</th>
-                <th className="p-2 border">Fecha</th>
                 <th className="p-2 border">Aula</th>
                 <th className="p-2 border">Acciones</th>
             </tr>
