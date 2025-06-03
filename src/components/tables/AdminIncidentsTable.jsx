@@ -142,7 +142,6 @@ export default function AdminIncidentsTable() {
         .toLowerCase()
         .includes(filtros.alumno.toLowerCase())
     ) &&
-    (i.created_at?.includes(filtros.fecha) ?? '') &&
     (i.lesson?.location?.name.toLowerCase().includes(filtros.aula.toLowerCase()) ?? '')
   );
 
