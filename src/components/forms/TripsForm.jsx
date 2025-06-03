@@ -7,6 +7,7 @@ import { getAllLessons } from '@/requests/lessons';
 import ClassesSelector from '../lists/ClassesList';
 import StudentsSelector from '../lists/StudentsList';
 import SolvedToggleButton from '../ui/solvedToogledButton';
+import { toast } from 'react-toastify';
 
 export default function TripsForm({ initialData, onCrear, onEditar, isEditing, token }) {
   const [form, setForm] = useState({
@@ -43,15 +44,16 @@ export default function TripsForm({ initialData, onCrear, onEditar, isEditing, t
     }
   }, [initialData]);
 
-
   useEffect(() => {
     if (session?.accessToken && showAlumnoModal) {
       const controller = new AbortController();
       getAllStudents(session.accessToken, controller.signal)
         .then((res) => setAlumnos(res.data))
         .catch((err) => {
-          console.error('Error al cargar alumnos', err);
+          if (err.name !== 'CanceledError') {
+            console.error('Error al cargar alumnos', err);
             toast.error('Error al mostrar al alumnado');
+          }
         });
       return () => controller.abort();
     }
@@ -100,7 +102,11 @@ export default function TripsForm({ initialData, onCrear, onEditar, isEditing, t
       ...(isEditing ? { is_solved: form.is_solved } : { teacher_id: user.id }),
     };
 
-    (isEditing ? onEditar : onCrear)(data);
+    if (isEditing && onEditar) {
+      onEditar(data);
+    } else if (!isEditing && onCrear) {
+      onCrear(data);
+    }
   };
 
   return (
@@ -139,15 +145,17 @@ export default function TripsForm({ initialData, onCrear, onEditar, isEditing, t
       </div>
 
       <Input label="Fecha" type="date" name="fecha" value={form.fecha} onChange={handleChange} />
-      
-      <span className="text-gray-700">Ubicación:</span>
-      <ClassesSelector
-        aula={form.aula}
-        showModal={showClaseModal}
-        setShowModal={setShowClaseModal}
-        onSelect={seleccionarClase}
-        token={token}
-      />
+      <div>
+        <label className="block text-sm font-medium">Ubicación</label>
+        <ClassesSelector
+          aula={form.aula}
+          clases={clases}
+          showModal={showClaseModal}
+          setShowModal={setShowClaseModal}
+          onSelect={seleccionarClase}
+          token={token}
+        />
+      </div>
       {isEditing && (
         <div>
           <span className="text-gray-700 mr-4">Estado:</span>
@@ -169,7 +177,7 @@ export default function TripsForm({ initialData, onCrear, onEditar, isEditing, t
   );
 }
 
-// COMPONENTES AUXILIARES
+// COMPONENTE AUXILIAR
 
 function Input({ label, name, value, onChange, type = 'text' }) {
   return (

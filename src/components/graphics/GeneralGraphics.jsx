@@ -27,7 +27,6 @@ export default function IndexGraphic() {
     const fetchData = async () => {
       try {
         const token = session?.accessToken;
-        console.log('Token: ', token)
         const [
           teachersRes,
           studentsRes,

@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 export default function IncidentsTable() {
   const [loading, setLoading] = useState(true);
   const [incidents, setIncidents] = useState([]);
-  const [filtros, setFiltros] = useState({ descripcion: '', alumno: '', fecha: '', aula: '' });
+  const [filtros, setFiltros] = useState({ descripcion: '', alumno: '', aula: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingIncident, setEditingIncident] = useState(null);
   const abortControllerRef = useRef(null);
@@ -130,9 +130,6 @@ export default function IncidentsTable() {
     const alumnoTexto = `${i.student?.name ?? ''} ${i.student?.last_name_1 ?? ''} ${i.student?.last_name_2 ?? ''}`.toLowerCase();
     const alumnoMatch =
       filtros.alumno === '' || alumnoTexto.includes(filtros.alumno.toLowerCase());
-
-    const fechaMatch =
-      filtros.fecha === '' || i.created_at?.slice(0, 10) === filtros.fecha;
 
     const aulaMatch =
       filtros.aula === '' ||
