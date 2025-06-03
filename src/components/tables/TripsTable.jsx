@@ -94,7 +94,7 @@ export default function TripsTable() {
       setTrips(res.data);
       cerrarModal();
       toast.success('Salida creada correctamente');
-      
+
     } catch (err) {
       console.error('Error al crear salida:', err.message);
       toast.error('Error al crear la salida');
@@ -133,7 +133,7 @@ export default function TripsTable() {
       filtros.aula === '' ||
       (i.lesson?.location?.name?.toLowerCase() ?? '').includes(filtros.aula.toLowerCase());
 
-    return descripcionMatch && alumnoMatch && fechaMatch && aulaMatch;
+    return descripcionMatch && alumnoMatch && aulaMatch;
   });
 
   if (loading) return <p className="p-4">Cargando panel de salidas...</p>;
