@@ -14,6 +14,7 @@ export default function LessonsTable() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [filters, setFilters] = useState({ descripcion: '', ubicacion: '', profesor: '' });
   const [selectedLesson, setSelectedLesson] = useState(null);
   const abortControllerRef = useRef(null);
 
@@ -99,6 +100,20 @@ export default function LessonsTable() {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const filteredLessons = lessons.filter((l) => {
+    const descMatch = l.description.toLowerCase().includes(filters.descripcion.toLowerCase());
+    const locMatch = l.location.name.toLowerCase().includes(filters.ubicacion.toLowerCase());
+    const teacherFullName = `${l.teacher?.name || ''} ${l.teacher?.last_name_1 || ''} ${l.teacher?.last_name_2 || ''}`;
+    const teacherMatch = teacherFullName.toLowerCase().includes(filters.profesor.toLowerCase());
+
+    return descMatch && locMatch && teacherMatch;
+  });
+
   if (status === loading) return <p className="p-6">Cargando datos...</p>;
   if (status === 'unauthenticated') return <p className="p-6">No estás autenticado.</p>;
 
@@ -116,6 +131,35 @@ export default function LessonsTable() {
           + Nueva clase
         </button>
       </div>
+
+      {/* Filtros */}
+      <div className="flex gap-2">
+        <input
+          name="descripcion"
+          type="text"
+          placeholder="Filtrar por descripción"
+          value={filters.descripcion}
+          onChange={handleFilterChange}
+          className="border p-1 rounded"
+        />
+        <input
+          name="ubicacion"
+          type="text"
+          placeholder="Filtrar por ubicación"
+          value={filters.ubicacion}
+          onChange={handleFilterChange}
+          className="border p-1 rounded"
+        />
+        <input
+          name="profesor"
+          type="text"
+          placeholder="Filtrar por profesor/a"
+          value={filters.profesor}
+          onChange={handleFilterChange}
+          className="border p-1 rounded"
+        />
+      </div>
+
       <div className="max-h-[500px] overflow-auto rounded border border-gray-300">
         <table className="w-full">
           <thead className="bg-gray-100">

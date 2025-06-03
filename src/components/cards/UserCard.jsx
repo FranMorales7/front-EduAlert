@@ -39,7 +39,7 @@ export default function UserCard() {
           }
         });
     }
-  }, [session, status]);
+  }, [session, status, user?.image]);
 
   if (!user) return null;
 

@@ -13,6 +13,7 @@ export default function GroupsTable() {
   const abortControllerRef = useRef(null);
   const [groups, setGroups] = useState([]);
   const [tutors, setTutors] = useState([]);
+  const [filtros, setFiltros] = useState({ curso: '', ubicacion: '', tutor: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -56,6 +57,10 @@ export default function GroupsTable() {
 
     return () => controller.abort();
   }, [user, status, session]);
+
+  const handleFiltro = (e) => {
+    setFiltros({ ...filtros, [e.target.name]: e.target.value });
+  };
 
   const onCrear = async (nuevoGrupo) => {
     try {
@@ -105,6 +110,20 @@ export default function GroupsTable() {
     setIsModalOpen(true);
   };
 
+  const datosFiltrados = groups.filter((g) => {
+    const cursoMatch =
+      filtros.curso === '' || (g.name?.toLowerCase() ?? '').includes(filtros.curso.toLowerCase());
+
+    const ubicacionMatch =
+      filtros.ubicacion === '' || (g.location?.name?.toLowerCase() ?? '').includes(filtros.ubicacion.toLowerCase());
+
+    const nombreTutor = `${g.tutor?.name ?? ''} ${g.tutor?.last_name_1 ?? ''} ${g.tutor?.last_name_2 ?? ''}`.toLowerCase();
+    const tutorMatch = filtros.tutor === '' || nombreTutor.includes(filtros.tutor.toLowerCase());
+
+    return cursoMatch && ubicacionMatch && tutorMatch;
+  });
+
+
   if (status === loading) return <p className="p-6">Cargando datos...</p>;
   if (status === 'unauthenticated') return <p className="p-6">No estás autenticado.</p>;
 
@@ -122,18 +141,44 @@ export default function GroupsTable() {
           + Nuevo grupo
         </button>
       </div>
+
+      {/* Filtros */}
+      <div className="grid grid-cols-3 gap-4 mb-4">
+        <input
+          name="curso"
+          value={filtros.curso}
+          onChange={handleFiltro}
+          placeholder="Filtrar por curso"
+          className="border px-3 py-2 rounded"
+        />
+        <input
+          name="ubicacion"
+          value={filtros.ubicacion}
+          onChange={handleFiltro}
+          placeholder="Filtrar por aula"
+          className="border px-3 py-2 rounded"
+        />
+        <input
+          name="tutor"
+          value={filtros.tutor}
+          onChange={handleFiltro}
+          placeholder="Filtrar por tutor"
+          className="border px-3 py-2 rounded"
+        />
+      </div>
+
       <div className="max-h-[500px] overflow-auto rounded border border-gray-300">
         <table className="w-full">
           <thead className="bg-gray-100">
             <tr>
-              <th className="p-2 border">Nombre</th>
+              <th className="p-2 border">Curso</th>
               <th className="p-2 border">Ubicación</th>
               <th className="p-2 border">Tutor</th>
               <th className="p-2 border">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {groups.map((g) => (
+            {datosFiltrados.map((g) => (
               <tr key={g.id} className="hover:bg-gray-50">
                 <td className="p-2 border">{g.name}</td>
                 <td className="p-2 border">{g.location.name}</td>
