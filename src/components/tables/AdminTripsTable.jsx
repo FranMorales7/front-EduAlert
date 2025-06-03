@@ -170,6 +170,7 @@ export default function AdminTripsTable() {
                 <th className="p-2 border">Estado</th>
                 <th className="p-2 border max-w-2xl">Descripción</th>
                 <th className="p-2 border">Alumno</th>
+                <th className="p-2 border">Fecha</th>
                 <th className="p-2 border">Aula</th>
                 <th className="p-2 border">Acciones</th>
             </tr>

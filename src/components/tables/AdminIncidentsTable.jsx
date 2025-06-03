@@ -145,7 +145,7 @@ export default function AdminIncidentsTable() {
     (i.lesson?.location?.name.toLowerCase().includes(filtros.aula.toLowerCase()) ?? '')
   );
 
-  if (loading) return <p className="p-4">Cargando panel de avisos...</p>;
+  if (loading) return <p className="p-4">Cargando panel de incidencias...</p>;
 
   return (
     <div className='p-6 bg-white shadow-xl rounded-xl inset-shadow-sm'>
@@ -173,6 +173,7 @@ export default function AdminIncidentsTable() {
                 <th className="p-2 border">Estado</th>
                 <th className="p-2 border max-w-2xl">Descripción</th>
                 <th className="p-2 border">Alumno</th>
+                <th className="p-2 border">Fecha</th>
                 <th className="p-2 border">Aula</th>
                 <th className="p-2 border">Acciones</th>
             </tr>
