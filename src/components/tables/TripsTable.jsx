@@ -87,8 +87,7 @@ export default function TripsTable() {
 
   const handleCrear = async (nueva) => {
     try {
-      const nuevaSalida = { ...nueva, teacher_id: user.id };
-      await createTrip(nuevaSalida, session.accessToken);
+      await createTrip(nueva, session.accessToken);
       const res = await fetchTripsByUser(user.id, session.accessToken);
 
       setTrips(res.data);
