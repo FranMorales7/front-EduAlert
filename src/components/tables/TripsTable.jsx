@@ -31,6 +31,7 @@ export default function TripsTable() {
         const response = await fetchTripsByUser(user.id, session.accessToken, controller.signal);
         if (!response?.data) throw new Error('No se encontraron salidas');
         setTrips(response.data);
+
       } catch (error) {
         if (error.name !== 'CanceledError') {
           console.error('Error al traer las salidas:', error.message);
@@ -54,9 +55,10 @@ export default function TripsTable() {
       await updateTrip(
         editado.id,
         {
-          is_solved: editado.is_solved,
+         is_solved: editado.is_solved,
           description: editado.descripcion,
-          created_at: editado.fecha,
+          student_id: editado.student_id,
+          lesson_id: editado.lesson_id,
         },
         session.accessToken
       );
@@ -88,9 +90,11 @@ export default function TripsTable() {
       const nuevaSalida = { ...nueva, teacher_id: user.id };
       await createTrip(nuevaSalida, session.accessToken);
       const res = await fetchTripsByUser(user.id, session.accessToken);
+
       setTrips(res.data);
       cerrarModal();
       toast.success('Salida creada correctamente');
+      
     } catch (err) {
       console.error('Error al crear salida:', err.message);
       toast.error('Error al crear la salida');

@@ -7,7 +7,6 @@ import { getAllLessons } from '@/requests/lessons';
 import ClassesSelector from '../lists/ClassesList';
 import StudentsSelector from '../lists/StudentsList';
 import SolvedToggleButton from '../ui/solvedToogledButton';
-import { toast } from 'react-toastify';
 
 export default function TripsForm({ initialData, onCrear, onEditar, isEditing, token }) {
   const [form, setForm] = useState({
@@ -31,14 +30,12 @@ export default function TripsForm({ initialData, onCrear, onEditar, isEditing, t
   useEffect(() => {
     if (initialData) {
       setForm({
-        descripcion: initialData.description || '',
-        fecha: initialData.created_at?.slice(0, 10) || '',
-        aula: initialData.lesson?.location || '',
-        alumno: initialData.student
-          ? `${initialData.student.name} ${initialData.student.last_name_1}`
-          : '',
-        student_id: initialData.student_id || initialData.student?.id || null,
-        lesson_id: initialData.lesson_id || initialData.lesson?.id || null,
+        descripcion: initialData.descripcion || '',
+        fecha: initialData.fecha || '',
+        aula: initialData.aula || '',
+        alumno: initialData.alumno || '',
+        student_id: initialData.student_id || null,
+        lesson_id: initialData.lesson_id || null,
         is_solved: initialData.is_solved || false,
       });
     }
@@ -177,7 +174,7 @@ export default function TripsForm({ initialData, onCrear, onEditar, isEditing, t
   );
 }
 
-// COMPONENTE AUXILIAR
+// COMPONENTES AUXILIARES
 
 function Input({ label, name, value, onChange, type = 'text' }) {
   return (
