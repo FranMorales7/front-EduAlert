@@ -129,7 +129,7 @@ export default function TeachersTable() {
       <div className="max-h-[500px] overflow-auto rounded border border-gray-300 text-center">
         <table className="w-full">
           <thead>
-            <tr className="bg-gray-100 text-left">
+            <tr className="bg-gray-100">
               <th className="p-2 border">Estado</th>
               <th className="p-2 border">Nombre</th>
               <th className="p-2 border">Apellidos</th>

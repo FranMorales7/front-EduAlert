@@ -165,7 +165,7 @@ export default function AdminTripsTable() {
       <div className='max-h-[520px] overflow-y-auto border border-gray-300'>
         <table className="w-full">
             <thead>
-            <tr className="bg-gray-100 text-left">
+            <tr className="bg-gray-100">
                 <th className="p-2 border">Estado</th>
                 <th className="p-2 border max-w-2xl">Descripción</th>
                 <th className="p-2 border">Alumno</th>
