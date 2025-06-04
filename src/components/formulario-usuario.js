@@ -119,7 +119,7 @@ export default function FormularioUsuario() {
 
     const form = new FormData();
 
-    ['name', 'last_name_1', 'last_name_2'].forEach((field) => {
+    ['name', 'last_name_1', 'last_name_2', 'email'].forEach((field) => {
       if (formData[field]) form.append(field, formData[field]);
     });
 
@@ -240,12 +240,15 @@ export default function FormularioUsuario() {
             type="email"
             name="email"
             value={formData.email}
-            readOnly
-            className="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-500 cursor-not-allowed"
+            onChange={handleChange}
+            className="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-lg"
           />
         </div>
       </div>
 
+      <p className="text-sm text-gray-600 italic">
+        Para cambiar tu contraseña, debes ingresar tu contraseña actual y la nueva contraseña.
+      </p>
       <UpdatePassword 
         value={formData.password}
         onChange={handleChange} 
