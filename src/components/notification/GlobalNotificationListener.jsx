@@ -1,5 +1,6 @@
 "use client";
 
+import { BellRing } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -16,15 +17,22 @@ export default function GlobalNotificationListener() {
           t.visible ? "animate-enter" : "animate-leave"
         }`}
       >
-        <strong className="flex gap-2">
-          <BellRing className="bg-yellow-500" /> 
-          {event.title}
-        </strong>
-        {expanded && (
-          <p className="mt-2 text-sm text-gray-700 transition-opacity duration-300">
-            {event.message}
-          </p>
-        )}
+        <div className="flex items-start gap-3">
+          <div className="p-2 bg-yellow-100 text-yellow-600 rounded-full">
+            <BellRing className="w-5 h-5" />
+          </div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-sm text-gray-900">{event.title}</h4>
+            {expanded && (
+              <p className="mt-1 text-sm text-gray-600 transition-opacity duration-300">
+                {event.message}
+              </p>
+            )}
+            {!expanded && (
+              <p className="mt-1 text-xs text-blue-500">Haz clic para ver más</p>
+            )}
+          </div>
+        </div>
       </div>
     );
   }

@@ -27,6 +27,20 @@ export default function FormularioUsuario() {
     updated_at: '',
   });
 
+  // Validaciones
+  const allowedDomains = ['com', 'es', 'net', 'org'];
+
+  function isValidEmailDomain(email) {
+    const domain = email.split('@')[1]; // Ej: "gmail.com"
+    const tld = domain.split('.').pop(); // Ej: "com"
+    return allowedDomains.includes(tld);
+  }
+
+  function isStrongPassword(password) {
+    const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    return strongRegex.test(password);
+  }
+
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
       setUser(session.user.id);
@@ -116,6 +130,24 @@ export default function FormularioUsuario() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+    // Validar información antes de enviar
+    if (!isValidEmailDomain(formData.email)) {
+      toast.error('El correo debe ser de un dominio permitido (.com, .es, .net, .org)');
+      return;
+    }
+
+    if (formData.new_password) {
+      if (!isStrongPassword(formData.new_password)) {
+        toast.error('La nueva contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, un número y un símbolo.');
+        return;
+      }
+
+      if (!formData.current_password) {
+        toast.error('Debes ingresar tu contraseña actual para cambiarla.');
+        return;
+      }
+    }
 
     const form = new FormData();
 
@@ -253,6 +285,9 @@ export default function FormularioUsuario() {
         value={formData.password}
         onChange={handleChange} 
       />
+      <p className="text-sm text-gray-600 italic">
+        La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula, un número y un símbolo.
+      </p>
 
       <div className="flex justify-between text-xs text-gray-400 mt-2">
         <span>Creado: {formData.created_at?.slice(0, 10)}</span>
