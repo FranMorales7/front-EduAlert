@@ -39,7 +39,7 @@ export default function TeacherForm({ initialData = null, onSubmit, isEditing = 
   useEffect(() => {
     if (initialData) {
       const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL;
-      const fullImageUrl = initialData.image ? `${imageUrl}storage/${initialData.image}` : '';
+      const fullImageUrl = initialData.image ? `${imageUrl}/storage/${initialData.image}` : '';
 
       setFormData({
         name: initialData.name || '',
