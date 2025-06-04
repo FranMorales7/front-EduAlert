@@ -173,7 +173,7 @@ export default function AdminForm() {
   if (isLoading) return <p>Cargando datos del usuario...</p>;
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg space-y-4">
+    <form onSubmit={handleSubmit} className="max-w-xl mx-auto bg-white p-6 rounded-xl inset-shadow-md shadow-lg space-y-4">
       <h2 className="text-xl font-bold text-gray-800 mb-4">Mi perfil</h2>
 
       <div className="flex justify-center">
