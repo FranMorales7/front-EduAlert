@@ -130,7 +130,7 @@ export default function ClassRoomsTable() {
       </div>
 
       {/* Lista de aulas */}
-      <ul className="space-y-2 mr-4 max-h-[500px] overflow-y-auto">
+      <ul className="space-y-2 max-h-[500px] overflow-y-auto scroll-p-4">
         {filteredClassRooms.length > 0 ? (
           filteredClassRooms.map((aula) => (
             <li
