@@ -1,24 +1,30 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-/*
----break---
-  */
+
+/* ---------------------------------------------
+  VARIANTES PERSONALIZADAS
+--------------------------------------------- */
 @custom-variant dark (&:is(.dark *));
 
+/* ---------------------------------------------
+  DEFINICIÓN DE VARIABLES PERSONALIZADAS (Modo Claro)
+--------------------------------------------- */
 :root {
   --primary-style: #0066cc;
   --radius: 0.625rem;
 
-  /* Fondo general y colores base */
+  /* Colores base */
   --background: #ffffff;
   --foreground: #003366;
 
+  /* Componentes UI */
   --card: #f5f5f5;
   --card-foreground: #003366;
 
   --popover: #f5f5f5;
   --popover-foreground: #003366;
 
+  /* Colores de énfasis */
   --primary: #0066cc;
   --primary-foreground: #ffffff;
 
@@ -33,16 +39,19 @@
 
   --destructive: #ff4d4f;
 
+  /* Bordes, inputs y anillos */
   --border: #66b2ff;
   --input: #d9d9d9;
   --ring: #003366;
 
+  /* Colores para gráficos */
   --chart-1: #66b2ff;
   --chart-2: #3399ff;
   --chart-3: #0066cc;
   --chart-4: #004c99;
   --chart-5: #003366;
 
+  /* Sidebar */
   --sidebar: #f5f5f5;
   --sidebar-foreground: #003366;
   --sidebar-primary: #0066cc;
@@ -51,84 +60,69 @@
   --sidebar-accent-foreground: #003366;
   --sidebar-border: #d9d9d9;
   --sidebar-ring: #66b2ff;
-
 }
 
+/* ---------------------------------------------
+  VARIABLES PARA USO CON @theme
+--------------------------------------------- */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
+
+  /* Mapeo de colores */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
   --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Sidebar */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Gráficos */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Radio de bordes */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* ---------------------------------------------
+  MODO OSCURO: Variables personalizadas
+--------------------------------------------- */
 @media (prefers-color-scheme: dark) {
   :root {
     --primary-style: #0010f0;
   }
 }
-/*
-body {
-  background: white;
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-  */
-
-body {
-  background: linear-gradient(135deg, #1e293b, #334155, #475569, #1e293b);
-  background-size: 800% 800%;
-  animation: fondoAnimado 25s ease infinite;
-  font-family: 'Inter', sans-serif;
-}
-
-@keyframes fondoAnimado {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/*
----break---
-  */
 
 .dark {
   --background: #003366;
@@ -178,12 +172,33 @@ body {
   background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
 }
 
+/* ---------------------------------------------
+  ANIMACIÓN DE FONDO (Modo Claro)
+--------------------------------------------- */
+body {
+  background: linear-gradient(135deg, #1e293b, #334155, #475569, #1e293b);
+  background-size: 800% 800%;
+  animation: fondoAnimado 25s ease infinite;
+  font-family: 'Inter', sans-serif;
+}
+
+@keyframes fondoAnimado {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ---------------------------------------------
+  COMPONENTES PERSONALIZADOS
+--------------------------------------------- */
+
 .card {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
   border: 1px solid #e3e7ed;
   border-radius: 1rem;
 }
 
+/* Botones generales */
 button {
   background: linear-gradient(135deg, #3b82f6, #1e40af);
   color: white;
@@ -194,35 +209,37 @@ button {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
 }
+
 button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
 }
 
+/* Botón Editar */
 .btEdit {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem; /* gap-2 */
-  padding: 0.5rem 1rem; /* py-2 px-4 */
-  font-size: 0.875rem; /* text-sm */
-  font-weight: 500; 
-  margin-right: 8;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
   color: white;
-  background: linear-gradient(to right, #f97316, #fb923c); 
-  border-radius: 0.75rem; /* rounded-xl */
+  background: linear-gradient(to right, #f97316, #fb923c);
+  border-radius: 0.75rem;
   box-shadow: 0 1px 2px rgba(255, 94, 0, 0.05);
   transition: background 0.15s ease-in-out;
   outline: none;
 }
 
 .btEdit:hover {
-  background: linear-gradient(to right, #ea580c, #f97316); 
+  background: linear-gradient(to right, #ea580c, #f97316);
 }
 
 .btEdit:focus {
-  box-shadow: 0 0 0 2px #fdba74; /* ring-2-orange */
+  box-shadow: 0 0 0 2px #fdba74;
 }
 
+/* Botón Eliminar */
 button.btDelete {
   display: inline-flex;
   align-items: center;
@@ -231,7 +248,7 @@ button.btDelete {
   font-size: 0.875rem;
   font-weight: 500;
   color: white;
-  background: linear-gradient(to right, #ef4444, #f87171); 
+  background: linear-gradient(to right, #ef4444, #f87171);
   border-radius: 0.75rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   transition: background 0.15s ease-in-out;
@@ -239,16 +256,16 @@ button.btDelete {
 }
 
 button.btDelete:hover {
-  background: linear-gradient(to right, #dc2626, #ef4444); 
+  background: linear-gradient(to right, #dc2626, #ef4444);
 }
 
 button.btDelete:focus {
-  box-shadow: 0 0 0 2px #fca5a5; /* ring-2 */
+  box-shadow: 0 0 0 2px #fca5a5;
 }
 
+/* Botón Éxito */
 button.btSuccess {
-  background: linear-gradient(to right, #0c6400, #2e8339); 
-  background: #16a34a; 
+  background: #16a34a;
   border-radius: 0.75rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   transition: background 0.15s ease-in-out;
@@ -263,23 +280,25 @@ button.btSuccess {
 }
 
 button.btSuccess:hover {
-  background: linear-gradient(to right, #004d0d, #35743f); 
   background: #15803d;
 }
 
 button.btSuccess:focus {
-  box-shadow: 0 0 0 2px #00b30f; 
+  box-shadow: 0 0 0 2px #00b30f;
 }
 
+/* Estilos del Sidebar */
 .sidebar {
   background: rgba(240, 248, 255, 0.75);
   backdrop-filter: blur(8px);
   border-right: 1px solid #e3e7ed;
 }
 
+/* Animación de panel de perfil */
 .profile-panel {
   animation: fadeInUp 0.8s ease;
 }
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -291,10 +310,9 @@ button.btSuccess:focus {
   }
 }
 
-/*
----break---
-  */
-
+/* ---------------------------------------------
+  TAILWIND LAYER BASE: Estilos globales
+--------------------------------------------- */
 @layer base {
   * {
     @apply border-border outline-ring/50;
