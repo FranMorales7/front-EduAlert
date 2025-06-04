@@ -118,7 +118,7 @@ export default function LessonsTable() {
   if (status === 'unauthenticated') return <p className="p-6">No estás autenticado.</p>;
 
   return (
-    <div className="p-6 bg-white shadow-xl rounded-xl inset-shadow-sm">
+    <div className="p-6 bg-white shadow-xl rounded-xl inset-shadow-sm mt-2">
       <div className="flex justify-end mb-4">
         <button
           onClick={() => {
@@ -133,14 +133,14 @@ export default function LessonsTable() {
       </div>
 
       {/* Filtros */}
-      <div className="flex gap-2">
+      <div className="grid grid-cols-3 gap-4 mb-4">
         <input
           name="descripcion"
           type="text"
           placeholder="Filtrar por descripción"
           value={filters.descripcion}
           onChange={handleFilterChange}
-          className="border p-1 rounded"
+          className="border px-3 py-2 rounded"
         />
         <input
           name="ubicacion"
@@ -148,7 +148,7 @@ export default function LessonsTable() {
           placeholder="Filtrar por ubicación"
           value={filters.ubicacion}
           onChange={handleFilterChange}
-          className="border p-1 rounded"
+          className="border px-3 py-2 rounded"
         />
         <input
           name="profesor"
@@ -156,7 +156,7 @@ export default function LessonsTable() {
           placeholder="Filtrar por profesor/a"
           value={filters.profesor}
           onChange={handleFilterChange}
-          className="border p-1 rounded"
+          className="border px-3 py-2 rounded"
         />
       </div>
 
