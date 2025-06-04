@@ -130,7 +130,6 @@ export default function AdminIncidentsTable() {
             console.error('Error al eliminar incidencias resueltas:', err.message);
             toast.error('Error al eliminar las incidencias resueltas');
         } finally {
-            // Refrescar datos
             setShowConfirm(false); // Cerramos el modal después de la acción
         }
     };

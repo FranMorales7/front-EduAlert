@@ -147,13 +147,13 @@ export default function ClassRoomsTable() {
                   />
                   <button
                     onClick={handleUpdate}
-                    className="text-green-600 hover:underline"
+                    className="btSuccess"
                   >
                     Guardar
                   </button>
                   <button
                     onClick={() => setEditId(null)}
-                    className="text-red-600 hover:underline"
+                    className="btDelete"
                   >
                     Cancelar
                   </button>

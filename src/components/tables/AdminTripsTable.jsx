@@ -127,7 +127,6 @@ export default function AdminTripsTable() {
         } catch (err) {
             console.error('Error al eliminar salidas resueltas:', err.message);
         } finally {
-            // Refrescar datos
             setShowConfirm(false); // Cerramos el modal después de la acción
         }
 };

@@ -147,7 +147,7 @@ export default function StudentsTable() {
         <input name="contacto" value={filtros.contacto} onChange={handleFiltro} placeholder="Filtrar por contacto" className="border px-3 py-2 rounded" />
       </div>
 
-      <div className='max-h-[500px] overflow-auto rounded border border-gray-300'>
+      <div className='max-h-[500px] overflow-auto rounded border border-gray-300 text-center'>
         <table className="w-full">
           <thead>
             <tr className="bg-gray-100 text-left">
