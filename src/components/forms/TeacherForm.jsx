@@ -22,6 +22,20 @@ export default function TeacherForm({ initialData = null, onSubmit, isEditing = 
     updated_at: '',
   });
 
+  // Validaciones
+  const allowedDomains = ['com', 'es', 'net', 'org'];
+
+  function isValidEmailDomain(email) {
+    const domain = email.split('@')[1]; // Ej: "gmail.com"
+    const tld = domain.split('.').pop(); // Ej: "com"
+    return allowedDomains.includes(tld);
+  }
+
+  function isStrongPassword(password) {
+    const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    return strongRegex.test(password);
+  }
+
   useEffect(() => {
     if (initialData) {
       const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL;
@@ -80,6 +94,24 @@ export default function TeacherForm({ initialData = null, onSubmit, isEditing = 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validar información antes de enviar
+    if (!isValidEmailDomain(formData.email)) {
+      toast.error('El correo debe ser de un dominio permitido (.com, .es, .net, .org)');
+      return;
+    }
+
+    if (formData.new_password) {
+      if (!isStrongPassword(formData.new_password)) {
+        toast.error('La nueva contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, un número y un símbolo.');
+        return;
+      }
+
+      if (!formData.current_password) {
+        toast.error('Debes ingresar tu contraseña actual para cambiarla.');
+        return;
+      }
+    }
     const data = new FormData();
 
     ['name', 'last_name_1', 'last_name_2', 'email'].forEach((field) => {
@@ -198,6 +230,9 @@ export default function TeacherForm({ initialData = null, onSubmit, isEditing = 
           </button>
         </div>
       </div>
+      <p className="text-sm text-gray-600 italic">
+        La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula, un número y un símbolo.
+      </p>
 
       <div className="flex items-start">
         <label className="text-sm font-medium text-gray-700" htmlFor="is_active">¿Activo?</label>
