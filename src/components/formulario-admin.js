@@ -278,14 +278,14 @@ export default function FormularioUsuario() {
         </div>
       </div>
       
-      <p className="text-sm text-gray-600 italic">
+      <p className="text-xs text-gray-600 italic">
         Para cambiar tu contraseña, debes ingresar la actual también.
       </p>
       <UpdatePassword 
         value={formData.password}
         onChange={handleChange} 
       />
-      <p className="text-sm text-gray-600 italic">
+      <p className="text-xs text-gray-600 italic">
           La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula, un número y un símbolo.
       </p>
 
