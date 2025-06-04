@@ -68,7 +68,7 @@ export default function FormularioUsuario() {
       .then((resp) => {
         const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL;
         const data = resp?.data || {};
-        const fullImageUrl = data.image ? `${imageUrl}storage/${data.image}?t=${Date.now()}` : '';
+        const fullImageUrl = data.image ? `${imageUrl}/storage/${data.image}?t=${Date.now()}` : '';
         setFormData({
           name: data.name ?? '',
           last_name_1: data.last_name_1 ?? '',

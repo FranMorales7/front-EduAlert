@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
           {children}
           <GlobalNotificationListener />
           </SessionWrapper>
-         <Toaster position="top-center" />
+         <Toaster position="top-right" />
       </body>
     </html>
   );
