@@ -133,7 +133,7 @@ export default function LessonsTable() {
       </div>
 
       {/* Filtros */}
-      <div className="grid grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-4 gap-4 mb-4">
         <input
           name="descripcion"
           type="text"
@@ -160,7 +160,7 @@ export default function LessonsTable() {
         />
       </div>
 
-      <div className="max-h-[500px] overflow-auto rounded border border-gray-300">
+      <div className="max-h-[500px] overflow-auto rounded border border-gray-300 text-center">
         <table className="w-full">
           <thead className="bg-gray-100">
             <tr>

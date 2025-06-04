@@ -120,13 +120,13 @@ export default function TeachersTable() {
         </button>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-4 gap-4 mb-4">
         <input name="nombre" value={filtros.nombre} onChange={handleFiltro} placeholder="Filtrar por nombre" className="border px-3 py-2 rounded" />
         <input name="apellidos" value={filtros.apellidos} onChange={handleFiltro} placeholder="Filtrar por apellidos" className="border px-3 py-2 rounded" />
         <input name="email" value={filtros.email} onChange={handleFiltro} placeholder="Filtrar por email" className="border px-3 py-2 rounded" />
       </div>
 
-      <div className="max-h-[500px] overflow-auto rounded border border-gray-300">
+      <div className="max-h-[500px] overflow-auto rounded border border-gray-300 text-center">
         <table className="w-full">
           <thead>
             <tr className="bg-gray-100 text-left">
