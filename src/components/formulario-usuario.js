@@ -205,12 +205,12 @@ export default function FormularioUsuario() {
   if (isLoading) return <p>Cargando datos del usuario...</p>;
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-xl mx-auto -my-10 bg-white p-6 rounded-xl shadow-inset-sm shadow-lg space-y-4 inset-shadow-sm">
+    <form onSubmit={handleSubmit} className="max-w-xl mx-auto -my-8 bg-white p-6 rounded-xl shadow-inset-sm shadow-lg space-y-4 inset-shadow-sm">
       <h2 className="text-xl font-bold text-gray-800 mb-4">Mi perfil</h2>
 
       <div className="flex justify-center">
         <Image
-          src={preview || formData.image || '/images/SF_logo-fa.png'}
+          src={'/images/SF_logo-fa.png'}
           alt="Foto de perfil"
           sizes='64px'
           width={100}
@@ -221,6 +221,7 @@ export default function FormularioUsuario() {
 
       </div>
 
+{/*
       <div>
         <label className="block text-sm font-medium text-gray-700">Cambiar imagen de perfil</label>
         <input
@@ -231,7 +232,7 @@ export default function FormularioUsuario() {
           className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
         />
       </div>
-
+*/}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700">Nombre</label>
@@ -273,7 +274,7 @@ export default function FormularioUsuario() {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-lg"
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
           />
         </div>
       </div>

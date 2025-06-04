@@ -210,7 +210,7 @@ export default function FormularioUsuario() {
 
       <div className="flex justify-center">
         <Image
-          src={preview || formData.image || '/images/SF_logo-fa.png'}
+          src={'/images/SF_logo-fa.png'}
           alt="Foto de perfil"
           sizes='64px'
           width={100}
@@ -220,7 +220,7 @@ export default function FormularioUsuario() {
         />
 
       </div>
-
+{/* 
       <div>
         <label className="block text-sm font-medium text-gray-700">Cambiar imagen de perfil</label>
         <input
@@ -231,7 +231,7 @@ export default function FormularioUsuario() {
           className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
         />
       </div>
-
+*/}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700">Nombre</label>
