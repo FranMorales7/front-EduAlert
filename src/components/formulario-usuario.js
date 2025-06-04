@@ -285,7 +285,7 @@ export default function FormularioUsuario() {
         value={formData.password}
         onChange={handleChange} 
       />
-      <p className="text-sm text-gray-600 italic">
+      <p className="text-xs text-gray-600 italic">
         La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula, un número y un símbolo.
       </p>
 
