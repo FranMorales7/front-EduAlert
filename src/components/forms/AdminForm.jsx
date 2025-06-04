@@ -246,6 +246,9 @@ export default function AdminForm() {
         </div>
       </div>
 
+      <p className="text-sm text-gray-600 italic">
+        Para cambiar tu contraseña, debes ingresar tu contraseña actual y la nueva contraseña.
+      </p>
       <UpdatePassword 
         value={formData.password}
         onChange={handleChange} 

@@ -8,9 +8,6 @@ export default function UpdatePassword({ currentPassword, newPassword, onChange 
   return (
     <>
       <div className="block text-sm font-medium text-gray-700">
-        <p className="text-sm text-gray-600 italic">
-          Para cambiar tu contraseña, debes ingresar tu contraseña actual y la nueva contraseña.
-        </p>
         <label htmlFor="current_password">Contraseña actual</label>
         <div className="relative">
           <input
