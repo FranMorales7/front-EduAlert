@@ -238,28 +238,38 @@ button.btDelete {
   outline: none;
 }
 
-.btDelete:hover {
+button.btDelete:hover {
   background: linear-gradient(to right, #dc2626, #ef4444); 
 }
 
-.btDelete:focus {
-  box-shadow: 0 0 0 2px #fca5a5; /* ring-2-red */
+button.btDelete:focus {
+  box-shadow: 0 0 0 2px #fca5a5; /* ring-2 */
 }
 
 button.btSuccess {
+  background: linear-gradient(to right, #0c6400, #2e8339); 
   background: #16a34a; 
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: background 0.15s ease-in-out;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
   color: white;
-  padding: 0.25rem 0.75rem; 
-  border-radius: 0.25rem;    
-  margin-right: 0.5rem;    
-  border: none;
-  cursor: pointer;
 }
 
 button.btSuccess:hover {
+  background: linear-gradient(to right, #004d0d, #35743f); 
   background: #15803d;
 }
 
+button.btSuccess:focus {
+  box-shadow: 0 0 0 2px #00b30f; 
+}
 
 .sidebar {
   background: rgba(240, 248, 255, 0.75);
