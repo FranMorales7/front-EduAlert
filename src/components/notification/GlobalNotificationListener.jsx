@@ -10,7 +10,7 @@ export default function GlobalNotificationListener() {
 
     const setupEcho = async () => {
       const { createEcho } = await import('@/lib/echo');
-      echo = createEcho();
+      echo = await createEcho();
 
       if (!echo) return;
 
