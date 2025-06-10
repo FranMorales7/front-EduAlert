@@ -185,13 +185,19 @@ export default function FormularioUsuario() {
         },
       });
 
+      const updated = resp.data;
       setFormData((prev) => ({
         ...prev,
-        image: resp?.data?.image ? `${backendUrl}/storage/${resp.data.image}?t=${Date.now()}` : '',
+        name: updated.name ?? prev.name,
+        last_name_1: updated.last_name_1 ?? prev.last_name_1,
+        last_name_2: updated.last_name_2 ?? prev.last_name_2,
+        email: updated.email ?? prev.email,
+        image: updated.image ? `${backendUrl}/storage/${updated.image}?t=${Date.now()}` : prev.image,
         imageFile: null,
         password: '',
         current_password: '',
         new_password: '',
+        updated_at: updated.updated_at ?? prev.updated_at,
       }));
       
       toast.success('Perfil actualizado con éxito');
