@@ -187,7 +187,7 @@ export default function LessonsTable() {
                 <td className="p-2 border">{diasSemana[l.day - 1] || 'Desconocido'}</td>
                 <td className="p-2 border">{formatHour(l.starts_at)} - {formatHour(l.ends_at)}</td>
                 
-                <td className="p-2 border">
+                <td className="p-2 border text-center flex gap-2">
                   <EditButton onClick={() => abrirEditar(l)} />
                   <DeleteButton onClick={() => onEliminar(l.id)} />
                    

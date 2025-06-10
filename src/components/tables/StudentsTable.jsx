@@ -146,7 +146,8 @@ export default function StudentsTable() {
         <input name="curso" value={filtros.curso} onChange={handleFiltro} placeholder="Filtrar por curso" className="border px-3 py-2 rounded" />
         <input name="contacto" value={filtros.contacto} onChange={handleFiltro} placeholder="Filtrar por contacto" className="border px-3 py-2 rounded" />
       </div>
-
+      
+      {/* Tabla */}
       <div className='max-h-[500px] overflow-auto rounded border border-gray-300 text-center'>
         <table className="w-full">
           <thead>

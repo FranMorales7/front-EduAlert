@@ -162,7 +162,7 @@ export default function AdminTripsTable() {
       </div>
 
       {/* Tabla */}
-      <div className='max-h-[520px] overflow-y-auto border border-gray-300'>
+      <div className='max-h-[520px] overflow-y-auto border border-gray-300 text-center'>
         <table className="w-full">
             <thead>
             <tr className="bg-gray-100">

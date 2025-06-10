@@ -166,7 +166,8 @@ export default function GroupsTable() {
           className="border px-3 py-2 rounded"
         />
       </div>
-
+      
+      {/* Tabla */}
       <div className="max-h-[500px] overflow-auto rounded border border-gray-300 text-center">
         <table className="w-full">
           <thead className="bg-gray-100">
