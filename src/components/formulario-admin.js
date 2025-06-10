@@ -59,7 +59,7 @@ export default function FormularioUsuario() {
     abortControllerRef.current = controller;
 
     axios
-      .get(`${backendUrl}/users/${user}`, {
+      .get(`${backendUrl}/manager/byUser/${user}`, {
         headers: {
           Authorization: `Bearer ${session.accessToken}`,
         },
@@ -179,7 +179,7 @@ export default function FormularioUsuario() {
     }
 
     try {
-      const resp = await axios.put(`${backendUrl}/users/${user}`, form, {
+      const resp = await axios.put(`${backendUrl}/manager/byUser/${user}`, form, {
         headers: {
           Authorization: `Bearer ${session.accessToken}`,
           'Content-Type': 'multipart/form-data',
