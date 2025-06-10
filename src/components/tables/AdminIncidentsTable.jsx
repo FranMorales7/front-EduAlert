@@ -191,7 +191,7 @@ export default function AdminIncidentsTable() {
                 </td>
                 <td className="p-2 border">{i.created_at?.slice(0, 10)}</td>
                 <td className="p-2 border">{i.lesson?.location?.name}</td>
-                <td className="p-2 border text-center flex gap-2">
+                <td className="p-2 border text-center flex justify-center items-center gap-2">
                     <EditButton onClick={() => abrirModalEditar(i)} />
                     <DeleteButton onClick={() => handleEliminar(i.id)} />
                 </td>

@@ -150,7 +150,7 @@ export default function TeachersTable() {
                 <td className="p-2 border">{t.name}</td>
                 <td className="p-2 border">{t.last_name_1} {t.last_name_2}</td>
                 <td className="p-2 border">{t.email}</td>
-                <td className="p-2 border text-center flex gap-2">
+                <td className="p-2 border text-center flex justify-center items-center gap-2">
                   <EditButton onClick={() => abrirEditar(t)} />
                   <DeleteButton onClick={() => handleEliminar(t.id)} />
                 </td>

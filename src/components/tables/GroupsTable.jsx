@@ -187,7 +187,7 @@ export default function GroupsTable() {
                   {g.tutor?.name} {g.tutor?.last_name_1} {g.tutor?.last_name_2 || ''}
                 </td>
 
-                <td className="p-2 border text-center flex gap-2">
+                <td className="p-2 border text-center flex justify-center items-center gap-2">
                   <EditButton onClick={() => abrirEditar(g)} />
                   <DeleteButton onClick={() => onEliminar(g.id)} />
                 </td>
