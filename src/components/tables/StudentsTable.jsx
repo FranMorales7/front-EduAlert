@@ -174,7 +174,7 @@ export default function StudentsTable() {
                   </span>
                 </td>
                 <td className="p-2 border">{s.contact}</td>
-                <td className="p-2 border text-center">
+                <td className="p-2 border text-center flex gap-2">
                   <EditButton onClick={() => abrirEditar(s)}/>
                   <DeleteButton onClick={() => handleEliminar(s.id)}/>
                 </td>
