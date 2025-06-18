@@ -69,6 +69,13 @@ FRONT-EDU/
 
  ### Ejecutar en entorno de desarrollo
     npm run dev
+    
+ ### Usuarios de prueba
+    user: Quevedo@email.com
+    password: Aa123456789
+
+    admin: gonzaloMegias@email.com
+    password: 12345678
 ---
 
 ## 🌐 Variables de entorno
